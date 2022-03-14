@@ -40,12 +40,12 @@ namespace DataStructure
 			return false;
 		}
 
-		~LinkedList()
+		~DoublyLinkedList()
 		{
 			Clear();
 		}
 	public:
-		LinkedList()
+		DoublyLinkedList()
 		{
 			first = nullptr;
 			last = first;

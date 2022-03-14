@@ -6,10 +6,10 @@ namespace DataStructure
 	class Stack
 	{
 	private:
-		LinkedList<T>* listStack;
+		DoublyLinkedList<T>* listStack;
 	public:
 		Stack() {
-			listStack = new LinkedList<T>();
+			listStack = new DoublyLinkedList<T>();
 		}
 		~Stack()
 		{
