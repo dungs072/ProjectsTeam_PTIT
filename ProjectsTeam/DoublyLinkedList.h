@@ -1,6 +1,6 @@
 #pragma once
 #include<iostream>
-#include"Node.h"
+#include"DoublyNode.h"
 #include<string>
 namespace DataStructure
 {
