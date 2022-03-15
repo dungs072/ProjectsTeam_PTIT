@@ -239,23 +239,33 @@ namespace DataStructure
 		void RemoveFirst()
 		{
 			if (first == nullptr) { return; }
+			length--;
+			if (first == last)
+			{
+				delete first;
+				last = first = nullptr;
+				return;
+			}
 			Node<T>* p = first;
 			first = first->next;
 			delete p;
 			p = nullptr;
-			length--;
-			if (first == nullptr) { return; }
 			first->prev = nullptr;
 		}
 		void RemoveLast()
 		{
 			if (last == nullptr) { return; }
+			length--;
+			if (last == first)
+			{
+				delete last;
+				last = first = nullptr;
+				return;
+			}
 			Node<T>* p = last;
 			last = last->prev;
 			delete p;
 			p = nullptr;
-			length--;
-			if (last == nullptr) { return; }
 			last->next = nullptr;
 		}
 		bool Remove(T value)
