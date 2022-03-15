@@ -2,19 +2,19 @@
 #include<iostream>
 namespace DataStructure
 {
-	template<typename T>
-	class Node
+	template<class T>
+	class DoublyNode
 	{
 	public:
-		Node* prev;
-		Node* next;
+		DoublyNode* prev;
+		DoublyNode* next;
 		T data;
-		Node(T value)
+		DoublyNode(T value)
 		{
 			data = value;
 			prev = nullptr;
 			next = nullptr;
 		}
-		Node() {}
+		DoublyNode() {}
 	};
 }

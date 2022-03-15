@@ -5,26 +5,26 @@ template<typename T>
 class SinglyLinkedList
 {
 private:
-	Node<T>* firstNode;
-	Node<T>* lastNode;
+	SinglyNode<T>* firstSinglyNode;
+	SinglyNode<T>* lastSinglyNode;
 	int lengthList;
-	Node<T>* CreateNode(T data)
+	SinglyNode<T>* CreateSinglyNode(T data)
 	{
-		Node<T>* p = new Node<T>();
+		SinglyNode<T>* p = new SinglyNode<T>();
 		p->data = data;
 		p->next = nullptr;
 		return p;
 	}
 	void SetListnullptr()
 	{
-		firstNode = nullptr;
-		lastNode = nullptr;
+		firstSinglyNode = nullptr;
+		lastSinglyNode = nullptr;
 	}
 public:
 	SinglyLinkedList<T>()
 	{
-		firstNode = nullptr;
-		lastNode = nullptr;
+		firstSinglyNode = nullptr;
+		lastSinglyNode = nullptr;
 		lengthList = 0;
 	}
 	~SinglyLinkedList<T>()
@@ -33,69 +33,69 @@ public:
 	}
 	void Add(T newData)
 	{
-		if (firstNode == nullptr && lastNode == nullptr)
+		if (firstSinglyNode == nullptr && lastSinglyNode == nullptr)
 		{
-			firstNode = CreateNode(newData);
-			lastNode = new Node<T>();
-			lastNode = firstNode;
+			firstSinglyNode = CreateSinglyNode(newData);
+			lastSinglyNode = new SinglyNode<T>();
+			lastSinglyNode = firstSinglyNode;
 			lengthList++;
 		}
 		else
 		{
-			Node<T>* tempNode = CreateNode(newData);
-			lastNode->next = tempNode;
-			lastNode = tempNode;
+			SinglyNode<T>* tempSinglyNode = CreateSinglyNode(newData);
+			lastSinglyNode->next = tempSinglyNode;
+			lastSinglyNode = tempSinglyNode;
 			lengthList++;
 		}
 	}
 	void Insert(T newData, T previousData)
 	{
-		if (firstNode == nullptr) { return; }
-		Node<T>* temp = CreateNode(newData);
-		Node<T>* p = FindNode(previousData);
+		if (firstSinglyNode == nullptr) { return; }
+		SinglyNode<T>* temp = CreateSinglyNode(newData);
+		SinglyNode<T>* p = FindSinglyNode(previousData);
 		if (p == nullptr) { return; }//cannot insert
 		temp->next = p->next;
 		p->next = temp;
-		if (p == lastNode)
+		if (p == lastSinglyNode)
 		{
-			lastNode = temp;
+			lastSinglyNode = temp;
 		}
 		lengthList++;
 	}
-	void Insert(T newData, Node<T>* previousNode)
+	void Insert(T newData, SinglyNode<T>* previousSinglyNode)
 	{
-		//check whether previousNode is in SinglyLinkedList or not
-		if (firstNode == nullptr || !Contains(previousNode)) { return; }
-		Node<T>* temp = CreateNode(newData);
-		temp->next = previousNode->next;
-		previousNode->next = temp;
-		if (previousNode == lastNode)
+		//check whether previousSinglyNode is in SinglyLinkedList or not
+		if (firstSinglyNode == nullptr || !Contains(previousSinglyNode)) { return; }
+		SinglyNode<T>* temp = CreateSinglyNode(newData);
+		temp->next = previousSinglyNode->next;
+		previousSinglyNode->next = temp;
+		if (previousSinglyNode == lastSinglyNode)
 		{
-			lastNode = temp;
+			lastSinglyNode = temp;
 		}
 		lengthList++;
 	}
 	void InsertFirstList(T newData)
 	{
-		Node<T>* temp = CreateNode(newData);
+		SinglyNode<T>* temp = CreateSinglyNode(newData);
 		lengthList++;
-		if (firstNode == nullptr)
+		if (firstSinglyNode == nullptr)
 		{
-			lastNode = firstNode = temp;
+			lastSinglyNode = firstSinglyNode = temp;
 			return;
 		}
-		temp->next = firstNode;
-		firstNode = temp;
+		temp->next = firstSinglyNode;
+		firstSinglyNode = temp;
 
 	}
 	void Remove(T dataDelete)
 	{
-		if (firstNode == nullptr) { return; }
-		Node<T>* p = firstNode;
+		if (firstSinglyNode == nullptr) { return; }
+		SinglyNode<T>* p = firstSinglyNode;
 
-		if (dataDelete == firstNode->data) {
-			if (firstNode->next != nullptr) {
-				firstNode = firstNode->next;
+		if (dataDelete == firstSinglyNode->data) {
+			if (firstSinglyNode->next != nullptr) {
+				firstSinglyNode = firstSinglyNode->next;
 			}
 			else {
 				SetListnullptr();
@@ -106,13 +106,13 @@ public:
 			return;
 		}
 
-		p = FindNode(dataDelete);
+		p = FindSinglyNode(dataDelete);
 		if (p == nullptr) { return; }// not have data in linked List
-		Node<T>* prevNode = FindPreviousNode(p);
-		prevNode->next = p->next;
-		if (p == lastNode)
+		SinglyNode<T>* prevSinglyNode = FindPreviousSinglyNode(p);
+		prevSinglyNode->next = p->next;
+		if (p == lastSinglyNode)
 		{
-			lastNode = prevNode;
+			lastSinglyNode = prevSinglyNode;
 		}
 		p->next = nullptr;
 		delete p;
@@ -122,41 +122,41 @@ public:
 	}
 	void RemoveFirst()
 	{
-		if (firstNode == nullptr) { return; }
+		if (firstSinglyNode == nullptr) { return; }
 		lengthList--;
-		if (firstNode == lastNode) {
+		if (firstSinglyNode == lastSinglyNode) {
 			SetListnullptr();
 			return;
 		}
-		Node<T>* p = firstNode;
-		firstNode = firstNode->next;
+		SinglyNode<T>* p = firstSinglyNode;
+		firstSinglyNode = firstSinglyNode->next;
 		delete p;
 		p = nullptr;
 
 	}
 	void RemoveLast()
 	{
-		if (lastNode == nullptr) { return; }
+		if (lastSinglyNode == nullptr) { return; }
 		lengthList--;
-		if (firstNode == lastNode) {
+		if (firstSinglyNode == lastSinglyNode) {
 			SetListnullptr();
 			return;
 		}
-		Node<T>* p = lastNode;
-		lastNode = FindPreviousNode(lastNode);
-		lastNode->next = nullptr;
+		SinglyNode<T>* p = lastSinglyNode;
+		lastSinglyNode = FindPreviousSinglyNode(lastSinglyNode);
+		lastSinglyNode->next = nullptr;
 		delete p;
 		p = nullptr;
 
 	}
-	Node<T>* FindPreviousNode(T data)
+	SinglyNode<T>* FindPreviousSinglyNode(T data)
 	{
-		if (firstNode == nullptr) { return nullptr; }
-		if (data == firstNode->data)
+		if (firstSinglyNode == nullptr) { return nullptr; }
+		if (data == firstSinglyNode->data)
 		{
 			return nullptr;
 		}
-		Node<T>* p = firstNode;
+		SinglyNode<T>* p = firstSinglyNode;
 		while (p->next != nullptr)
 		{
 			if (p->next->data == data)
@@ -167,14 +167,14 @@ public:
 		}
 		return nullptr;
 	}
-	Node<T>* FindPreviousNode(Node<T>* node)
+	SinglyNode<T>* FindPreviousSinglyNode(SinglyNode<T>* singlyNode)
 	{
-		if (firstNode == nullptr) { return nullptr; }
-		if (node == firstNode) { return nullptr; }
-		Node<T>* p = firstNode;
+		if (firstSinglyNode == nullptr) { return nullptr; }
+		if (singlyNode == firstSinglyNode) { return nullptr; }
+		SinglyNode<T>* p = firstSinglyNode;
 		while (p->next != nullptr)
 		{
-			if (p->next == node)
+			if (p->next == singlyNode)
 			{
 				return p;
 			}
@@ -182,13 +182,13 @@ public:
 		}
 		return nullptr;
 	}
-	void DisplayNode()
+	void DisplaySinglyNode()
 	{
-		if (firstNode == nullptr) {
+		if (firstSinglyNode == nullptr) {
 			std::cout << "list is nullptr" << std::endl;
 			return;
 		}
-		Node<T>* p = firstNode;
+		SinglyNode<T>* p = firstSinglyNode;
 		while (p != nullptr)
 		{
 			std::cout << p->data << std::endl;
@@ -197,10 +197,10 @@ public:
 	}
 	void Reverse()
 	{
-		if (firstNode == nullptr) { return; }
-		Node<T>* p = firstNode;
-		Node<T>* q = nullptr;
-		Node<T>* r = nullptr;
+		if (firstSinglyNode == nullptr) { return; }
+		SinglyNode<T>* p = firstSinglyNode;
+		SinglyNode<T>* q = nullptr;
+		SinglyNode<T>* r = nullptr;
 		while (p != nullptr)
 		{
 			r = q;
@@ -208,22 +208,22 @@ public:
 			p = p->next;
 			q->next = r;
 		}
-		firstNode = q;
+		firstSinglyNode = q;
 	}
 	bool Contains(T data)
 	{
-		Node<T>* p = FindNode(data);
+		SinglyNode<T>* p = FindSinglyNode(data);
 		return p != nullptr ? true : false;
 	}
-	bool Contains(Node<T>* node)
+	bool Contains(SinglyNode<T>* singlyNode)
 	{
-		Node<T>* p = FindNode(node);
+		SinglyNode<T>* p = FindSinglyNode(singlyNode);
 		return p != nullptr ? true : false;
 	}
-	Node<T>* FindNode(T data)
+	SinglyNode<T>* FindSinglyNode(T data)
 	{
-		if (firstNode == nullptr) { return nullptr; }
-		Node<T>* p = firstNode;
+		if (firstSinglyNode == nullptr) { return nullptr; }
+		SinglyNode<T>* p = firstSinglyNode;
 		while (p != nullptr)
 		{
 			if (p->data == data)
@@ -234,13 +234,13 @@ public:
 		}
 		return nullptr;
 	}
-	Node<T>* FindNode(Node<T>* node)
+	SinglyNode<T>* FindSinglyNode(SinglyNode<T>* singlyNode)
 	{
-		if (firstNode == nullptr) { return nullptr; }
-		Node<T>* p = firstNode;
+		if (firstSinglyNode == nullptr) { return nullptr; }
+		SinglyNode<T>* p = firstSinglyNode;
 		while (p != nullptr)
 		{
-			if (p == node)
+			if (p == singlyNode)
 			{
 				return p;
 			}
@@ -254,29 +254,29 @@ public:
 	}
 	void Clear()
 	{
-		if (firstNode == nullptr) { return; }
-		Node<T>* p = firstNode;
+		if (firstSinglyNode == nullptr) { return; }
+		SinglyNode<T>* p = firstSinglyNode;
 		while (p != nullptr)
 		{
-			firstNode = firstNode->next;
+			firstSinglyNode = firstSinglyNode->next;
 			p->next = nullptr;
 			delete p;
-			if (p == lastNode)
+			if (p == lastSinglyNode)
 			{
 				SetListnullptr();
 			}
 			p = nullptr;
-			p = firstNode;
+			p = firstSinglyNode;
 			lengthList--;
 		}
 	}
-	Node<T>* First()
+	SinglyNode<T>* First()
 	{
-		return firstNode;
+		return firstSinglyNode;
 	}
-	Node<T>* Last()
+	SinglyNode<T>* Last()
 	{
-		return lastNode;
+		return lastSinglyNode;
 	}
 	bool IsEmptyList()
 	{

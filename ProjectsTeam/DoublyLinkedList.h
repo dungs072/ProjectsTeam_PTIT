@@ -9,29 +9,29 @@ namespace DataStructure
 	class DoublyLinkedList
 	{
 	private:
-		Node<T>* first;
-		Node<T>* last;
+		DoublyNode<T>* first;
+		DoublyNode<T>* last;
 		int length;
 		void InitialLinkedList(T value)
 		{
-			first = new Node<T>();
+			first = new DoublyNode<T>();
 			first->data = value;
 			first->prev = first->next = nullptr;
 			last = first;
 		}
-		void InitialLinkedList(Node<T>* node)
+		void InitialLinkedList(DoublyNode<T>* doublyNode)
 		{
-			first = node;
+			first = doublyNode;
 			first->prev = first->next = nullptr;
 			last = first;
 		}
-		bool HasInLinkedList(Node<T>* node)
+		bool HasInLinkedList(DoublyNode<T>* doublyNode)
 		{
-			Node<T>* p = first;
+			DoublyNode<T>* p = first;
 			if (p == nullptr) { return false; }
 			while (p != nullptr)
 			{
-				if (p == node)
+				if (p == doublyNode)
 				{
 					return true;
 				}
@@ -52,11 +52,11 @@ namespace DataStructure
 			length = 0;
 		}
 
-		Node<T>* First()
+		DoublyNode<T>* First()
 		{
 			return first;
 		}
-		Node<T>* Last()
+		DoublyNode<T>* Last()
 		{
 			return last;
 		}
@@ -72,7 +72,7 @@ namespace DataStructure
 			}
 			else
 			{
-				Node<T>* t = new Node<T>();
+				DoublyNode<T>* t = new DoublyNode<T>();
 				t->data = value;
 				t->prev = last;
 				t->next = nullptr;
@@ -81,20 +81,20 @@ namespace DataStructure
 			}
 			length++;
 		}
-		void AddLast(Node<T>* node)
+		void AddLast(DoublyNode<T>* DoublyNode)
 		{
-			if (HasInLinkedList(node)) { return; }
-			if (node == nullptr) { return; }
+			if (HasInLinkedList(DoublyNode)) { return; }
+			if (DoublyNode == nullptr) { return; }
 			if (first == last && first == nullptr)
 			{
-				InitialLinkedList(node);
+				InitialLinkedList(DoublyNode);
 			}
 			else
 			{
-				node->prev = last;
-				node->next = nullptr;
-				last->next = node;
-				last = node;
+				DoublyNode->prev = last;
+				DoublyNode->next = nullptr;
+				last->next = DoublyNode;
+				last = DoublyNode;
 			}
 			length++;
 		}
@@ -107,7 +107,7 @@ namespace DataStructure
 			}
 			else
 			{
-				Node<T>* t = new Node<T>();
+				DoublyNode<T>* t = new DoublyNode<T>();
 				t->data = value;
 				t->next = first;
 				t->prev = nullptr;
@@ -116,85 +116,85 @@ namespace DataStructure
 			}
 			length++;
 		}
-		void AddFirst(Node<T>* node)
+		void AddFirst(DoublyNode<T>* DoublyNode)
 		{
-			if (HasInLinkedList(node)) { return; }
-			if (node == nullptr) { return; }
+			if (HasInLinkedList(DoublyNode)) { return; }
+			if (DoublyNode == nullptr) { return; }
 			if (first == last && last == nullptr)
 			{
-				InitialLinkedList(node);
+				InitialLinkedList(DoublyNode);
 			}
 			else
 			{
-				node->next = first;
-				node->prev = nullptr;
-				first->prev = node;
-				first = node;
+				DoublyNode->next = first;
+				DoublyNode->prev = nullptr;
+				first->prev = DoublyNode;
+				first = DoublyNode;
 			}
 			length++;
 		}
-		void AddBefore(Node<T>* node, T value)
+		void AddBefore(DoublyNode<T>* doublyNode, T value)
 		{
-			if (!HasInLinkedList(node)) { return; }
-			if (node == first || node == nullptr)
+			if (!HasInLinkedList(doublyNode)) { return; }
+			if (doublyNode == first || doublyNode == nullptr)
 			{
 				AddFirst(value);
 				return;
 			}
-			Node<T>* t = new Node<T>();
+			DoublyNode<T>* t = new DoublyNode<T>();
 			t->data = value;
-			t->next = node;
-			t->prev = node->prev;
-			if (node->prev) { node->prev->next = t; }
-			node->prev = t;
+			t->next = doublyNode;
+			t->prev = doublyNode->prev;
+			if (doublyNode->prev) { doublyNode->prev->next = t; }
+			doublyNode->prev = t;
 			length++;
 		}
-		void AddBefore(Node<T>* node, Node<T>* nodeValue)
+		void AddBefore(DoublyNode<T>* doublyNode, DoublyNode<T>* doublyNodeValue)
 		{
-			if (HasInLinkedList(nodeValue)) { return; }
-			if (nodeValue == nullptr) { return; }
-			if (!HasInLinkedList(node)) { return; }
-			if (node == first || node == nullptr)
+			if (HasInLinkedList(doublyNodeValue)) { return; }
+			if (doublyNodeValue == nullptr) { return; }
+			if (!HasInLinkedList(doublyNode)) { return; }
+			if (doublyNode == first || doublyNode == nullptr)
 			{
-				AddFirst(nodeValue);
+				AddFirst(doublyNodeValue);
 				return;
 			}
-			nodeValue->next = node;
-			nodeValue->prev = node->prev;
-			if (node->prev) { node->prev->next = nodeValue; }
-			node->prev = nodeValue;
+			doublyNodeValue->next = doublyNode;
+			doublyNodeValue->prev = doublyNode->prev;
+			if (doublyNode->prev) { doublyNode->prev->next = doublyNodeValue; }
+			doublyNode->prev = doublyNodeValue;
 			length++;
 		}
-		void AddAfter(Node<T>* node, T value)
+		void AddAfter(DoublyNode<T>* doublyNode, T value)
 		{
-			if (!HasInLinkedList(node)) { return; }
-			if (last == node || node == nullptr)
+			if (!HasInLinkedList(doublyNode)) { return; }
+			if (last == doublyNode || doublyNode == nullptr)
 			{
 				AddLast(value);
 				return;
 			}
-			Node<T>* t = new Node<T>();
+			DoublyNode<T>* t = new DoublyNode<T>();
 			t->data = value;
-			t->next = node->next;
-			t->prev = node;
-			if (node->next) { node->next->prev = t; }
-			node->next = t;
+			t->next = doublyNode->next;
+			t->prev = doublyNode;
+			if (doublyNode->next) { doublyNode->next->prev = t; }
+			doublyNode->next = t;
 			length++;
 		}
-		void AddAfter(Node<T>* node, Node<T>* nodeValue)
+		void AddAfter(DoublyNode<T>* doublyNode, DoublyNode<T>* doublyNodeValue)
 		{
-			if (HasInLinkedList(nodeValue)) { return; }
-			if (nodeValue == nullptr) { return; }
-			if (!HasInLinkedList(node)) { return; }
-			if (last == node || node == nullptr)
+			if (HasInLinkedList(doublyNodeValue)) { return; }
+			if (doublyNodeValue == nullptr) { return; }
+			if (!HasInLinkedList(doublyNode)) { return; }
+			if (last == doublyNode || doublyNode == nullptr)
 			{
-				AddLast(nodeValue);
+				AddLast(doublyNodeValue);
 				return;
 			}
-			nodeValue->next = node->next;
-			nodeValue->prev = node;
-			if (node->next) { node->next->prev = nodeValue; }
-			node->next = nodeValue;
+			doublyNodeValue->next = doublyNode->next;
+			doublyNodeValue->prev = doublyNode;
+			if (doublyNode->next) { doublyNode->next->prev = doublyNodeValue; }
+			doublyNode->next = doublyNodeValue;
 			length++;
 		}
 		void Clear()
@@ -202,16 +202,16 @@ namespace DataStructure
 			length = 0;
 			while (first != nullptr)
 			{
-				Node<T>* p = first;
+				DoublyNode<T>* p = first;
 				first = first->next;
 				delete p;
 				p = nullptr;
 			}
 			last = nullptr;
 		}
-		Node<T>* Find(T value)
+		DoublyNode<T>* Find(T value)
 		{
-			Node<T>* p = first;
+			DoublyNode<T>* p = first;
 			while (p != nullptr)
 			{
 				if (p->data == value)
@@ -222,10 +222,10 @@ namespace DataStructure
 			}
 			return nullptr;
 		}
-		Node<T>* FindLast(T value)
+		DoublyNode<T>* FindLast(T value)
 		{
-			Node<T>* p = first;
-			Node<T>* result = nullptr;
+			DoublyNode<T>* p = first;
+			DoublyNode<T>* result = nullptr;
 			while (p != nullptr)
 			{
 				if (p->data == value)
@@ -246,7 +246,7 @@ namespace DataStructure
 				last = first = nullptr;
 				return;
 			}
-			Node<T>* p = first;
+			DoublyNode<T>* p = first;
 			first = first->next;
 			delete p;
 			p = nullptr;
@@ -262,7 +262,7 @@ namespace DataStructure
 				last = first = nullptr;
 				return;
 			}
-			Node<T>* p = last;
+			DoublyNode<T>* p = last;
 			last = last->prev;
 			delete p;
 			p = nullptr;
@@ -275,7 +275,7 @@ namespace DataStructure
 				RemoveFirst();
 				return true;
 			}
-			Node<T>* p = first;
+			DoublyNode<T>* p = first;
 			while (p != nullptr)
 			{
 				if (p->data == value)
@@ -285,7 +285,7 @@ namespace DataStructure
 						RemoveLast();
 						return true;
 					}
-					Node<T>* t = p;
+					DoublyNode<T>* t = p;
 					if (p->prev) { p->prev->next = p->next; }
 					if (p->next) { p->next->prev = p->prev; }
 					delete t;
@@ -297,25 +297,25 @@ namespace DataStructure
 			}
 			return false;
 		}
-		void Remove(Node<T>* node)
+		void Remove(DoublyNode<T>* doublyNode)
 		{
-			if (node == nullptr) { return; }
-			if (!HasInLinkedList(node)) { return; }
-			if (node == first)
+			if (doublyNode == nullptr) { return; }
+			if (!HasInLinkedList(doublyNode)) { return; }
+			if (doublyNode == first)
 			{
 				first = first->next;
 				first->prev = nullptr;
-				node->next = nullptr;
-				node->prev = nullptr;
+				doublyNode->next = nullptr;
+				doublyNode->prev = nullptr;
 				length--;
 				return;
 			}
-			Node<T>* p = first;
+			DoublyNode<T>* p = first;
 			while (p != nullptr)
 			{
-				if (p == node)
+				if (p == doublyNode)
 				{
-					Node<T>* t = p;
+					DoublyNode<T>* t = p;
 					if (p->prev) { p->prev->next = p->next; }
 					if (p->next) { p->next->prev = p->prev; }
 					t->next = nullptr;
@@ -330,10 +330,10 @@ namespace DataStructure
 		{
 			if (first == nullptr) { return; }
 			last = first;
-			Node<T>* p = first;
+			DoublyNode<T>* p = first;
 			while (p != nullptr)
 			{
-				Node<T>* t = p->next;
+				DoublyNode<T>* t = p->next;
 				p->next = p->prev;
 				p->prev = t;
 				p = p->prev;
@@ -347,7 +347,7 @@ namespace DataStructure
 		bool Contains(T value)
 		{
 			if (first == nullptr) { return false; }
-			Node<T>* p = first;
+			DoublyNode<T>* p = first;
 			while (p != nullptr)
 			{
 				if (value == p->data)
@@ -358,13 +358,13 @@ namespace DataStructure
 			}
 			return false;
 		}
-		bool Contains(Node<T>* node)
+		bool Contains(DoublyNode<T>* doublyNode)
 		{
 			if (first == nullptr) { return false; }
-			Node<T>* p = first;
+			DoublyNode<T>* p = first;
 			while (p != nullptr)
 			{
-				if (node == p)
+				if (doublyNode == p)
 				{
 					return true;
 				}
@@ -374,7 +374,7 @@ namespace DataStructure
 		}
 		void Display()
 		{
-			Node<T>* p = first;
+			DoublyNode<T>* p = first;
 			if (p == nullptr)
 			{
 				std::cout << "Linked list is empty" << std::endl;

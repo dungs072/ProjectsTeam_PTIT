@@ -1,11 +1,11 @@
 #pragma once
 #include<iostream>
 template<typename T>
-class Node
+class SinglyNode
 {
 public:
 	T data;
-	Node* next;
-	~Node() {}
+	SinglyNode* next;
+	~SinglyNode() {}
 };
 
