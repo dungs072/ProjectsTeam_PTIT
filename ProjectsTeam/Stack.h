@@ -16,18 +16,18 @@ namespace DataStructure
 			listStack->Clear();
 		}
 
-		void Push(T* data) {
-			listStack->AddLast(*data);
+		void Push(T data) {
+			listStack->AddLast(data);
 		}
 
-		T* Pop() {
+		T Pop() {
 			T tempData = listStack->Last()->data;
 			listStack->RemoveLast();
-			return &tempData;
+			return tempData;
 		}
-		T* Front()
+		T Front()
 		{
-			return &listStack->Last()->data;
+			return listStack->Last()->data;
 		}
 		bool IsEmpty() {
 			return listStack->Length() == 0;

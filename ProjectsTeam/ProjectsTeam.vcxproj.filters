@@ -42,6 +42,18 @@
     <ClCompile Include="SinglyLinkedList.cpp">
       <Filter>Source Files\BackEnd</Filter>
     </ClCompile>
+    <ClCompile Include="BSTree.cpp">
+      <Filter>Source Files\BackEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="BSTNode.cpp">
+      <Filter>Source Files\BackEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="Queue.cpp">
+      <Filter>Source Files\BackEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="CardReader.cpp">
+      <Filter>Source Files\BackEnd</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ReaderCard.h">
@@ -60,6 +72,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SinglyLinkedList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BSTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BSTNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Queue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CardReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
