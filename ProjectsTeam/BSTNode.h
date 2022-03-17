@@ -6,8 +6,8 @@ class BSTNode
 public:
 	BSTNode* leftNode;
 	BSTNode* rightNode;
-	T data;
-	BSTNode(T value)
+	T* data;
+	BSTNode(T* value)
 	{
 		data = value;
 		leftNode = nullptr;

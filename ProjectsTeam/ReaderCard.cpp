@@ -3,6 +3,9 @@ using namespace Library;
 ReaderCard::ReaderCard(const wxString& title) :wxFrame
 (NULL, -1, title, wxPoint(-1, -1), wxSize(1280, 680))
 {
+	//backend
+	cardReaderTree = new BSTree<CardReader>();
+	//frontend
 	//colors
 	wxColour lightYellow, greenColor, organColor, lightBlue, eggYellow, lightRed;
 	lightYellow.Set(wxT("#E0EBB7"));
@@ -109,6 +112,8 @@ void ReaderCard::CreateEnterArea()
 	lightGreen.Set(wxT("#ACE39D"));
 	defaultColor.Set(wxT("#E0E0E0"));
 	enterText = new wxTextCtrl * [4];
+	/*sexCheckBox = new wxCheckBox * [2];
+	stateCheckBox = new wxCheckBox * [2];*/
 	wxStaticText** labelText = new wxStaticText * [4];
 	labelText[0] = new wxStaticText(enterTextBackGround, -1, wxT("HO: "), wxPoint(10, 10));
 	labelText[1] = new wxStaticText(enterTextBackGround, -1, wxT("TEN: "), wxPoint(10, 60));
@@ -120,6 +125,16 @@ void ReaderCard::CreateEnterArea()
 			wxPoint(10, 30 * (i + 1) + i * 20), wxSize(170, -1), wxTE_CENTER | wxTE_PROCESS_ENTER);
 		enterText[i]->SetBackgroundColour(lightBlue2);
 	}
+	/*sexCheckBox[0] = new wxCheckBox(enterTextBackGround,
+					-1, wxT("NAM"), wxPoint(30, 31*(2+1)+2*20));
+	sexCheckBox[1] = new wxCheckBox(enterTextBackGround,
+		-1, wxT("NU"), wxPoint(150, 31 * (2 + 1) + 2 * 20));
+
+	stateCheckBox[0] = new wxCheckBox(enterTextBackGround,
+		-1, wxT("KHOA"), wxPoint(30, 31 * (3 + 1) + 3 * 20));
+	stateCheckBox[1] = new wxCheckBox(enterTextBackGround,
+		-1, wxT("HOAT DONG"), wxPoint(150, 31 * (3 + 1) + 3 * 20));*/
+
 	GuideToUser();
 	//mainHBox->Add(enterTextBackGround, 0, wxLEFT|wxTOP, 60);
 }
@@ -243,8 +258,8 @@ void ReaderCard::SaveToList(wxTextCtrl** textCtrlList, int length, int& pos)
 	}
 	textCtrlList[3]->SetLabelText(stateText[stateCard]);
 
-
-	WriteHashCodeToCell(pos, textCtrlList);
+	ulong cardCode = 0;
+	WriteHashCodeToCell(pos, textCtrlList,cardCode);
 	for (i = 1; i < 5; i++)
 	{
 		ModifyTextInput(textCtrlList[i - 1]);
@@ -254,7 +269,8 @@ void ReaderCard::SaveToList(wxTextCtrl** textCtrlList, int length, int& pos)
 		textCtrlList[i - 1]->Clear();
 
 	}
-
+	CardReader* cardReader = CreateCardReader(textCtrlList,cardCode);
+	cardReaderTree->Add(cardReader);
 	for (; i - 1 < length; i++)
 	{
 		textCtrlList[i - 1]->Clear();
@@ -282,7 +298,6 @@ void ReaderCard::InsertToList()
 	grid->SetReadOnly(row, 0);
 	SaveToList(enterText2, 5, row);
 }
-
 void ReaderCard::OnKeyDown(wxKeyEvent& event)
 {
 
@@ -330,8 +345,11 @@ void ReaderCard::DeleteSelectedRows()
 		{
 			if (grid->IsInSelection(i, 0))
 			{
-
+				wxString cardCodewxstr = grid->GetCellValue(i, 0);
+				ulong cardCode = CastWxStringToUlong(cardCodewxstr);
+				cardReaderTree->Delete(cardCode);
 				grid->DeleteRows(i, 1);
+				
 				if (i < count)
 				{
 					count--;
@@ -520,9 +538,9 @@ void ReaderCard::EditCurrentCell(wxGridEvent& event)
 	//wxMessageBox(event.GetString());
 	event.Skip();
 }
-void ReaderCard::WriteHashCodeToCell(int pos, wxTextCtrl** textCtrlList)
+void ReaderCard::WriteHashCodeToCell(int pos, wxTextCtrl** textCtrlList,ulong &hashCode)
 {
-	long long hashCode = CreateHashCode(textCtrlList);
+	hashCode = CreateHashCode(textCtrlList);
 	std::string strCode = EditCardCode(hashCode, 10);
 	wxString wxStrCode(strCode.c_str(), wxConvUTF8);
 	grid->SetCellValue(pos, 0, wxStrCode);
@@ -530,11 +548,27 @@ void ReaderCard::WriteHashCodeToCell(int pos, wxTextCtrl** textCtrlList)
 }
 void ReaderCard::WriteHashCodeToCell(int row)
 {
-	long long hashCode = CreateHashCode(row);
+	ulong hashCode = CreateHashCode(row);
 	std::string strCode = EditCardCode(hashCode, 10);
 	wxString wxStrCode(strCode.c_str(), wxConvUTF8);
 	grid->SetCellValue(row, 0, wxStrCode);
 	grid->SetCellAlignment(row, 0, wxALIGN_CENTER, wxALIGN_CENTER);
+}
+void ReaderCard::CastWxStringIntoString(wxString text, string& str)
+{
+	str = std::string(text.mb_str());
+}
+CardReader* ReaderCard::CreateCardReader(wxTextCtrl** textCtrlList, ulong cardCode)
+{
+	string firstName = "";
+	string lastName = "";
+	string sex = "";
+	string state = "";
+	CastWxStringIntoString(textCtrlList[0]->GetValue(), firstName);
+	CastWxStringIntoString(textCtrlList[1]->GetValue(), lastName);
+	CastWxStringIntoString(textCtrlList[2]->GetValue(), sex);
+	CastWxStringIntoString(textCtrlList[3]->GetValue(), state);
+	return new CardReader(cardCode, firstName, lastName, sex, state);
 }
 bool ReaderCard::IsWhiteSpaceAllText(wxTextCtrl* textCtrl)
 {
@@ -602,7 +636,7 @@ bool ReaderCard::IsRightCodeState(int maxNumber, int number)
 {
 	return number >= 0 && number <= maxNumber;
 }
-std::string ReaderCard::UpperText(std::string text)
+string ReaderCard::UpperText(string text)
 {
 	for (int i = 0; i < text.length(); i++)
 	{
@@ -617,7 +651,7 @@ std::string ReaderCard::UpperText(std::string text)
 	}
 	return text;
 }
-std::string ReaderCard::EditCardCode(long long number, int maxLengthCode)
+string ReaderCard::EditCardCode(ulong number, int maxLengthCode)
 {
 	std::string codeReader = "";
 	std::string rawCodeReader = "";
@@ -654,7 +688,7 @@ int ReaderCard::CastWxStringToInt(wxString wxStr)
 {
 	int i, j;
 	int number = 0;
-	std::string strText = std::string(wxStr.mb_str());
+	string strText = string(wxStr.mb_str());
 	for (i = strText.length() - 1, j = 0; i >= 0; i--, j++)
 	{
 		if (strText[i] < '0' || strText[i]>'9')
@@ -665,7 +699,22 @@ int ReaderCard::CastWxStringToInt(wxString wxStr)
 	}
 	return number;
 }
-long long ReaderCard::CreateHashCode(wxTextCtrl** textCtrlList)
+ulong ReaderCard::CastWxStringToUlong(wxString wxStr)
+{
+	int i, j;
+	ulong number = 0;
+	string strText = string(wxStr.mb_str());
+	for (i = strText.length() - 1, j = 0; i >= 0; i--, j++)
+	{
+		if (strText[i] < '0' || strText[i]>'9')
+		{
+			return -1;
+		}
+		number += (strText[i] - '0') * pow(10, j);
+	}
+	return number;
+}
+ulong ReaderCard::CreateHashCode(wxTextCtrl** textCtrlList)
 {
 
 	std::string strText = "";
@@ -681,7 +730,7 @@ long long ReaderCard::CreateHashCode(wxTextCtrl** textCtrlList)
 	return HashCode(strText);
 
 }
-long long ReaderCard::CreateHashCode(int row)
+ulong ReaderCard::CreateHashCode(int row)
 {
 	wxString wxStrText = wxT("");
 	std::string strText = "";
@@ -694,9 +743,9 @@ long long ReaderCard::CreateHashCode(int row)
 	strText = std::string(wxStrText.mb_str());
 	return HashCode(strText);
 }
-long long ReaderCard::HashCode(std::string strText)
+ulong ReaderCard::HashCode(string strText)
 {
-	long long hashCode = 0;
+	ulong hashCode = 0;
 	for (int i = 0; i < strText.length(); i++)
 	{
 		if (strText[i] == ' ')

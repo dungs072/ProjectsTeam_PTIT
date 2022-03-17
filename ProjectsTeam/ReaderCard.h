@@ -7,16 +7,26 @@
 #include<iostream>
 #include<String>
 #include<math.h>
-
+#include"BSTree.h"
+typedef unsigned long long ulong;
+using std::string;
+using namespace DataStructure;
 namespace Library
 {
 	class ReaderCard :public wxFrame
 	{
 	private:
+		//backend
+		
+		BSTree<CardReader>* cardReaderTree;
+		CardReader* CreateCardReader(wxTextCtrl** textCtrlList,ulong cardCode);
+		//frontend
 		wxMenuBar* menuBar;
 		wxMenu* file;
-		std::string* stateText;
+		string* stateText;
 		wxNotebook* noteBook;
+		wxCheckBox** sexCheckBox;
+		wxCheckBox** stateCheckBox;
 		wxTextCtrl** enterText;
 		wxTextCtrl** enterText2;
 		wxBoxSizer* mainHBox;
@@ -42,14 +52,16 @@ namespace Library
 		void InsertToList();
 		void ModifyTextInput(wxTextCtrl* textCtrl);
 		void ModifyTextInput(wxString& wxStr);
-		void ModifyString(std::string& str);
-		void ErrorMessageBox(int pos, std::string message);
+		void ModifyString(string& str);
+		void ErrorMessageBox(int pos,string message);
 		void MakeStateCodeText();
 		void UpperWxString(wxTextCtrl* textCtrl);
 		void UpperWxString(wxString& wxStr);
-		void WriteHashCodeToCell(int pos, wxTextCtrl** textCtrlList);
+		void WriteHashCodeToCell(int pos, wxTextCtrl** textCtrlList,ulong &hashCode);
 		void WriteHashCodeToCell(int row);
 		void EditCurrentCell(wxGridEvent& event);
+		void CastWxStringIntoString(wxString text, string& str);
+
 		bool IsWhiteSpaceAllText(wxTextCtrl* textCtrl);
 		bool IsWhiteSpaceAllText(wxString wxStr);
 		bool IsWord(wxTextCtrl* textCtrl);
@@ -59,11 +71,12 @@ namespace Library
 		bool IsRightCodeState(int maxNum, int number);
 		int CastWxStringToInt(wxTextCtrl* textCtrl);
 		int CastWxStringToInt(wxString wxStr);
-		long long CreateHashCode(wxTextCtrl** textCltrList);
-		long long CreateHashCode(int row);
-		long long HashCode(std::string str);
-		std::string UpperText(std::string text);
-		std::string EditCardCode(long long number, int maxLengthCode);
+		ulong CastWxStringToUlong(wxString wxStr);
+		ulong CreateHashCode(wxTextCtrl** textCltrList);
+		ulong CreateHashCode(int row);
+		ulong HashCode(string str);
+		string UpperText(string text);
+		string EditCardCode(ulong number, int maxLengthCode);
 		int count = 0;
 		DECLARE_EVENT_TABLE();
 	public:

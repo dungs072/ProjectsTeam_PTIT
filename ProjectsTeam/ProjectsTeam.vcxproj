@@ -156,6 +156,7 @@
     <ClCompile Include="DoublyNode.cpp" />
     <ClCompile Include="Queue.cpp" />
     <ClCompile Include="ReaderCard.cpp" />
+    <ClCompile Include="SaveTextFile.cpp" />
     <ClCompile Include="SinglyLinkedList.cpp" />
     <ClCompile Include="SinglyNode.cpp" />
     <ClCompile Include="Stack.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="DoublyNode.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="ReaderCard.h" />
+    <ClInclude Include="SaveTextFile.h" />
     <ClInclude Include="SinglyLinkedList.h" />
     <ClInclude Include="SinglyNode.h" />
     <ClInclude Include="Stack.h" />
