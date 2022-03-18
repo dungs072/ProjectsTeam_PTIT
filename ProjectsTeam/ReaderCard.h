@@ -8,6 +8,7 @@
 #include<String>
 #include<math.h>
 #include"BSTree.h"
+#include"SaveTextFile.h"
 typedef unsigned long long ulong;
 using std::string;
 using namespace DataStructure;
@@ -20,6 +21,7 @@ namespace Library
 		
 		BSTree<CardReader>* cardReaderTree;
 		CardReader* CreateCardReader(wxTextCtrl** textCtrlList,ulong cardCode);
+		SaveTextFile<CardReader>* saveFile;
 		//frontend
 		wxMenuBar* menuBar;
 		wxMenu* file;
@@ -28,28 +30,34 @@ namespace Library
 		wxCheckBox** sexCheckBox;
 		wxCheckBox** stateCheckBox;
 		wxTextCtrl** enterText;
-		wxTextCtrl** enterText2;
+		wxTextCtrl** displayText;
 		wxBoxSizer* mainHBox;
 		wxGrid* grid;
 		wxPanel* mainPanel;
 		wxPanel* enterTextBackGround;
-		wxPanel* insertTextBackGround;
+		wxPanel* searchTextBackGround;
 		wxPanel* guidePanel;
 		wxPanel* noteTableBackGround;
+
 		void MoveDownToAnotherTextCtrl(wxTextCtrl** textCtrl, int length);
 		void MoveUpToAnotherTextCtrl(wxTextCtrl** textCtrl, int length);
 		void GuideToUser();
 		void SetTextSize(wxStaticText& text, int size);
 		void CreateEnterArea();
-		void CreateInsertArea();
+		void CreateSearchArea();
 		void CreateNoteArea();
+
+		void OnChangedPageNoteBook(wxCommandEvent& event);
+		void OnSave(wxCommandEvent& event);
 		void OnEnter(wxCommandEvent& event);
 		void OnKeyDown(wxKeyEvent& event);
-		void OnSearch(wxCommandEvent& event);
+		void EditCurrentCell(wxGridEvent& event);
+
+		void SaveFile();
 		void ShowMessageClear();
 		void DeleteSelectedRows();
 		void SaveToList(wxTextCtrl** textCtrlList, int length, int& pos);
-		void InsertToList();
+		void SearchOnList();
 		void ModifyTextInput(wxTextCtrl* textCtrl);
 		void ModifyTextInput(wxString& wxStr);
 		void ModifyString(string& str);
@@ -57,9 +65,9 @@ namespace Library
 		void MakeStateCodeText();
 		void UpperWxString(wxTextCtrl* textCtrl);
 		void UpperWxString(wxString& wxStr);
-		void WriteHashCodeToCell(int pos, wxTextCtrl** textCtrlList,ulong &hashCode);
+		void WriteHashCode(wxTextCtrl** textCtrlList,ulong &hashCode,wxString& wxStrCode);
 		void WriteHashCodeToCell(int row);
-		void EditCurrentCell(wxGridEvent& event);
+		void SetDefaultColorForRow();
 		void CastWxStringIntoString(wxString text, string& str);
 
 		bool IsWhiteSpaceAllText(wxTextCtrl* textCtrl);
@@ -78,11 +86,14 @@ namespace Library
 		string UpperText(string text);
 		string EditCardCode(ulong number, int maxLengthCode);
 		int count = 0;
+		int numberRowIsFilled = 0;
+		int rowChangedColor = -1;
 		DECLARE_EVENT_TABLE();
 	public:
 		ReaderCard(const wxString& title);
+
 	};
-	const int LOOKUP_ID = 1;
+	const int SAVE_FILE = 2;
 	const int DefaultRows = 25;
 
 }

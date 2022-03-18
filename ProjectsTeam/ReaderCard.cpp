@@ -4,7 +4,9 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 (NULL, -1, title, wxPoint(-1, -1), wxSize(1280, 680))
 {
 	//backend
+
 	cardReaderTree = new BSTree<CardReader>();
+	saveFile = new SaveTextFile<CardReader>("ListReaders.txt");
 	//frontend
 	//colors
 	wxColour lightYellow, greenColor, organColor, lightBlue, eggYellow, lightRed;
@@ -22,7 +24,7 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 	//Draw label title 
 	wxPanel* labelTitleBackGround = new wxPanel(mainPanel, -1, wxPoint(-1, -1), wxSize(500, 50));
 	enterTextBackGround = new wxPanel(noteBook, -1, wxPoint(-1, -1), wxSize(300, 300));
-	insertTextBackGround = new wxPanel(noteBook, -1, wxPoint(-1, -1), wxSize(300, 300));
+	searchTextBackGround = new wxPanel(noteBook, -1, wxPoint(-1, -1), wxSize(300, 300));
 	guidePanel = new wxPanel(mainPanel, -1, wxPoint(-1, -1), wxSize(400, 75));
 	noteTableBackGround = new wxPanel(mainPanel, -1, wxPoint(1050, 103), wxSize(200, 100));
 	wxStaticText* labelText = new wxStaticText(labelTitleBackGround, -1,
@@ -63,7 +65,7 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 	listBox->Add(grid, 0, wxTOP, 10);
 	mainHBox->Add(listBox, 0, wxTOP, 20);
 	CreateEnterArea();
-	CreateInsertArea();
+	CreateSearchArea();
 	CreateNoteArea();
 	MakeStateCodeText();
 	//Set BoxSizer
@@ -75,10 +77,10 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 	mainHBox->Add(vRightBox, 0, wxLEFT, 20);
 
 	noteBook->AddPage(enterTextBackGround, wxT("NHAP"));
-	noteBook->AddPage(insertTextBackGround, wxT("CHEN"));
+	noteBook->AddPage(searchTextBackGround, wxT("TIM KIEM"));
 	//Set colors
 	enterTextBackGround->SetBackgroundColour(lightYellow);
-	insertTextBackGround->SetBackgroundColour(lightYellow);
+	searchTextBackGround->SetBackgroundColour(lightYellow);
 	noteTableBackGround->SetBackgroundColour(lightYellow);
 	labelTitleBackGround->SetBackgroundColour(lightBlue);
 
@@ -86,15 +88,17 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 	//Register event
 	Bind(wxEVT_TEXT_ENTER, &ReaderCard::OnEnter, this);
 	grid->Bind(wxEVT_GRID_CELL_CHANGED, &ReaderCard::EditCurrentCell, this);
-	Connect(LOOKUP_ID, wxEVT_COMMAND_MENU_SELECTED,
-		wxCommandEventHandler(ReaderCard::OnSearch));
+	noteBook->Bind(wxEVT_NOTEBOOK_PAGE_CHANGED, &ReaderCard::OnChangedPageNoteBook, this);
+	Connect(SAVE_FILE, wxEVT_COMMAND_MENU_SELECTED, 
+		wxCommandEventHandler(ReaderCard::OnSave));
 	//SetSizer for mainPanel runs on it
 	mainPanel->SetSizer(mainHBox);
 	//Create Menu bar
-	menuBar = new wxMenuBar;
 	file = new wxMenu;
-	file->Append(LOOKUP_ID, wxT("&Search"));
-	menuBar->Append(file, wxT("&File"));
+	menuBar = new wxMenuBar;
+	wxMenuItem* save = new wxMenuItem(file, SAVE_FILE,wxT("&SAVE"));
+	file->Append(save);
+	menuBar->Append(file,wxT("&FILE"));
 	SetMenuBar(menuBar);
 	Centre();
 }
@@ -138,23 +142,28 @@ void ReaderCard::CreateEnterArea()
 	GuideToUser();
 	//mainHBox->Add(enterTextBackGround, 0, wxLEFT|wxTOP, 60);
 }
-void ReaderCard::CreateInsertArea()
+void ReaderCard::CreateSearchArea()
 {
 	wxColour lightBlue2, lightGreen;
 	lightBlue2.Set(wxT("#9AD6E6"));
 	lightGreen.Set(wxT("#ACE39D"));
-	enterText2 = new wxTextCtrl * [5];
+	displayText = new wxTextCtrl * [5];
 	wxStaticText** labelText2 = new wxStaticText * [5];
-	labelText2[0] = new wxStaticText(insertTextBackGround, -1, wxT("HO: "), wxPoint(10, 10));
-	labelText2[1] = new wxStaticText(insertTextBackGround, -1, wxT("TEN: "), wxPoint(10, 60));
-	labelText2[2] = new wxStaticText(insertTextBackGround, -1, wxT("PHAI: "), wxPoint(10, 110));
-	labelText2[3] = new wxStaticText(insertTextBackGround, -1, wxT("TRANG THAI THE: "), wxPoint(10, 160));
-	labelText2[4] = new wxStaticText(insertTextBackGround, -1, wxT("HANG CHEN: "), wxPoint(10, 210));
-	for (int i = 0; i < 5; i++)
+	labelText2[0] = new wxStaticText(searchTextBackGround, -1, wxT("MA THE "), wxPoint(120, 10));
+	labelText2[1] = new wxStaticText(searchTextBackGround, -1, wxT("HO: "), wxPoint(10, 60));
+	labelText2[2] = new wxStaticText(searchTextBackGround, -1, wxT("TEN: "), wxPoint(10, 110));
+	labelText2[3] = new wxStaticText(searchTextBackGround, -1, wxT("PHAI: "), wxPoint(10, 160));
+	labelText2[4] = new wxStaticText(searchTextBackGround, -1, wxT("TRANG THAI THE: "), wxPoint(10, 210));
+	
+	displayText[0] = new wxTextCtrl(searchTextBackGround, -1, wxT(""),
+		wxPoint(60, 30 * (0 + 1) + 0 * 20), wxSize(170, -1), wxTE_CENTER | wxTE_PROCESS_ENTER);
+	displayText[0]->SetBackgroundColour(lightBlue2);
+	for (int i = 1; i < 5; i++)
 	{
-		enterText2[i] = new wxTextCtrl(insertTextBackGround, -1, wxT(""),
-			wxPoint(10, 30 * (i + 1) + i * 20), wxSize(170, -1), wxTE_CENTER | wxTE_PROCESS_ENTER);
-		enterText2[i]->SetBackgroundColour(lightBlue2);
+		displayText[i] = new wxTextCtrl(searchTextBackGround, -1, wxT(""),
+			wxPoint(10, 30 * (i + 1) + i * 20), wxSize(170, -1), 
+			wxTE_CENTER | wxTE_PROCESS_ENTER|wxTE_READONLY	);
+		displayText[i]->SetBackgroundColour(*wxWHITE);
 	}
 }
 void ReaderCard::CreateNoteArea()
@@ -192,22 +201,28 @@ void ReaderCard::GuideToUser()
 		wxPoint(150, 20), wxSize(100, 30), wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL);
 
 	wxStaticText* deleteText = new wxStaticText(guidePanel, -1, wxT("Delete"), wxPoint(183, 55));
+	wxStaticText* saveFileLabel = new wxStaticText(guidePanel, -1, wxT("Luu vao file"),
+		wxPoint(280, 20), wxSize(100, 30), wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL);
+	wxStaticText* saveFileText = new wxStaticText(guidePanel, -1, wxT("F2"), wxPoint(325, 55));
 
 	//set color for backgrounds
 	saveLabel->SetBackgroundColour(orange);
 	deleteLabel->SetBackgroundColour(orange);
+	saveFileLabel->SetBackgroundColour(orange);
 	saveText->SetBackgroundColour(lightOrange);
 	deleteText->SetBackgroundColour(lightOrange);
+	saveFileText->SetBackgroundColour(lightOrange);
 }
 void ReaderCard::OnEnter(wxCommandEvent& WXUNUSED(event))
 {
 	if (noteBook->GetSelection() == 0)
 	{
+		SetDefaultColorForRow();
 		SaveToList(enterText, 4, count);
 	}
 	else if (noteBook->GetSelection() == 1)
 	{
-		InsertToList();
+		SearchOnList();
 	}
 
 }
@@ -259,21 +274,36 @@ void ReaderCard::SaveToList(wxTextCtrl** textCtrlList, int length, int& pos)
 	textCtrlList[3]->SetLabelText(stateText[stateCard]);
 
 	ulong cardCode = 0;
-	WriteHashCodeToCell(pos, textCtrlList,cardCode);
+	wxString wxStrCode;
+	WriteHashCode(textCtrlList, cardCode, wxStrCode);
+	numberRowIsFilled++;
+	for (int i = 0; i < grid->GetNumberRows(); i++)
+	{
+		wxString cardCodeStr = grid->GetCellValue(i, 0);
+		ulong tempCardCode = CastWxStringToUlong(cardCodeStr);
+		if (tempCardCode > cardCode||tempCardCode==0)
+		{
+			pos = i;		
+			grid->InsertRows(pos, 1);
+			grid->SetReadOnly(pos, 0);
+			grid->SetCellValue(pos, 0, wxStrCode);
+			grid->SetCellAlignment(pos, 0, wxALIGN_CENTER, wxALIGN_CENTER);
+			break;
+		}
+	}
 	for (i = 1; i < 5; i++)
 	{
 		ModifyTextInput(textCtrlList[i - 1]);
 		UpperWxString(textCtrlList[i - 1]);
 		grid->SetCellValue(pos, i, textCtrlList[i - 1]->GetValue());
 		grid->SetCellAlignment(pos, i, wxALIGN_CENTER, wxALIGN_CENTER);
-		textCtrlList[i - 1]->Clear();
-
+		
 	}
-	CardReader* cardReader = CreateCardReader(textCtrlList,cardCode);
+	CardReader* cardReader = CreateCardReader(textCtrlList, cardCode);
 	cardReaderTree->Add(cardReader);
-	for (; i - 1 < length; i++)
+	for (int i = 0; i < 4; i++)
 	{
-		textCtrlList[i - 1]->Clear();
+		textCtrlList[i]->Clear();
 	}
 	textCtrlList[0]->SetFocus();
 	count++;
@@ -286,21 +316,48 @@ void ReaderCard::SaveToList(wxTextCtrl** textCtrlList, int length, int& pos)
 		}
 	}
 }
-void ReaderCard::InsertToList()
+void ReaderCard::SearchOnList()
 {
-	int row = CastWxStringToInt(enterText2[4]) - 1;
-	if (row > count || row < 0)
+	wxColor organColor;
+	organColor.Set(wxT("#FFAB03"));
+	wxString cardCodeStr = displayText[0]->GetValue();
+	displayText[0]->Clear();
+	ulong cardCode = CastWxStringToUlong(cardCodeStr);
+	SetDefaultColorForRow();
+	if(cardCode!=0)
 	{
-		wxMessageBox(wxString::Format("Loi vi tri chen"));
-		return;
+		for (int i = 0; i < grid->GetNumberRows(); i++)
+		{
+			ulong tempCardCode = CastWxStringToUlong(grid->GetCellValue(i, 0));
+			if (tempCardCode == cardCode)
+			{
+				rowChangedColor = i;
+				for (int j = 0; j < 5; j++)
+				{
+					grid->SetCellBackgroundColour(i, j, organColor);
+					if (j == 4) { break; }
+					displayText[j + 1]->SetValue(grid->GetCellValue(i, j + 1));
+				}
+				grid->Refresh();
+				return;
+			}
+		}
 	}
-	grid->InsertRows(row, 1);
-	grid->SetReadOnly(row, 0);
-	SaveToList(enterText2, 5, row);
+	wxMessageBox(wxString::Format("Khong the tim thay thong tin ma the yeu cau"));
+}
+void ReaderCard::OnChangedPageNoteBook(wxCommandEvent& WXUNUSED(event))
+{
+	if (noteBook->GetSelection() == 0)
+	{
+		SetDefaultColorForRow();
+	}
 }
 void ReaderCard::OnKeyDown(wxKeyEvent& event)
 {
-
+	if (event.GetKeyCode() == WXK_F2)
+	{
+		SaveFile();
+	}
 	if (event.GetKeyCode() == WXK_DELETE)
 	{
 		//wxMessageBox(wxString::Format("Key pressed: %c", event.GetUnicodeKey()));
@@ -315,7 +372,7 @@ void ReaderCard::OnKeyDown(wxKeyEvent& event)
 		}
 		else if (noteBook->GetSelection() == 1)
 		{
-			MoveDownToAnotherTextCtrl(enterText2, 5);
+			MoveDownToAnotherTextCtrl(displayText, 5);
 		}
 	}
 	if (event.GetKeyCode() == WXK_UP)
@@ -326,14 +383,39 @@ void ReaderCard::OnKeyDown(wxKeyEvent& event)
 		}
 		else if (noteBook->GetSelection() == 1)
 		{
-			MoveUpToAnotherTextCtrl(enterText2, 5);
+			MoveUpToAnotherTextCtrl(displayText, 5);
 		}
 	}
 	event.Skip();
 }
-void ReaderCard::OnSearch(wxCommandEvent& WXUNUSED(event))
+void ReaderCard::OnSave(wxCommandEvent& WXUNUSED(event))
 {
-
+	SaveFile();
+}
+void ReaderCard::SetDefaultColorForRow()
+{
+	if (rowChangedColor == -1) { return; }
+	for (int j = 0; j < 5; j++)
+	{
+		grid->SetCellBackgroundColour(rowChangedColor, j,*wxWHITE);
+		if (j == 4) { break; }
+		displayText[j + 1]->Clear();
+	}
+	grid->Refresh();
+	rowChangedColor = -1;
+}
+void ReaderCard::SaveFile()
+{
+	if (cardReaderTree->GetNumberNodes() == 0)
+	{
+		wxMessageBox("NOTHING TO SAVE");
+		return;
+	}
+	CardReader** arr = cardReaderTree->ToArray();
+	
+	int length = cardReaderTree->GetNumberNodes();
+	saveFile->WriteToFile(arr, length);
+	wxMessageBox(wxString::Format("LIST IS SAVED SUCCESSFULLY"));
 }
 void ReaderCard::DeleteSelectedRows()
 {
@@ -347,6 +429,8 @@ void ReaderCard::DeleteSelectedRows()
 			{
 				wxString cardCodewxstr = grid->GetCellValue(i, 0);
 				ulong cardCode = CastWxStringToUlong(cardCodewxstr);
+				numberRowIsFilled--;
+				//wxMessageBox(wxString::Format("%i",cardCode));
 				cardReaderTree->Delete(cardCode);
 				grid->DeleteRows(i, 1);
 				
@@ -538,13 +622,13 @@ void ReaderCard::EditCurrentCell(wxGridEvent& event)
 	//wxMessageBox(event.GetString());
 	event.Skip();
 }
-void ReaderCard::WriteHashCodeToCell(int pos, wxTextCtrl** textCtrlList,ulong &hashCode)
+void ReaderCard::WriteHashCode(wxTextCtrl** textCtrlList,ulong &hashCode,wxString &wxStrCode)
 {
 	hashCode = CreateHashCode(textCtrlList);
+
 	std::string strCode = EditCardCode(hashCode, 10);
-	wxString wxStrCode(strCode.c_str(), wxConvUTF8);
-	grid->SetCellValue(pos, 0, wxStrCode);
-	grid->SetCellAlignment(pos, 0, wxALIGN_CENTER, wxALIGN_CENTER);
+	wxString wxStr(strCode.c_str(), wxConvUTF8);
+	wxStrCode = wxStr;
 }
 void ReaderCard::WriteHashCodeToCell(int row)
 {
@@ -672,6 +756,8 @@ string ReaderCard::EditCardCode(ulong number, int maxLengthCode)
 			tempNumber = number;
 		}
 	}
+	//reverse string
+	std::reverse(rawCodeReader.begin(), rawCodeReader.end());
 	for (int i = 0; i < maxLengthCode - lengthNumber; i++)
 	{
 		codeReader += "0";
@@ -701,6 +787,7 @@ int ReaderCard::CastWxStringToInt(wxString wxStr)
 }
 ulong ReaderCard::CastWxStringToUlong(wxString wxStr)
 {
+	if (wxStr == "") { return 0; }
 	int i, j;
 	ulong number = 0;
 	string strText = string(wxStr.mb_str());
@@ -756,8 +843,9 @@ ulong ReaderCard::HashCode(string strText)
 	}
 	for (int i = 0; i < strText.length(); i++)
 	{
-		hashCode += strText[i] * i;
+		hashCode += (strText[i]) * i;
 	}
+
 	return hashCode;
 }
 BEGIN_EVENT_TABLE(ReaderCard, wxFrame)

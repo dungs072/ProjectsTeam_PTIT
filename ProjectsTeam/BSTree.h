@@ -116,6 +116,7 @@ namespace DataStructure
 		}
 		bool Delete(ulong key)
 		{
+			if (Search(key) == nullptr) { return false; }
 			numberNodes--;
 			return Delete(rootNode, key) != nullptr;
 		}
@@ -127,7 +128,7 @@ namespace DataStructure
 			{
 				if (p == rootNode)
 				{
-					rootNode == nullptr;
+					rootNode = nullptr;
 				}
 				delete p;
 				return nullptr;
@@ -166,11 +167,11 @@ namespace DataStructure
 			if (mainNode == nullptr) { return nullptr; }
 			while (mainNode != nullptr)
 			{
-				if (mainNode->data.GetCardCode() < key)
+				if (mainNode->data->GetCardCode() < key)
 				{
 					mainNode = mainNode->rightNode;
 				}
-				else if (mainNode->data.GetCardCode() > key)
+				else if (mainNode->data->GetCardCode() > key)
 				{
 					mainNode = mainNode->leftNode;
 				}
@@ -198,7 +199,7 @@ namespace DataStructure
 				{
 					node = stack->Pop();
 					t = &node;
-					std::cout << t->data.GetCardCode() <<" ";
+					std::cout << t->data->GetCardCode() <<" ";
 					t = t->rightNode;
 				}
 			}
