@@ -3,74 +3,96 @@
 #include<wx/grid.h>
 #include<wx/event.h>
 #include<wx/notebook.h>
-#include<wx/time.h>
 #include<iostream>
 #include<String>
 #include<math.h>
-
-namespace Library
+#include<time.h>
+#include"BSTree.h"
+#include"SaveTextFile.h"
+typedef unsigned long long ulong;
+using std::string;
+using namespace DataStructure;
+class ReaderCard :public wxFrame
 {
-	class ReaderCard :public wxFrame
-	{
-	private:
-		wxMenuBar* menuBar;
-		wxMenu* file;
-		std::string* stateText;
-		wxNotebook* noteBook;
-		wxTextCtrl** enterText;
-		wxTextCtrl** enterText2;
-		wxBoxSizer* mainHBox;
-		wxGrid* grid;
-		wxPanel* mainPanel;
-		wxPanel* enterTextBackGround;
-		wxPanel* insertTextBackGround;
-		wxPanel* guidePanel;
-		wxPanel* noteTableBackGround;
-		void MoveDownToAnotherTextCtrl(wxTextCtrl** textCtrl, int length);
-		void MoveUpToAnotherTextCtrl(wxTextCtrl** textCtrl, int length);
-		void GuideToUser();
-		void SetTextSize(wxStaticText& text, int size);
-		void CreateEnterArea();
-		void CreateInsertArea();
-		void CreateNoteArea();
-		void OnEnter(wxCommandEvent& event);
-		void OnKeyDown(wxKeyEvent& event);
-		void OnSearch(wxCommandEvent& event);
-		void ShowMessageClear();
-		void DeleteSelectedRows();
-		void SaveToList(wxTextCtrl** textCtrlList, int length, int& pos);
-		void InsertToList();
-		void ModifyTextInput(wxTextCtrl* textCtrl);
-		void ModifyTextInput(wxString& wxStr);
-		void ModifyString(std::string& str);
-		void ErrorMessageBox(int pos, std::string message);
-		void MakeStateCodeText();
-		void UpperWxString(wxTextCtrl* textCtrl);
-		void UpperWxString(wxString& wxStr);
-		void WriteHashCodeToCell(int pos, wxTextCtrl** textCtrlList);
-		void WriteHashCodeToCell(int row);
-		void EditCurrentCell(wxGridEvent& event);
-		bool IsWhiteSpaceAllText(wxTextCtrl* textCtrl);
-		bool IsWhiteSpaceAllText(wxString wxStr);
-		bool IsWord(wxTextCtrl* textCtrl);
-		bool IsWord(wxString wxStr);
-		bool IsRightSex(wxTextCtrl* textCtrl);
-		bool IsRightSex(wxString& wxStr);
-		bool IsRightCodeState(int maxNum, int number);
-		int CastWxStringToInt(wxTextCtrl* textCtrl);
-		int CastWxStringToInt(wxString wxStr);
-		long long CreateHashCode(wxTextCtrl** textCltrList);
-		long long CreateHashCode(int row);
-		long long HashCode(std::string str);
-		std::string UpperText(std::string text);
-		std::string EditCardCode(long long number, int maxLengthCode);
-		int count = 0;
-		DECLARE_EVENT_TABLE();
-	public:
-		ReaderCard(const wxString& title);
-	};
-	const int LOOKUP_ID = 1;
-	const int DefaultRows = 25;
+private:
 
-}
+	//backend
+	BSTree<CardReader>* cardReaderTree;
+	CardReader* CreateCardReader(wxTextCtrl** textCtrlList, ulong cardCode);
+	SaveTextFile<CardReader>* saveFile;
+	//frontend
+	wxMenuBar* menuBar;
+	wxMenu* file;
+	string* stateText;
+	wxNotebook* noteBook;
+	wxCheckBox** sexCheckBox;
+	wxCheckBox** stateCheckBox;
+	wxTextCtrl** enterText;
+	wxTextCtrl** displayText;
+	wxBoxSizer* mainHBox;
+	wxGrid* grid;
+	wxPanel* mainPanel;
+	wxPanel* enterTextBackGround;
+	wxPanel* searchTextBackGround;
+	wxPanel* guidePanel;
+	wxPanel* noteTableBackGround;
+
+	void MoveDownToAnotherTextCtrl(wxTextCtrl** textCtrl, int length);
+	void MoveUpToAnotherTextCtrl(wxTextCtrl** textCtrl, int length);
+	void GuideToUser();
+	void SetTextSize(wxStaticText& text, int size);
+	void CreateEnterArea();
+	void CreateSearchArea();
+	void CreateNoteArea();
+
+	void OnChangedPageNoteBook(wxCommandEvent& event);
+	void OnSave(wxCommandEvent& event);
+	void OnEnter(wxCommandEvent& event);
+	void OnKeyDown(wxKeyEvent& event);
+	void EditCurrentCell(wxGridEvent& event);
+	void OnCardMenu(wxCommandEvent& event);
+
+	void SaveFile();
+	void ShowMessageClear();
+	void DeleteSelectedRows();
+	void SaveToList(wxTextCtrl** textCtrlList, int length, int& pos);
+	void SearchOnList();
+	void ModifyTextInput(wxTextCtrl* textCtrl);
+	void ModifyTextInput(wxString& wxStr);
+	void ModifyString(string& str);
+	void ErrorMessageBox(int pos, string message);
+	void MakeStateCodeText();
+	void UpperWxString(wxTextCtrl* textCtrl);
+	void UpperWxString(wxString& wxStr);
+	void WriteHashCode(wxTextCtrl** textCtrlList, ulong& hashCode, wxString& wxStrCode);
+	void SetDefaultColorForRow();
+	void CastWxStringIntoString(wxString text, string& str);
+	
+
+	bool IsWhiteSpaceAllText(wxTextCtrl* textCtrl);
+	bool IsWhiteSpaceAllText(wxString wxStr);
+	bool IsWord(wxTextCtrl* textCtrl);
+	bool IsWord(wxString wxStr);
+	bool IsRightSex(wxTextCtrl* textCtrl);
+	bool IsRightSex(wxString& wxStr);
+	bool IsRightCodeState(int maxNum, int number);
+	int CastWxStringToInt(wxTextCtrl* textCtrl);
+	int CastWxStringToInt(wxString wxStr);
+	ulong CastWxStringToUlong(wxString wxStr);
+	ulong CreateHashCode();
+	ulong RandomNumber(ulong minNumber, ulong maxNumber);
+	string UpperText(string text);
+	string EditCardCode(ulong number, int maxLengthCode);
+	int count = 0;
+	int rowChangedColor = -1;
+	int numberRowIsFilled = 0;
+	DECLARE_EVENT_TABLE();
+public:
+	ReaderCard(const wxString& title);
+	void DisplayDataInFile();
+};
+const int CARD_MENU = 3;
+const int SAVE_FILE = 2;
+const int DefaultRows = 25;
+
 
