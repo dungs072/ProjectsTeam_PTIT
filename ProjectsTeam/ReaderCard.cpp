@@ -1,22 +1,22 @@
 #include "ReaderCard.h"
-using namespace Library;
 ReaderCard::ReaderCard(const wxString& title) :wxFrame
 (NULL, -1, title, wxPoint(-1, -1), wxSize(1280, 680))
 {
+	
 	//backend
-
+	numberRowIsFilled = 0;
 	cardReaderTree = new BSTree<CardReader>();
 	saveFile = new SaveTextFile<CardReader>("ListReaders.txt");
 	//frontend
 	//colors
-	wxColour lightYellow, greenColor, organColor, lightBlue, eggYellow, lightRed;
+	wxColour lightYellow, greenColor, organColor, lightBlue, eggYellow, lightRed,red;
 	lightYellow.Set(wxT("#E0EBB7"));
 	greenColor.Set(wxT("#03FF29"));
 	organColor.Set(wxT("#FFAB03"));
 	lightBlue.Set(wxT("#7FB1E3"));
 	eggYellow.Set(wxT("#FDFF69"));
 	lightRed.Set(wxT("#FA8E8E"));
-
+	red.Set(wxT("#F74A4A"));
 
 	wxPanel* mainPanel = new wxPanel(this, -1);
 	//create NoteBook
@@ -44,6 +44,10 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 	//create grid;
 	grid = new wxGrid(mainPanel, -1, wxDefaultPosition, wxSize(708, 500), wxEVT_GRID_CELL_CHANGED);
 	grid->CreateGrid(DefaultRows, 5);
+	//Create Button
+	wxButton* exitMenuButton = new wxButton(mainPanel,CARD_MENU,
+		wxT("EXIT MENU"), wxPoint(-1, -1), wxSize(100, 30));
+	//Set BoxSizer
 	//Set name for label
 	grid->SetColLabelValue(0, wxT("MA THE"));
 	grid->SetColLabelValue(1, wxT("HO"));
@@ -63,12 +67,18 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 		grid->SetReadOnly(i, 0);
 	}
 	listBox->Add(grid, 0, wxTOP, 10);
+	listBox->Add(exitMenuButton, 0,wxTOP|wxLEFT,10);
 	mainHBox->Add(listBox, 0, wxTOP, 20);
 	CreateEnterArea();
 	CreateSearchArea();
 	CreateNoteArea();
 	MakeStateCodeText();
-	//Set BoxSizer
+	DisplayDataInFile();
+	
+
+
+	guidePanel->SetBackgroundColour(lightYellow);
+
 	vRightBox->Add(noteBook, 0, wxTOP, 80);
 	vGuideBox->Add(labelGuide, 0, wxLEFT, 145);
 	vGuideBox->Add(guidePanel, 0, wxTOP, 5);
@@ -78,19 +88,14 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 
 	noteBook->AddPage(enterTextBackGround, wxT("NHAP"));
 	noteBook->AddPage(searchTextBackGround, wxT("TIM KIEM"));
-	//Set colors
-	enterTextBackGround->SetBackgroundColour(lightYellow);
-	searchTextBackGround->SetBackgroundColour(lightYellow);
-	noteTableBackGround->SetBackgroundColour(lightYellow);
-	labelTitleBackGround->SetBackgroundColour(lightBlue);
-
-	guidePanel->SetBackgroundColour(lightYellow);
 	//Register event
 	Bind(wxEVT_TEXT_ENTER, &ReaderCard::OnEnter, this);
 	grid->Bind(wxEVT_GRID_CELL_CHANGED, &ReaderCard::EditCurrentCell, this);
 	noteBook->Bind(wxEVT_NOTEBOOK_PAGE_CHANGED, &ReaderCard::OnChangedPageNoteBook, this);
 	Connect(SAVE_FILE, wxEVT_COMMAND_MENU_SELECTED, 
 		wxCommandEventHandler(ReaderCard::OnSave));
+	Connect(CARD_MENU, wxEVT_COMMAND_BUTTON_CLICKED,
+		wxCommandEventHandler(ReaderCard::OnCardMenu));
 	//SetSizer for mainPanel runs on it
 	mainPanel->SetSizer(mainHBox);
 	//Create Menu bar
@@ -101,6 +106,13 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 	menuBar->Append(file,wxT("&FILE"));
 	SetMenuBar(menuBar);
 	Centre();
+	//Set colors
+	enterTextBackGround->SetBackgroundColour(lightYellow);
+	searchTextBackGround->SetBackgroundColour(lightYellow);
+	noteTableBackGround->SetBackgroundColour(lightYellow);
+	labelTitleBackGround->SetBackgroundColour(lightBlue);
+	exitMenuButton->SetBackgroundColour(red);
+	
 }
 
 void ReaderCard::SetTextSize(wxStaticText& text, int size)
@@ -392,6 +404,11 @@ void ReaderCard::OnSave(wxCommandEvent& WXUNUSED(event))
 {
 	SaveFile();
 }
+void ReaderCard::OnCardMenu(wxCommandEvent& WXUNUSED(event))
+{
+	this->GetParent()->Show(true);
+	this->Show(false);
+}
 void ReaderCard::SetDefaultColorForRow()
 {
 	if (rowChangedColor == -1) { return; }
@@ -593,7 +610,6 @@ void ReaderCard::EditCurrentCell(wxGridEvent& event)
 
 		UpperWxString(wxNewText);
 		grid->SetCellValue(row, col, wxNewText);
-		WriteHashCodeToCell(row);
 	}
 	if (col == 3)
 	{
@@ -605,7 +621,6 @@ void ReaderCard::EditCurrentCell(wxGridEvent& event)
 		}
 		UpperWxString(wxNewText);
 		grid->SetCellValue(row, col, wxNewText);
-		WriteHashCodeToCell(row);
 	}
 	if (col == 4)
 	{
@@ -624,23 +639,43 @@ void ReaderCard::EditCurrentCell(wxGridEvent& event)
 }
 void ReaderCard::WriteHashCode(wxTextCtrl** textCtrlList,ulong &hashCode,wxString &wxStrCode)
 {
-	hashCode = CreateHashCode(textCtrlList);
+	hashCode = CreateHashCode();
 
 	std::string strCode = EditCardCode(hashCode, 10);
 	wxString wxStr(strCode.c_str(), wxConvUTF8);
 	wxStrCode = wxStr;
 }
-void ReaderCard::WriteHashCodeToCell(int row)
-{
-	ulong hashCode = CreateHashCode(row);
-	std::string strCode = EditCardCode(hashCode, 10);
-	wxString wxStrCode(strCode.c_str(), wxConvUTF8);
-	grid->SetCellValue(row, 0, wxStrCode);
-	grid->SetCellAlignment(row, 0, wxALIGN_CENTER, wxALIGN_CENTER);
-}
 void ReaderCard::CastWxStringIntoString(wxString text, string& str)
 {
 	str = std::string(text.mb_str());
+}
+void ReaderCard::DisplayDataInFile()
+{
+	cardReaderTree->Clear();
+	int length = saveFile->GetLineCount();
+	CardReader** arr = new CardReader * [length];
+	saveFile->ReadFile(arr);
+	if (length > grid->GetNumberRows())
+	{
+		grid->AppendRows(length - grid->GetNumberRows() + 1);
+	}
+	
+	for (int i = 0; i < length; i++)
+	{
+		cardReaderTree->Add(arr[i]);
+		ulong cardCode = arr[i]->GetCardCode();
+		wxString cardCodeStr = EditCardCode(cardCode, 10);
+		grid->SetCellValue(i, 0, cardCodeStr);
+		grid->SetCellValue(i, 1, arr[i]->GetFirstName());
+		grid->SetCellValue(i, 2,arr[i]->GetLastName());
+		grid->SetCellValue(i, 3, arr[i]->GetSex());
+		grid->SetCellValue(i, 4, arr[i]->GetState());
+		for (int j = 0; j < 5; j++)
+		{
+			grid->SetCellAlignment(i, j, wxALIGN_CENTER, wxALIGN_CENTER);
+		}	
+		
+	}
 }
 CardReader* ReaderCard::CreateCardReader(wxTextCtrl** textCtrlList, ulong cardCode)
 {
@@ -801,53 +836,22 @@ ulong ReaderCard::CastWxStringToUlong(wxString wxStr)
 	}
 	return number;
 }
-ulong ReaderCard::CreateHashCode(wxTextCtrl** textCtrlList)
+ulong ReaderCard::CreateHashCode()
 {
-
-	std::string strText = "";
-	wxString wxStrText = wxT("");
-	for (int i = 0; i < 3; i++)
+	srand((ulong)time(0));
+	ulong r;
+	for (int i = 0; i < 500; i++)
 	{
-		if (i == 1) { continue; }
-		wxStrText += textCtrlList[i]->GetLineText(0);
+		r = RandomNumber(1, 9999999999);
+		if(cardReaderTree->IsDifferentNode(r)) { break; }
 	}
-	wxStrText += textCtrlList[1]->GetLineText(0);
-	UpperWxString(wxStrText);
-	strText = std::string(wxStrText.mb_str());
-	return HashCode(strText);
-
+	return r;
 }
-ulong ReaderCard::CreateHashCode(int row)
+ulong ReaderCard::RandomNumber(ulong minNumber,ulong maxNumber)
 {
-	wxString wxStrText = wxT("");
-	std::string strText = "";
-	for (int i = 1; i < 4; i++)
-	{
-		if (i == 2) { continue; }
-		wxStrText += grid->GetCellValue(row, i);
-	}
-	wxStrText += grid->GetCellValue(row, 2);
-	strText = std::string(wxStrText.mb_str());
-	return HashCode(strText);
+	return minNumber + rand() % (maxNumber + 1 - minNumber);
 }
-ulong ReaderCard::HashCode(string strText)
-{
-	ulong hashCode = 0;
-	for (int i = 0; i < strText.length(); i++)
-	{
-		if (strText[i] == ' ')
-		{
-			strText.erase(strText.begin() + i);
-			i--;
-		}
-	}
-	for (int i = 0; i < strText.length(); i++)
-	{
-		hashCode += (strText[i]) * i;
-	}
 
-	return hashCode;
-}
 BEGIN_EVENT_TABLE(ReaderCard, wxFrame)
 EVT_CHAR_HOOK(ReaderCard::OnKeyDown)
 END_EVENT_TABLE()

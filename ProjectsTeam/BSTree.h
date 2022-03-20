@@ -28,10 +28,72 @@ namespace DataStructure
 			}
 			return p;
 		}
-		
+		BSTNode<T>* Delete(BSTNode<T>* p, ulong key)
+		{
+			BSTNode<T>* q;
+			if (p == nullptr) { return nullptr; }
+			if (p->rightNode == nullptr && p->leftNode == nullptr)
+			{
+				if (p == rootNode)
+				{
+					rootNode = nullptr;
+				}
+				delete p;
+				return nullptr;
+			}
+			if (key < p->data->GetCardCode())
+			{
+				p->leftNode = Delete(p->leftNode, key);
+			}
+			else if (key > p->data->GetCardCode())
+			{
+				p->rightNode = Delete(p->rightNode, key);
+			}
+			else
+			{
+				if (Height(p->leftNode) > Height(p->rightNode))
+				{
+					q = InPre(p->leftNode);
+					p->data = q->data;
+					p->leftNode = Delete(p->leftNode, q->data->GetCardCode());
+				}
+				else
+				{
+					q = InSucc(p->rightNode);
+					p->data = q->data;
+					p->rightNode = Delete(p->rightNode, q->data->GetCardCode());
+				}
+			}
+			return p;
+		}
+		void Clear(BSTNode<T>*& root)
+		{
+			if (root == nullptr) {
+				return;
+			}
+			if (root->leftNode) {
+				Clear(root->leftNode);
+			}
+			if (root->rightNode) {
+				Clear(root->rightNode);
+			}
+			delete root;
+			root = nullptr;
+		}
+
 	public:
 		BSTree()
 		{
+			rootNode = nullptr;
+		}
+		~BSTree()
+		{
+			Clear();
+		}
+		void Clear()
+		{
+			Clear(rootNode);
+			numberNodes = 0;
 			rootNode = nullptr;
 		}
 		void Add(T* data)
@@ -120,44 +182,7 @@ namespace DataStructure
 			numberNodes--;
 			return Delete(rootNode, key) != nullptr;
 		}
-		BSTNode<T>* Delete(BSTNode<T>* p, ulong key)
-		{
-			BSTNode<T>* q;
-			if (p == nullptr) { return nullptr; }
-			if (p->rightNode == nullptr && p->leftNode == nullptr)
-			{
-				if (p == rootNode)
-				{
-					rootNode = nullptr;
-				}
-				delete p;
-				return nullptr;
-			}
-			if (key < p->data->GetCardCode())
-			{
-				p->leftNode = Delete(p->leftNode, key);
-			}
-			else if (key > p->data->GetCardCode())
-			{
-				p->rightNode = Delete(p->rightNode, key);
-			}
-			else
-			{
-				if (Height(p->leftNode) > Height(p->rightNode))
-				{
-					q = InPre(p->leftNode);
-					p->data = q->data;
-					p->leftNode = Delete(p->leftNode, q->data->GetCardCode());
-				}
-				else
-				{
-					q = InSucc(p->rightNode);
-					p->data = q->data;
-					p->rightNode = Delete(p->rightNode, q->data->GetCardCode());
-				}
-			}
-			return p;
-		}
+
 		BSTNode<T>* Search(ulong key)
 		{
 			return Search(rootNode, key);
@@ -199,11 +224,11 @@ namespace DataStructure
 				{
 					node = stack->Pop();
 					t = &node;
-					std::cout << t->data->GetCardCode() <<" ";
+					std::cout << t->data->GetCardCode() << " ";
 					t = t->rightNode;
 				}
 			}
-			
+
 		}
 		void InOrderTravelsal()
 		{
@@ -213,8 +238,8 @@ namespace DataStructure
 		{
 			T** arr = new T * [numberNodes];
 			int index = 0;
-			BSTNode<T> *t = rootNode;
-			if (t == nullptr) { return nullptr ; }
+			BSTNode<T>* t = rootNode;
+			if (t == nullptr) { return nullptr; }
 			BSTNode<T> node;
 			Stack<BSTNode<T>>* stack = new Stack<BSTNode<T>>();
 			while (t != nullptr || !stack->IsEmpty())
@@ -235,6 +260,10 @@ namespace DataStructure
 				}
 			}
 			return arr;
+		}
+		bool IsDifferentNode(ulong key)
+		{
+			return Search(key) == nullptr;
 		}
 		int GetNumberNodes() { return numberNodes; }
 	};

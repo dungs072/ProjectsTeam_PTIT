@@ -103,5 +103,17 @@ public:
 			std::cout << "Error open file" << std::endl;
 		}
 	}
+	unsigned int GetLineCount()
+	{
+		ifstream myfile(nameFile);
+		myfile.unsetf(std::ios_base::skipws);
+
+		// count the newlines with an algorithm specialized for counting:
+		unsigned int line_count = std::count(
+			std::istream_iterator<char>(myfile),
+			std::istream_iterator<char>(),
+			'\n');
+		return line_count;
+	}
 };
 
