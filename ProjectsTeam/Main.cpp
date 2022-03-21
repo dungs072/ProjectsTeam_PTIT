@@ -11,6 +11,20 @@ using std::cout;
 using std::endl;
 using namespace DataStructure;
 typedef unsigned long long ulong;
+class ReaderCardApp :public wxApp
+{
+public:
+	virtual bool OnInit();
+};
+IMPLEMENT_APP(ReaderCardApp);
+bool ReaderCardApp::OnInit()
+{
+	/*CardReaderMenu* cardReaderMenu = new CardReaderMenu("Card Reader Menu");
+	cardReaderMenu->Show(true);*/
+	BookTitle* title = new BookTitle("DAU SACH");
+	title->Show(true);
+	return true;
+}
 //class ReaderCardApp :public wxApp
 //{
 //public:
@@ -25,8 +39,6 @@ typedef unsigned long long ulong;
 //	title->Show(true);*/
 //	return true;
 //}
-
-
 
 //int main()
 //{
@@ -162,5 +174,68 @@ typedef unsigned long long ulong;
 //    for (int i = 0; i < 1000; ++i) {
 //        r = random(1, 100);
 //    }
+//	return 0;
+//}
+//LinearList<Title>* linearList = new LinearList<Title>(10);
+//int CompareTitle(Title* t1, Title* t2)
+//{
+//	if (t1->GetType() > t2->GetType()) { return 1; }
+//	else if (t1->GetType() < t2->GetType()) { return -1; }
+//	else
+//	{
+//		if (t1->GetBookName() > t2->GetBookName()) { return 1; }
+//		else if (t1->GetBookName() < t2->GetBookName()) { return -1; }
+//		else return 0;
+//	}
+//}
+//void Swap(Title* t1, Title* t2)
+//{
+//	Title temp = *t1;
+//	*t1 = *t2;
+//	*t2 = temp;
+//}
+//int partition(int l, int h)
+//{
+//	Title* pivot = linearList->GetData(l);
+//	int i = l;
+//	int j = h;
+//	do
+//	{
+//		do { i++; if (i == j) { break; } } while (CompareTitle(linearList->GetData(i),pivot) < 1);
+//		do { j--; } while (CompareTitle(linearList->GetData(j),pivot) == 1);
+//		if (i < j) { Swap((linearList->GetData(i)), (linearList->GetData(j))); }
+//	} while (i < j);
+//	Swap(linearList->GetData(l), linearList->GetData(j));
+//	return j;
+//}
+//void QuickSort(int l, int h)
+//{
+//	int j = 0;
+//	if (l < h)
+//	{
+//		j = partition(l, h);
+//		QuickSort(l, j);
+//		QuickSort(j + 1, h);
+//	}
+//}
+//int main()
+//{
+//	
+//	Title* t1 = new Title("AAAA", "A", 123, "ASD", 1999, "bcd");
+//	Title* t2 = new Title("AAAA", "x", 123, "ASD", 1999, "ucd");
+//	Title* t3 = new Title("AAAA", "t", 123, "ASD", 1999, "acd");
+//	Title* t4 = new Title("AAAA", "e", 123, "ASD", 1999, "dcd");
+//	Title* t5 = new Title("AAAA", "b", 123, "ASD", 1999, "acd");
+//	linearList->AddLast(t1);
+//	linearList->AddLast(t2);
+//	linearList->AddLast(t3);
+//	linearList->AddLast(t4);
+//	linearList->AddLast(t5);
+//	QuickSort( 0, linearList->Length());
+//	for (int i = 0; i < linearList->Length(); i++)
+//	{
+//		linearList->GetData(i)->Display();
+//		cout << endl;
+//	}
 //	return 0;
 //}

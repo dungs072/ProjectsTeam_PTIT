@@ -2,6 +2,7 @@
 BookTitle::BookTitle(const wxString& title) : wxFrame(NULL, -1, title, wxDefaultPosition, wxSize(1280, 680))
 {
 	//back end
+	saveFile = new SaveTextFile<Title>("BookTitle.txt");
 	linearList = new LinearList<Title>(100);
 	//catch error
 	checkInput = new CheckInput();
@@ -97,6 +98,22 @@ void BookTitle::CreateEnterArea(wxPanel* enterPanel)
 	}
 	enterTitle->SetBackgroundColour(lightRed);
 }
+void BookTitle::OnKeyDown(wxKeyEvent& event)
+{
+	if (event.GetKeyCode() == WXK_UP)
+	{
+		checkInput->MoveUpToAnotherTextCtrl(enterText, 6);
+	}
+	else if (event.GetKeyCode() == WXK_DOWN)
+	{
+		checkInput->MoveDownToAnotherTextCtrl(enterText, 6);
+	}
+	else if (event.GetKeyCode() == WXK_F2)
+	{
+		SaveFile();
+	}
+	event.Skip();
+}
 void BookTitle::OnEnter(wxCommandEvent& WXUNUSED(event))
 {
 	for (int i = 0; i < 6; i++)
@@ -104,6 +121,7 @@ void BookTitle::OnEnter(wxCommandEvent& WXUNUSED(event))
 		if (checkInput->IsWhiteSpaceAllText(enterText[i]->GetValue()))
 		{
 			checkInput->ErrorMessageBox("KHONG DUOC BO TRONG O NHAP");
+			enterText[i]->SetFocus();
 			return;
 		}
 		wxString myWxStr = enterText[i]->GetValue();
@@ -114,6 +132,7 @@ void BookTitle::OnEnter(wxCommandEvent& WXUNUSED(event))
 	if (!CheckISBN(wxstr))
 	{
 		checkInput->ErrorMessageBox("LOI ISBN");
+		enterText[0]->SetFocus();
 		return;
 	}
 	checkInput->ModifyTextInput(wxstr);
@@ -121,36 +140,42 @@ void BookTitle::OnEnter(wxCommandEvent& WXUNUSED(event))
 	if (!CheckDuplicateISBN(wxstr))
 	{
 		checkInput->ErrorMessageBox("TRUNG ISBN CO TRONG DANH SACH");
+		enterText[0]->SetFocus();
 		return;
 	}
 	wxstr = enterText[1]->GetValue();
 	if (!CheckBookName(wxstr))
 	{
 		checkInput->ErrorMessageBox("LOI TEN SACH");
+		enterText[1]->SetFocus();
 		return;
 	}
 	wxstr = enterText[2]->GetValue();
 	if (!CheckPageNumber(wxstr))
 	{
 		checkInput->ErrorMessageBox("LOI SO TRANG");
+		enterText[2]->SetFocus();
 		return;
 	}
 	wxstr = enterText[3]->GetValue();
 	if (!CheckAuthor(wxstr))
 	{
 		checkInput->ErrorMessageBox("LOI TEN TAC GIA");
+		enterText[3]->SetFocus();
 		return;
 	}
 	wxstr = enterText[4]->GetValue();
 	if (!CheckYearPublic(wxstr))
 	{
 		checkInput->ErrorMessageBox("LOI NAM XUAT BAN");
+		enterText[4]->SetFocus();
 		return;
 	}
 	wxstr = enterText[5]->GetValue();
 	if (!CheckType(wxstr))
 	{
 		checkInput->ErrorMessageBox("LOI THE LOAI");
+		enterText[5]->SetFocus();
 		return;
 	}
 	
@@ -265,14 +290,99 @@ void BookTitle::SaveToList()
 
 	for (int i = 0; i < 6; i++)
 	{
-
 		grid->SetCellValue(pos, i, enterText[i]->GetValue());
 		grid->SetCellAlignment(pos,i,wxALIGN_CENTER, wxALIGN_CENTER);
 	}
+	ClearInforInEnterText();
+	linearList->AddLast(curTitle);
 	maxItem++;
-	delete curTitle;
 	return;
 
+}
+void BookTitle::SaveFile()
+{
+	int length = linearList->Length();
+	if (length == 0)
+	{
+		wxMessageBox(wxT("NOTHING TO SAVE"));
+	}
+	QuickSort(0, length);
+	Title** arr = linearList->ToArray();
+	saveFile->WriteToFile(arr, length);
+	wxMessageBox(wxT("LIST IS SAVED SUCCESSFULLY"));
+	delete arr;
+}
+void BookTitle::LoadFile()
+{
+
+}
+void BookTitle::EditCurrentCell(wxGridEvent& event)
+{
+	int row = grid->GetGridCursorRow();
+	int col = grid->GetGridCursorCol();
+	wxString wxOldText = event.GetString();
+	if (wxOldText == wxT(""))
+	{
+		checkInput->ErrorMessageBox("Khong the chinh chua o nay ");
+		grid->SetCellValue(row, col, wxOldText);
+		return;
+	}
+	wxString wxNewText = grid->GetCellValue(row, col);
+	//main error
+	if (checkInput->IsWhiteSpaceAllText(wxNewText))
+	{
+		checkInput->ErrorMessageBox("Khong duoc bo trong ");
+		grid->SetCellValue(row, col, wxOldText);
+		return;
+	}
+
+	//col errors
+	/*if (col == 1 || col == 2)
+	{
+		ModifyTextInput(wxNewText);
+		if (!IsWord(wxNewText))
+		{
+			ErrorMessageBox(-1, "Loi Nhap Lieu ");
+			grid->SetCellValue(row, col, wxOldText);
+			return;
+		}
+
+		UpperWxString(wxNewText);
+		grid->SetCellValue(row, col, wxNewText);
+	}
+	if (col == 3)
+	{
+		if (!IsRightSex(wxNewText))
+		{
+			ErrorMessageBox(-1, "Loi Nhap Lieu ");
+			grid->SetCellValue(row, col, wxOldText);
+			return;
+		}
+		UpperWxString(wxNewText);
+		grid->SetCellValue(row, col, wxNewText);
+	}
+	if (col == 4)
+	{
+		ModifyTextInput(wxNewText);
+		int num = CastWxStringToInt(wxNewText);
+		if (!IsRightCodeState(1, num))
+		{
+			ErrorMessageBox(-1, "Loi Nhap Lieu ");
+			grid->SetCellValue(row, col, wxOldText);
+			return;
+		}
+		grid->SetCellValue(row, col, stateText[num]);
+	}*/
+	//wxMessageBox(event.GetString());
+	event.Skip();
+}
+void BookTitle::ClearInforInEnterText()
+{
+	for (int i = 0; i < 6; i++)
+	{
+		enterText[i]->Clear();
+	}
+	enterText[0]->SetFocus();
 }
 bool BookTitle::CheckISBN(wxString text)
 {
@@ -332,25 +442,14 @@ int BookTitle::CompareTitle(Title* t1, Title* t2)
 		else return 0;
 	}
 }
-void BookTitle::OnKeyDown(wxKeyEvent& event)
-{
-	if (event.GetKeyCode() == WXK_UP)
-	{
-		checkInput->MoveUpToAnotherTextCtrl(enterText, 6);
-	}
-	else if (event.GetKeyCode() == WXK_DOWN)
-	{
-		checkInput->MoveDownToAnotherTextCtrl(enterText, 6);
-	}
-	event.Skip();
-}
+
 
 //quickSort
-void BookTitle::Swap(Title** t1, Title** t2)
+void BookTitle::Swap(Title* t1, Title* t2)
 {
-	Title temp = **t1;
-	**t1 = **t2;
-	**t2 = temp;
+	Title temp = *t1;
+	*t1 = *t2;
+	*t2 = temp;
 }
 int BookTitle::partition(int l, int h)
 {
@@ -359,10 +458,22 @@ int BookTitle::partition(int l, int h)
 	int j = h;
 	do
 	{
-		do { i++; } while (CompareTitle(pivot, linearList->GetData(i)) < 1);
-		do { j--; } while (CompareTitle(pivot, linearList->GetData(i)) == 1);
-		//if (i < j) { Swap(&(linearList->GetData(i)), &(linearList->GetData(j)) }
-	} while (true);
+		do { i++;if (i == j) { break; } } while (CompareTitle(linearList->GetData(i),pivot) < 1);
+		do { j--; } while (CompareTitle(linearList->GetData(j), pivot ) == 1);
+		if (i < j) { Swap((linearList->GetData(i)), (linearList->GetData(j))); }
+	} while (i<j);
+	Swap(linearList->GetData(l), linearList->GetData(j));
+	return j;
+}
+void BookTitle::QuickSort(int l, int h)
+{
+	int j = 0;
+	if (l < h)
+	{
+		j = partition(l, h);
+		QuickSort(l, j);
+		QuickSort(j + 1, h);
+	}
 }
 BEGIN_EVENT_TABLE(BookTitle, wxFrame)
 EVT_CHAR_HOOK(BookTitle::OnKeyDown)

@@ -25,6 +25,10 @@ namespace DataStructure
 		{
 			Clear();
 		}
+		int Length()
+		{
+			return currentPointer;
+		}
 		void AddLast(T* data)
 		{
 			if (IsFull()) { return; }
@@ -88,6 +92,14 @@ namespace DataStructure
 		{
 			delete list;
 			list = nullptr;
+		}
+		void Display()
+		{
+
+		}
+		T** ToArray()
+		{
+			return list;
 		}
 	};
 
