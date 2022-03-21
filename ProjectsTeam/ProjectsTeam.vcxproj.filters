@@ -24,9 +24,6 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ReaderCard.cpp">
-      <Filter>Source Files\FrontEnd</Filter>
-    </ClCompile>
     <ClCompile Include="DoublyLinkedList.cpp">
       <Filter>Source Files\BackEnd</Filter>
     </ClCompile>
@@ -74,6 +71,9 @@
     </ClCompile>
     <ClCompile Include="BookTitle.cpp">
       <Filter>Source Files\FrontEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="ReaderCard.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
