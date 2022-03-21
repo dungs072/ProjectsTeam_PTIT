@@ -5,28 +5,42 @@
 #include"SaveTextFile.h"
 #include"CardReaderMenu.h"
 #include"BookTitle.h"
+#include"FormatText.h"
+#include"DateTime.h"
 using std::cout;
 using std::endl;
 using namespace DataStructure;
 typedef unsigned long long ulong;
-class ReaderCardApp :public wxApp
-{
-public:
-	virtual bool OnInit();
-};
-IMPLEMENT_APP(ReaderCardApp);
-bool ReaderCardApp::OnInit()
-{
-	CardReaderMenu* cardReaderMenu = new CardReaderMenu("Card Reader Menu");
-	cardReaderMenu->Show(true);
-	/*BookTitle* title = new BookTitle("DAU SACH");
-	title->Show(true);*/
-	return true;
-}
+//class ReaderCardApp :public wxApp
+//{
+//public:
+//	virtual bool OnInit();
+//};
+//IMPLEMENT_APP(ReaderCardApp);
+//bool ReaderCardApp::OnInit()
+//{
+//	CardReaderMenu* cardReaderMenu = new CardReaderMenu("Card Reader Menu");
+//	cardReaderMenu->Show(true);
+//	/*BookTitle* title = new BookTitle("DAU SACH");
+//	title->Show(true);*/
+//	return true;
+//}
+
+
 
 //int main()
 //{
-//
+
+	/*//=====BO TAT CA COMMENT O FILE DateTime.cpp LA SE HIEU RO.======
+	DateTime* x = new DateTime();
+	string temp = "30/03/2000";
+	if (x->CheckDate(temp)) {
+		cout << "nhap dung het roi kkk" << endl;
+	}
+	return 0;
+  }*/
+
+
 //	CardReader* cardReader1 = new CardReader(1, "D", "Hoang", "Nam","KHOA");
 //	CardReader* cardReader2 = new CardReader(2, "D", "Tien", "Nam", "KHOA");
 //	CardReader* cardReader3 = new CardReader(3, "D", "Nguyen", "Nam", "KHOA");
