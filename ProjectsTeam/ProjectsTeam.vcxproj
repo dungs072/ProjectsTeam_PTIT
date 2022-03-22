@@ -125,7 +125,7 @@
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(WXWIN)\lib\vc_x64_lib</AdditionalLibraryDirectories>
     </Link>
@@ -158,6 +158,7 @@
     <ClCompile Include="CheckInput.cpp" />
     <ClCompile Include="DateTime.cpp" />
     <ClCompile Include="DisplayListCardReader.cpp" />
+    <ClCompile Include="DisplayListTitle.cpp" />
     <ClCompile Include="DoublyLinkedList.cpp" />
     <ClCompile Include="FormatText.cpp" />
     <ClCompile Include="LinearList.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="CheckInput.h" />
     <ClInclude Include="DateTime.h" />
     <ClInclude Include="DisplayListCardReader.h" />
+    <ClInclude Include="DisplayListTitle.h" />
     <ClInclude Include="DoublyLinkedList.h" />
     <ClInclude Include="DoublyNode.h" />
     <ClInclude Include="FormatText.h" />

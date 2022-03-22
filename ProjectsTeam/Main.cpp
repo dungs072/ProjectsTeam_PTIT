@@ -5,8 +5,7 @@
 #include"SaveTextFile.h"
 #include"CardReaderMenu.h"
 #include"BookTitle.h"
-#include"FormatText.h"
-#include"DateTime.h"
+#include"DisplayListTitle.h"
 using std::cout;
 using std::endl;
 using namespace DataStructure;
@@ -23,6 +22,8 @@ bool ReaderCardApp::OnInit()
 	cardReaderMenu->Show(true);*/
 	BookTitle* title = new BookTitle("DAU SACH");
 	title->Show(true);
+	/*DisplayListTitle* displayTitle = new DisplayListTitle("IN DANH SACH DAU SACH");
+	displayTitle->Show(true);*/
 	return true;
 }
 //class ReaderCardApp :public wxApp

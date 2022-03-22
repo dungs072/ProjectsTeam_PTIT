@@ -38,6 +38,25 @@ bool CheckInput::IsWhiteSpaceAllText(wxString text)
 	}
 	return true;
 }
+bool CheckInput::HasNumberAndAlphabet(wxString text)
+{
+	std::string strText = std::string(text.mb_str());
+	for (int i = 0; i < strText.length(); i++)
+	{
+		if ((strText[i] >= 'A' && strText[i] <= 'Z') ||
+			(strText[i] >= 'a' && strText[i] <= 'z') ||
+			(strText[i] >= '0' && strText[i] <= '9') ||
+			(strText[i]==' '))
+		{
+			continue;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	return true;
+}
 bool CheckInput::IsWord(wxString text)
 {
 	std::string strText = std::string(text.mb_str());

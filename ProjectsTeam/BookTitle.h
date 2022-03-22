@@ -26,11 +26,11 @@ private:
 	void CreateTakeNoteArea(wxPanel* takeNotePanel);
 	void CreateKeyNoteArea(wxPanel* keyNotePanel);
 	void OnKeyDown(wxKeyEvent& event);
-	void OnKeyDownToUpper(wxCommandEvent& event);
+	void OnKeyDownTextCltrToUpper(wxCommandEvent& event);
 	void OnEnter(wxCommandEvent& event);
 	void EditCurrentCell(wxGridEvent& event);
-
-
+	
+	void EditTable(Title* title,int row);
 	void SwitchPanel(bool state);
 	void SwitchEnterText(bool state);
 	void SaveToList();
