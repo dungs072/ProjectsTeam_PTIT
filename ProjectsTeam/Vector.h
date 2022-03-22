@@ -50,7 +50,7 @@ public:
     size_type size() const {
         return m_size;
     }
-
+       
     ~Vector() {
         if (m_data != nullptr) {
             for (size_type i = 0; i < size(); i++) delete &m_data[i];
@@ -207,7 +207,7 @@ public:
 
         for (auto i = index; i < size() - 1; i++) {
             _allocator.destroy(&_data[i + 1]);
-            _allocator.construct(&_data[i], _data[i + 1]);
+            _allocator.construct(&_data[i], m_data[i + 1]);
         }
 
         _size--;

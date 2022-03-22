@@ -75,6 +75,9 @@
     <ClCompile Include="BookTitle.cpp">
       <Filter>Source Files\FrontEnd</Filter>
     </ClCompile>
+    <ClCompile Include="BookCatalog.cpp">
+      <Filter>Source Files\FrontEnd</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ReaderCard.h">
@@ -126,6 +129,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BookTitle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BookCatalog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

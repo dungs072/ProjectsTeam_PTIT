@@ -3,8 +3,7 @@
 namespace DataStructure
 {
 	template<class T>
-	class LinearList
-	{
+	class LinearList {
 	private:
 		int currentPointer;
 		int maxLength;

@@ -150,6 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BookCatalog.cpp" />
     <ClCompile Include="BookTitle.cpp" />
     <ClCompile Include="BSTNode.cpp" />
     <ClCompile Include="BSTree.cpp" />
@@ -170,6 +171,7 @@
     <ClCompile Include="Title.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BookCatalog.h" />
     <ClInclude Include="BookTitle.h" />
     <ClInclude Include="BSTNode.h" />
     <ClInclude Include="BSTree.h" />
@@ -187,6 +189,7 @@
     <ClInclude Include="SinglyNode.h" />
     <ClInclude Include="Stack.h" />
     <ClInclude Include="Title.h" />
+    <ClInclude Include="Vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
