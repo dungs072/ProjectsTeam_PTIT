@@ -73,7 +73,7 @@
       <Filter>Source Files\FrontEnd</Filter>
     </ClCompile>
     <ClCompile Include="ReaderCard.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\FrontEnd</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
