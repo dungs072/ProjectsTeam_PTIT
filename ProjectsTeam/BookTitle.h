@@ -15,18 +15,30 @@ private:
 	LinearList<Title>* linearList;
 	//frontend
 	int maxItem = 0;
+	bool isTurnOnEnterPanel = true;
+	wxPanel* enterPanel;
+	wxPanel* takeNotePanel;
 	wxGrid* grid;
 	CheckInput* checkInput;
 	wxTextCtrl** enterText;
 	//method
 	void CreateEnterArea(wxPanel* enterPanel);
+	void CreateTakeNoteArea(wxPanel* takeNotePanel);
+	void CreateKeyNoteArea(wxPanel* keyNotePanel);
 	void OnKeyDown(wxKeyEvent& event);
+	void OnKeyDownToUpper(wxCommandEvent& event);
 	void OnEnter(wxCommandEvent& event);
 	void EditCurrentCell(wxGridEvent& event);
 
+
+	void SwitchPanel(bool state);
+	void SwitchEnterText(bool state);
 	void SaveToList();
 	void SaveFile();
 	void LoadFile();
+	void LoadListToTable();
+	void ShowMessageClear();
+	void DeleteSelectedRows();
 	void ClearInforInEnterText();
 	bool CheckISBN(wxString text);
 	bool CheckBookName(wxString text);
