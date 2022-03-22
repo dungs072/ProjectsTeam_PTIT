@@ -426,6 +426,7 @@ void ReaderCard::SaveFile()
 	if (cardReaderTree->GetNumberNodes() == 0)
 	{
 		wxMessageBox("NOTHING TO SAVE");
+		saveFile->ClearData();
 		return;
 	}
 	CardReader** arr = cardReaderTree->ToArray();

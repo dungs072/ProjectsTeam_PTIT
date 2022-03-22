@@ -78,9 +78,6 @@
 
     <ClCompile Include="ReaderCard.cpp">
       <Filter>Source Files</Filter>
-
-    <ClCompile Include="DateTime.cpp">
-      <Filter>Source Files\FrontEnd</Filter>
     </ClCompile>
     <ClCompile Include="FormatText.cpp">
       <Filter>Source Files\FrontEnd</Filter>

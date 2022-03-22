@@ -108,7 +108,6 @@ public:
 					ulong number = CastStringToNumber<ulong>(text[0]);
 					p[mainIndex] = new CardReader(number, text[1], text[2], text[3], text[4]);
 					mainIndex++;
-					delete text;
 				}
 			}
 			else if (std::is_same<T, Title>::value)
@@ -157,6 +156,12 @@ public:
 			std::istream_iterator<char>(),
 			'\n');
 		return line_count;
+	}
+	void ClearData()
+	{
+		ofstream ofs;
+		ofs.open(nameFile, std::ofstream::out | std::ofstream::trunc);
+		ofs.close();
 	}
 };
 
