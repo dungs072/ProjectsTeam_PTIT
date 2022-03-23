@@ -78,6 +78,11 @@ public:
 		
 
 	}
+	void WriteChildListToFile(T** arr, int length)
+	{
+
+	}
+
 	void ReadFile(T** arr)
 	{
 		ifstream ifFile(nameFile);

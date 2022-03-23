@@ -641,7 +641,7 @@ void ReaderCard::EditCurrentCell(wxGridEvent& event)
 	string sex = string(grid->GetCellValue(row, 3).mb_str());
 	string stateStr = string(grid->GetCellValue(row, 4).mb_str());
 	int i = cardReaderTree->Delete(key);
-	wxMessageBox(wxString::Format(grid->GetCellValue(row, 1)));
+	wxMessageBox(wxString::Format("%i", cardReaderTree->GetNumberNodes()));
 	CardReader* temp = new CardReader(key, lastName, firstName, sex, stateStr);
 	cardReaderTree->Add(temp);
 	//wxMessageBox(event.GetString());

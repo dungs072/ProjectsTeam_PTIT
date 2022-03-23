@@ -4,7 +4,7 @@ DisplayListTitle::DisplayListTitle(const wxString& title) : wxFrame(NULL, -1, ti
 	//back end
 	saveFile = new SaveTextFile<Title>("BookTitle.txt");
 	maxItem = saveFile->GetLineCount();
-	arr = new Title * [maxItem];
+	linearList = new LinearList<Title>(100);
 	//catch error
 	checkInput = new CheckInput();
 	//create color;
@@ -56,7 +56,7 @@ DisplayListTitle::DisplayListTitle(const wxString& title) : wxFrame(NULL, -1, ti
 	mainPanel->SetSizer(mainHBox);
 
 	//Create areas;
-
+	CreateKeyNoteArea(keyNotePanel);
 	//Register event
 	grid->Bind(wxEVT_GRID_CELL_CHANGED, &DisplayListTitle::EditCurrentCell, this);
 
@@ -157,7 +157,7 @@ void DisplayListTitle::EditCurrentCell(wxGridEvent& event)
 			return;
 		}
 		checkInput->UpperWxString(wxNewText);
-		if (!CheckDuplicateISBN(wxNewText))
+		if (!CheckDuplicateISBN(wxNewText,row))
 		{
 			checkInput->ErrorMessageBox("TRUNG VOI ISBN CO TRONG DANH SACH");
 			grid->SetCellValue(row, col, wxOldText);
@@ -213,17 +213,128 @@ void DisplayListTitle::EditCurrentCell(wxGridEvent& event)
 		}
 		checkInput->UpperWxString(wxNewText);
 	}
+	string ISBN = string(grid->GetCellValue(row, 0).mb_str());
+	if (col == 0)
+	{
+		ISBN = string(wxOldText.mb_str());
+	}
 	grid->SetCellValue(row, col, wxNewText);
+	ISBN = string(grid->GetCellValue(row, 0).mb_str());
+	string bookName = string(grid->GetCellValue(row, 1).mb_str());
+	uint numberPage = checkInput->CastWxStringToInt(grid->GetCellValue(row, 2));
+	string author = string(grid->GetCellValue(row, 3).mb_str());
+	uint nxb = checkInput->CastWxStringToInt(grid->GetCellValue(row, 4));
+	string type = string(grid->GetCellValue(row, 5).mb_str());
+	Title* title = new Title(ISBN, bookName, numberPage, author, nxb, type);
+	if (col == 5 || col == 1)
+	{
+		EditTable(title, row);
+	}
 	event.Skip();
+}
+void DisplayListTitle::EditTable(Title* title, int row)
+{
+	int pos = -1;
+	for (int i = 0; i < maxItem; i++)
+	{
+		if (i == row)
+		{
+			continue;
+		}
+		Title* tempT = new Title();
+		for (int j = 0; j < 6; j++)
+		{
+			int number = 0;
+			wxString wxstr = grid->GetCellValue(i, j);
+			if (!(j == 2 || j == 4))
+			{
+
+				if (j == 0)
+				{
+					tempT->SetISBN(string(wxstr.mbc_str()));
+				}
+				else if (j == 1)
+				{
+					tempT->SetBookName(string(wxstr.mbc_str()));
+				}
+				else if (j == 3)
+				{
+					tempT->SetAuthor(string(wxstr.mbc_str()));
+				}
+				else if (j == 5)
+				{
+					tempT->SetType(string(wxstr.mbc_str()));
+				}
+
+			}
+			else
+			{
+
+				number = checkInput->CastWxStringToInt(wxstr);
+				if (j == 2)
+				{
+					tempT->SetPageNumber(number);
+				}
+				else if (j == 4)
+				{
+					tempT->SetPublicYear(number);
+				}
+			}
+		}
+		//wxMessageBox(wxString::Format("Tempt: %s and cur: %s", tempT->GetType(), curTitle->GetType()));
+		if (CompareTitle(title, tempT) < 1)
+		{
+			pos = i;
+
+			delete tempT;
+			break;
+		}
+		delete tempT;
+		tempT = nullptr;
+	}
+	if (pos == -1)
+	{
+		pos = maxItem;
+	}
+	grid->InsertRows(pos, 1);
+	/*wxMessageBox(wxString::Format("%i", pos));
+	wxMessageBox(wxString::Format("%i", row));*/
+	if (row > pos)
+	{
+		row++;
+	}
+	for (int i = 0; i < 6; i++)
+	{
+		grid->SetCellValue(pos, i, grid->GetCellValue(row, i));
+		grid->SetCellAlignment(pos, i, wxALIGN_CENTER, wxALIGN_CENTER);
+	}
+	grid->DeleteRows(row, 1);
 }
 void DisplayListTitle::SaveFile()
 {
+	Title** arr = linearList->ToArray();
 	saveFile->WriteToFile(arr, maxItem);
 	wxMessageBox(wxT("LIST IS SAVED SUCCESSFULLY"));
 }
 void DisplayListTitle::LoadFile()
 {
+	linearList->Clear();
+	int length = maxItem;
+
+	if (length > linearList->MaxLength())
+	{
+		wxMessageBox("Danh sach trong file qua lon, khong the load duoc");
+		return;
+	}
+	Title** arr = new Title * [length];
+
 	saveFile->ReadFile(arr);
+
+	for (int i = 0; i < length; i++)
+	{
+		linearList->AddLast(arr[i]);
+		//wxMessageBox(wxString::Format("%i",i));
+	}
 	LoadListToTable();
 }
 void DisplayListTitle::LoadListToTable()
@@ -234,12 +345,12 @@ void DisplayListTitle::LoadListToTable()
 	}
 	for (int i = 0; i < maxItem; i++)
 	{
-		grid->SetCellValue(i, 0, arr[i]->GetISBN());
-		grid->SetCellValue(i, 1, arr[i]->GetBookName());
-		grid->SetCellValue(i, 2, wxString::Format("%i", arr[i]->GetPageNumber()));
-		grid->SetCellValue(i, 3, arr[i]->GetAuthor());
-		grid->SetCellValue(i, 4, wxString::Format("%i", arr[i]->GetPublicYear()));
-		grid->SetCellValue(i, 5, arr[i]->GetType());
+		grid->SetCellValue(i, 0, linearList->GetData(i)->GetISBN());
+		grid->SetCellValue(i, 1, linearList->GetData(i)->GetBookName());
+		grid->SetCellValue(i, 2, wxString::Format("%i", linearList->GetData(i)->GetPageNumber()));
+		grid->SetCellValue(i, 3, linearList->GetData(i)->GetAuthor());
+		grid->SetCellValue(i, 4, wxString::Format("%i", linearList->GetData(i)->GetPublicYear()));
+		grid->SetCellValue(i, 5, linearList->GetData(i)->GetType());
 		for (int j = 0; j < 6; j++)
 		{
 			grid->SetCellAlignment(i, j, wxALIGN_CENTER, wxALIGN_CENTER);
@@ -283,10 +394,14 @@ bool DisplayListTitle::CheckType(wxString text)
 {
 	return checkInput->IsWord(text);
 }
-bool DisplayListTitle::CheckDuplicateISBN(wxString text)
+bool DisplayListTitle::CheckDuplicateISBN(wxString text,int row)
 {
 	for (int i = 0; i < maxItem; i++)
 	{
+		if (row == i)
+		{
+			continue;
+		}
 		if (text == grid->GetCellValue(i, 0))
 		{
 			return false;
