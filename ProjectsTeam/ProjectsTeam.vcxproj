@@ -157,8 +157,11 @@
     <ClCompile Include="CardReader.cpp" />
     <ClCompile Include="CardReaderMenu.cpp" />
     <ClCompile Include="CheckInput.cpp" />
+    <ClCompile Include="DateTime.cpp" />
     <ClCompile Include="DisplayListCardReader.cpp" />
+    <ClCompile Include="DisplayListTitle.cpp" />
     <ClCompile Include="DoublyLinkedList.cpp" />
+    <ClCompile Include="FormatText.cpp" />
     <ClCompile Include="LinearList.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="DoublyNode.cpp" />
@@ -178,9 +181,12 @@
     <ClInclude Include="CardReader.h" />
     <ClInclude Include="CardReaderMenu.h" />
     <ClInclude Include="CheckInput.h" />
+    <ClInclude Include="DateTime.h" />
     <ClInclude Include="DisplayListCardReader.h" />
+    <ClInclude Include="DisplayListTitle.h" />
     <ClInclude Include="DoublyLinkedList.h" />
     <ClInclude Include="DoublyNode.h" />
+    <ClInclude Include="FormatText.h" />
     <ClInclude Include="LinearList.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="ReaderCard.h" />

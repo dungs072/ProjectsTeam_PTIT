@@ -2,6 +2,7 @@
 #include<iostream>
 #include<fstream>
 #include"CardReader.h"
+#include"Title.h"
 
 typedef unsigned long long ulong;
 using std::string;
@@ -15,10 +16,11 @@ class SaveTextFile
 private:
 	string nameFile = "";
 private:
-	ulong CastStringToUlong(string strText)
+	template<typename data_type>
+	data_type CastStringToNumber(string strText)
 	{
 		int i, j;
-		ulong number = 0;
+		data_type number = 0;
 		for (i = strText.length() - 1, j = 0; i >= 0; i--, j++)
 		{
 			if (strText[i] < '0' || strText[i]>'9')
@@ -52,6 +54,19 @@ public:
 					osFile << p[i]->GetLastName() << "  ";
 					osFile << p[i]->GetSex() << "  ";
 					osFile << p[i]->GetState() << "\n";
+				}
+			}
+			else if (std::is_same<T, Title>::value)
+			{
+				Title** p = reinterpret_cast<Title**>(arr);
+				for (int i = 0; i < length; i++)
+				{
+					osFile << p[i]->GetISBN() << "  ";
+					osFile << p[i]->GetBookName() << "  ";
+					osFile << p[i]->GetPageNumber() << "  ";
+					osFile << p[i]->GetAuthor() << "  ";
+					osFile << p[i]->GetPublicYear() << "  ";
+					osFile << p[i]->GetType() << "\n";
 				}
 			}
 			osFile.close();
@@ -90,8 +105,35 @@ public:
 							text[index] += myLine[i];
 						}
 					}
-					ulong number = CastStringToUlong(text[0]);
+					ulong number = CastStringToNumber<ulong>(text[0]);
 					p[mainIndex] = new CardReader(number, text[1], text[2], text[3], text[4]);
+					mainIndex++;
+				}
+			}
+			else if (std::is_same<T, Title>::value)
+			{
+				Title** p = reinterpret_cast<Title**>(arr);
+				int mainIndex = 0;
+				while (getline(ifFile, myLine))
+				{
+					//std::cout << myLine << std::endl;
+					string* text = new string[7];
+					int index = 0;
+					for (int i = 0; i < myLine.length(); i++)
+					{
+						if (i + 1 != myLine.length() && myLine[i] == ' ' && myLine[i + 1] == ' ')
+						{
+							index++;
+							i++;
+						}
+						else
+						{
+							text[index] += myLine[i];
+						}
+					}
+					uint pageNumber = CastStringToNumber<uint>(text[2]);
+					uint nxb = CastStringToNumber<uint>(text[4]);
+					p[mainIndex] = new Title(text[0], text[1], pageNumber, text[3], nxb,text[5]);
 					mainIndex++;
 				}
 			}
@@ -114,6 +156,12 @@ public:
 			std::istream_iterator<char>(),
 			'\n');
 		return line_count;
+	}
+	void ClearData()
+	{
+		ofstream ofs;
+		ofs.open(nameFile, std::ofstream::out | std::ofstream::trunc);
+		ofs.close();
 	}
 };
 

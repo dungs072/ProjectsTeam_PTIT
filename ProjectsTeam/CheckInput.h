@@ -5,10 +5,12 @@ using std::string;
 class CheckInput
 {
 public:
+
 	bool IsNumber(wxString text);
 	bool IsAlphabet(wxString text);
 	bool IsWhiteSpaceAllText(wxString text);
 	bool IsWord(wxString text);
+	bool HasNumberAndAlphabet(wxString text);
 	bool IsRightSex(wxString text);
 	bool IsRightCodeState(int maxNumber, int currentNumber);
 	void ModifyTextInput(wxString& text);

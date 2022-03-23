@@ -32,7 +32,15 @@ public:
 	void SetAuthor(string author);
 	void SetPublicYear(uint publicYear);
 	void SetType(string type);
-
+	void Display()
+	{
+		std::cout << "ISBN: " << ISBN << std::endl;
+		std::cout << "book name: " << bookName << std::endl;
+		std::cout << "pageNumber: " << pageNumber << std::endl;
+		std::cout << "author: " << author << std::endl;
+		std::cout << "publicYear: " << publicYear << std::endl;
+		std::cout << "Type: " << type << std::endl;
+	}
 	//Get field;
 	string GetISBN();
 	string GetBookName();
