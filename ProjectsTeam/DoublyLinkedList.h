@@ -4,8 +4,12 @@
 #include<string>
 namespace DataStructure
 {
-	template<typename T>
+	//class UDoublyLinkedList {
+	//public:
+	//	virtual ~DoublyLinkedList() = 0;
+	//};
 
+	template<typename T>
 	class DoublyLinkedList
 	{
 	private:
@@ -38,11 +42,6 @@ namespace DataStructure
 				p = p->next;
 			}
 			return false;
-		}
-
-		~DoublyLinkedList()
-		{
-			Clear();
 		}
 	public:
 		DoublyLinkedList()
@@ -115,6 +114,7 @@ namespace DataStructure
 				first = t;
 			}
 			length++;
+
 		}
 		void AddFirst(DoublyNode<T>* DoublyNode)
 		{
@@ -385,6 +385,10 @@ namespace DataStructure
 				std::cout << p->data << std::endl;
 				p = p->next;
 			}
+		}
+		~DoublyLinkedList()
+		{
+			Clear();
 		}
 	};
 }

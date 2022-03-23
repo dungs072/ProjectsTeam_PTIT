@@ -1,10 +1,14 @@
+
+#define _CRT_SECURE_NO_WARNINGS
 #include<iostream>
 #include"SinglyLinkedList.h"
+using namespace std;
 #include"CardReader.h"
 #include"BSTree.h"
 #include"SaveTextFile.h"
 #include"CardReaderMenu.h"
 #include"BookTitle.h"
+#include "BookCatalog.h"
 #include"DisplayListTitle.h"
 using std::cout;
 using std::endl;

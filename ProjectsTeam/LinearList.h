@@ -4,8 +4,7 @@ using std::string;
 namespace DataStructure
 {
 	template<class T>
-	class LinearList
-	{
+	class LinearList {
 	private:
 		int currentLength;
 		int maxLength;
