@@ -376,7 +376,7 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 	if (col == 5 || col == 1)
 	{
 		EditTable(title, row);
-		grid->DeleteRows(row + 1, 1);
+		grid->DeleteRows(row, 1);
 		//grid->Refresh();
 	}
 	linearList->AddLast(title);
@@ -443,9 +443,13 @@ void BookTitle::EditTable(Title* title, int row)
 		pos = maxItem;
 	}
 	grid->InsertRows(pos, 1);
+	if (row > pos)
+	{
+		row++;
+	}
 	for (int i = 0; i < 6; i++)
 	{
-		grid->SetCellValue(pos, i, grid->GetCellValue(row + 1, i));
+		grid->SetCellValue(pos, i, grid->GetCellValue(row, i));
 		grid->SetCellAlignment(pos, i, wxALIGN_CENTER, wxALIGN_CENTER);
 	}
 }
