@@ -21,7 +21,7 @@ BookTitle::BookTitle(const wxString& title) : wxFrame(NULL, -1, title, wxDefault
 	enterPanel = new wxPanel(mainPanel, -1,
 		wxDefaultPosition, wxSize(375, 400));
 	takeNotePanel = new wxPanel(mainPanel, -1,
-		wxDefaultPosition, wxSize(375, 200));
+		wxDefaultPosition, wxSize(375, 220));
 	wxPanel* keyNotePanel = new wxPanel(mainPanel, -1,
 		wxDefaultPosition, wxSize(570, 30));
 	//create wxStatic Text
@@ -54,7 +54,7 @@ BookTitle::BookTitle(const wxString& title) : wxFrame(NULL, -1, title, wxDefault
 	grid->DisableDragRowSize();
 	vGridBox->Add(gridTitle, 0, wxTOP | wxALIGN_CENTER_HORIZONTAL, 20);
 	vGridBox->Add(grid, 0, wxLEFT | wxTOP, 20);
-	vGridBox->Add(keyNotePanel, 0, wxTOP|wxALIGN_CENTER, 10);
+	vGridBox->Add(keyNotePanel, 0, wxTOP | wxALIGN_CENTER, 10);
 	vRightBox->Add(enterPanel, 0, wxLEFT | wxTOP, 10);
 	vRightBox->Add(takeNotePanel, 0, wxLEFT | wxTOP, 10);
 	mainHBox->Add(vGridBox);
@@ -107,10 +107,10 @@ void BookTitle::CreateEnterArea(wxPanel* enterPanel)
 	{
 		enterText[i] = new wxTextCtrl(enterPanel, -1,
 			wxT(""), wxPoint(37, 90 + i * 50), wxSize(300, 25), wxTE_CENTER
-			| wxTE_PROCESS_ENTER| wxTE_CENTRE);
+			| wxTE_PROCESS_ENTER | wxTE_CENTRE);
 		enterText[i]->SetBackgroundColour(lightBlue);
 		enterText[i]->Connect(wxID_ANY, wxEVT_COMMAND_TEXT_UPDATED,
-			(wxObjectEventFunction)&BookTitle::OnKeyDownToUpper);
+			(wxObjectEventFunction)&BookTitle::OnKeyDownTextCltrToUpper);
 	}
 	enterText[0]->SetMaxLength(4);
 	enterText[1]->SetMaxLength(24);
@@ -125,9 +125,9 @@ void BookTitle::CreateTakeNoteArea(wxPanel* takeNotePanel)
 	wxColor lightYellow, orange;
 	lightYellow.Set("#E9F0C9");
 	orange.Set(wxT("#FFAB03"));
-	wxPanel* foreGroundPanel = new wxPanel(takeNotePanel, -1, wxPoint(10, 10), wxSize(355, 180));
+	wxPanel* foreGroundPanel = new wxPanel(takeNotePanel, -1, wxPoint(10, 10), wxSize(355, 200));
 	wxStaticText* titleTakeNoteText = new wxStaticText(foreGroundPanel, -1,
-		wxT("GUIDES"), wxPoint(125, 5),wxSize(100,15),wxALIGN_CENTER);
+		wxT("GUIDES"), wxPoint(125, 5), wxSize(100, 15), wxALIGN_CENTER);
 
 	wxStaticText* ISBNText = new wxStaticText(foreGroundPanel, -1,
 		wxT("ISBN"), wxPoint(10, 30), wxSize(100, 30));
@@ -167,7 +167,7 @@ void BookTitle::CreateKeyNoteArea(wxPanel* keyNotePanel)
 {
 	wxStaticText* keyNoteText = new wxStaticText(keyNotePanel, -1,
 		wxT("KEYHOT :   F2 - SAVE FILE, F4 - NHAP LIEU ( ENTER - LUU DAU SACH, DELETE - XOA DAU SACH )"),
-		wxPoint(10, 10), wxSize(550, 20),wxALIGN_CENTER_HORIZONTAL);
+		wxPoint(10, 10), wxSize(550, 20), wxALIGN_CENTER_HORIZONTAL);
 }
 void BookTitle::OnKeyDown(wxKeyEvent& event)
 {
@@ -180,7 +180,7 @@ void BookTitle::OnKeyDown(wxKeyEvent& event)
 	if (!isTurnOnEnterPanel)
 	{
 		event.Skip();
-		
+
 		return;
 	}
 	if (event.GetKeyCode() == WXK_UP)
@@ -199,7 +199,7 @@ void BookTitle::OnKeyDown(wxKeyEvent& event)
 	{
 		ShowMessageClear();
 	}
-	
+
 	event.Skip();
 }
 void BookTitle::OnEnter(wxCommandEvent& WXUNUSED(event))
@@ -226,7 +226,7 @@ void BookTitle::OnEnter(wxCommandEvent& WXUNUSED(event))
 	}
 	checkInput->ModifyTextInput(wxstr);
 	//checkInput->UpperWxString(wxstr);
-	if (!CheckDuplicateISBN(wxstr))
+	if (!CheckDuplicateISBN(wxstr,-1))
 	{
 		checkInput->ErrorMessageBox("TRUNG ISBN CO TRONG DANH SACH");
 		enterText[0]->SetFocus();
@@ -267,7 +267,7 @@ void BookTitle::OnEnter(wxCommandEvent& WXUNUSED(event))
 		enterText[5]->SetFocus();
 		return;
 	}
-	
+
 	SaveToList();
 
 }
@@ -300,8 +300,8 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 			grid->SetCellValue(row, col, wxOldText);
 			return;
 		}
-		//checkInput->UpperWxString(wxNewText);
-		if (!CheckDuplicateISBN(wxNewText))
+		checkInput->UpperWxString(wxNewText);
+		if (!CheckDuplicateISBN(wxNewText,row))
 		{
 			checkInput->ErrorMessageBox("TRUNG VOI ISBN CO TRONG DANH SACH");
 			grid->SetCellValue(row, col, wxOldText);
@@ -317,7 +317,7 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 			grid->SetCellValue(row, col, wxOldText);
 			return;
 		}
-		//checkInput->UpperWxString(wxNewText);
+		checkInput->UpperWxString(wxNewText);
 	}
 	if (col == 2)
 	{
@@ -336,7 +336,7 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 			grid->SetCellValue(row, col, wxOldText);
 			return;
 		}
-		//checkInput->UpperWxString(wxNewText);
+		checkInput->UpperWxString(wxNewText);
 	}
 	if (col == 4)
 	{
@@ -355,12 +355,101 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 			grid->SetCellValue(row, col, wxOldText);
 			return;
 		}
-		//checkInput->UpperWxString(wxNewText);
+		checkInput->UpperWxString(wxNewText);
 	}
+
+
+	string ISBN = string(grid->GetCellValue(row, 0).mb_str());
+	if (col == 0)
+	{
+		ISBN = string(wxOldText.mb_str());
+	}
+	linearList->Delete(ISBN);
 	grid->SetCellValue(row, col, wxNewText);
+	ISBN = string(grid->GetCellValue(row, 0).mb_str());
+	string bookName = string(grid->GetCellValue(row, 1).mb_str());
+	uint numberPage = checkInput->CastWxStringToInt(grid->GetCellValue(row, 2));
+	string author = string(grid->GetCellValue(row, 3).mb_str());
+	uint nxb = checkInput->CastWxStringToInt(grid->GetCellValue(row, 4));
+	string type = string(grid->GetCellValue(row, 5).mb_str());
+	Title* title = new Title(ISBN, bookName, numberPage, author, nxb, type);
+	if (col == 5 || col == 1)
+	{
+		EditTable(title, row);
+		grid->DeleteRows(row + 1, 1);
+		//grid->Refresh();
+	}
+	linearList->AddLast(title);
 	event.Skip();
 }
-void BookTitle::OnKeyDownToUpper(wxCommandEvent& _rCommandEvent)
+void BookTitle::EditTable(Title* title, int row)
+{
+	int pos = -1;
+	for (int i = 0; i < maxItem; i++)
+	{
+		Title* tempT = new Title();
+		for (int j = 0; j < 6; j++)
+		{
+			int number = 0;
+			wxString wxstr = grid->GetCellValue(i, j);
+			if (!(j == 2 || j == 4))
+			{
+
+				if (j == 0)
+				{
+					tempT->SetISBN(string(wxstr.mbc_str()));
+				}
+				else if (j == 1)
+				{
+					tempT->SetBookName(string(wxstr.mbc_str()));
+				}
+				else if (j == 3)
+				{
+					tempT->SetAuthor(string(wxstr.mbc_str()));
+				}
+				else if (j == 5)
+				{
+					tempT->SetType(string(wxstr.mbc_str()));
+				}
+
+			}
+			else
+			{
+
+				number = checkInput->CastWxStringToInt(wxstr);
+				if (j == 2)
+				{
+					tempT->SetPageNumber(number);
+				}
+				else if (j == 4)
+				{
+					tempT->SetPublicYear(number);
+				}
+			}
+		}
+		//wxMessageBox(wxString::Format("Tempt: %s and cur: %s", tempT->GetType(), curTitle->GetType()));
+		if (CompareTitle(title, tempT) < 1)
+		{
+			pos = i;
+
+			delete tempT;
+			break;
+		}
+		delete tempT;
+		tempT = nullptr;
+	}
+	if (pos == -1)
+	{
+		pos = maxItem;
+	}
+	grid->InsertRows(pos, 1);
+	for (int i = 0; i < 6; i++)
+	{
+		grid->SetCellValue(pos, i, grid->GetCellValue(row + 1, i));
+		grid->SetCellAlignment(pos, i, wxALIGN_CENTER, wxALIGN_CENTER);
+	}
+}
+void BookTitle::OnKeyDownTextCltrToUpper(wxCommandEvent& _rCommandEvent)
 {
 	wxTextCtrl* pTextCtrl = dynamic_cast<wxTextCtrl*>(_rCommandEvent.GetEventObject());
 	if (pTextCtrl != NULL)
@@ -465,7 +554,7 @@ void BookTitle::SaveToList()
 		if (CompareTitle(curTitle, tempT) < 1)
 		{
 			pos = i;
-			
+
 			delete tempT;
 			break;
 		}
@@ -481,7 +570,7 @@ void BookTitle::SaveToList()
 	for (int i = 0; i < 6; i++)
 	{
 		grid->SetCellValue(pos, i, enterText[i]->GetValue());
-		grid->SetCellAlignment(pos,i,wxALIGN_CENTER, wxALIGN_CENTER);
+		grid->SetCellAlignment(pos, i, wxALIGN_CENTER, wxALIGN_CENTER);
 	}
 	ClearInforInEnterText();
 	linearList->AddLast(curTitle);
@@ -503,19 +592,19 @@ void BookTitle::SaveFile()
 }
 void BookTitle::LoadFile()
 {
-	
+
 	linearList->Clear();
 	int length = saveFile->GetLineCount();
-	
+
 	if (length > linearList->MaxLength())
 	{
 		wxMessageBox("Danh sach trong file qua lon, khong the load duoc");
 		return;
 	}
-	Title** arr = new Title*[length];
-	
+	Title** arr = new Title * [length];
+
 	saveFile->ReadFile(arr);
-	
+
 	for (int i = 0; i < length; i++)
 	{
 		linearList->AddLast(arr[i]);
@@ -541,7 +630,7 @@ void BookTitle::LoadListToTable()
 		grid->SetCellValue(i, 5, temp->GetType());
 		for (int j = 0; j < 6; j++)
 		{
-			grid->SetCellAlignment(i, j, wxALIGN_CENTER,wxALIGN_CENTER);
+			grid->SetCellAlignment(i, j, wxALIGN_CENTER, wxALIGN_CENTER);
 		}
 	}
 	maxItem = linearList->Length();
@@ -566,13 +655,13 @@ void BookTitle::DeleteSelectedRows()
 			if (grid->IsInSelection(i, 0))
 			{
 				//wxMessageBox(wxString::Format("%i",cardCode));
-				
+
 				string ISBN = string(grid->GetCellValue(i, 0).mbc_str());
 				if (ISBN != "")
 				{
 					linearList->Delete(ISBN);
 					maxItem--;
-					
+
 				}
 				grid->DeleteRows(i, 1);
 				if (grid->GetNumberRows() < 26)
@@ -620,14 +709,14 @@ bool BookTitle::CheckISBN(wxString text)
 }
 bool BookTitle::CheckBookName(wxString text)
 {
-	return checkInput->IsWord(text);
+	return checkInput->HasNumberAndAlphabet(text);
 }
 bool BookTitle::CheckPageNumber(wxString text)
 {
 	//page number has 6 number;
 	if (!checkInput->IsNumber(text)) { return false; }
 	string textstr = string(text.mbc_str());
-	return textstr.length() <= 6&&textstr.length()>0;
+	return textstr.length() <= 6 && textstr.length() > 0;
 }
 bool BookTitle::CheckAuthor(wxString text)
 {
@@ -638,7 +727,7 @@ bool BookTitle::CheckYearPublic(wxString text)
 	if (!checkInput->IsNumber(text)) { return false; }
 	time_t current = time(0);
 	tm* ltm = localtime(&current);
-	int currentYear = ltm->tm_year+1900;
+	int currentYear = ltm->tm_year + 1900;
 	int yearInput = checkInput->CastWxStringToInt(text);
 	//wxMessageBox(wxString::Format("current year: %i and year input: %i", currentYear, yearInput));
 	return yearInput <= currentYear;
@@ -647,10 +736,14 @@ bool BookTitle::CheckType(wxString text)
 {
 	return checkInput->IsWord(text);
 }
-bool BookTitle::CheckDuplicateISBN(wxString text)
+bool BookTitle::CheckDuplicateISBN(wxString text,int row)
 {
 	for (int i = 0; i < maxItem; i++)
 	{
+		if (row == i)
+		{
+			continue;
+		}
 		if (text == grid->GetCellValue(i, 0))
 		{
 			return false;
@@ -685,10 +778,10 @@ int BookTitle::partition(int l, int h)
 	int j = h;
 	do
 	{
-		do { i++;if (i == j) { break; } } while (CompareTitle(linearList->GetData(i),pivot) < 1);
-		do { j--; } while (CompareTitle(linearList->GetData(j), pivot ) == 1);
+		do { i++; if (i == j) { break; } } while (CompareTitle(linearList->GetData(i), pivot) < 1);
+		do { j--; } while (CompareTitle(linearList->GetData(j), pivot) == 1);
 		if (i < j) { Swap((linearList->GetData(i)), (linearList->GetData(j))); }
-	} while (i<j);
+	} while (i < j);
 	Swap(linearList->GetData(l), linearList->GetData(j));
 	return j;
 }

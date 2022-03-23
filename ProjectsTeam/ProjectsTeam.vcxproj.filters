@@ -22,6 +22,9 @@
     <Filter Include="Header Files\Fomat">
       <UniqueIdentifier>{4d47eaf2-1682-4c16-bc4c-9e9526b37462}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Format">
+      <UniqueIdentifier>{664f0c3b-cab5-4682-acd5-13e017ef89f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -75,13 +78,17 @@
     <ClCompile Include="BookTitle.cpp">
       <Filter>Source Files\FrontEnd</Filter>
     </ClCompile>
-
     <ClCompile Include="ReaderCard.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\FrontEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="DateTime.cpp">
+      <Filter>Source Files\Format</Filter>
     </ClCompile>
     <ClCompile Include="FormatText.cpp">
+      <Filter>Source Files\Format</Filter>
+    </ClCompile>
+    <ClCompile Include="DisplayListTitle.cpp">
       <Filter>Source Files\FrontEnd</Filter>
-
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -141,6 +148,9 @@
     </ClInclude>
     <ClInclude Include="FormatText.h">
       <Filter>Header Files\Fomat</Filter>
+    </ClInclude>
+    <ClInclude Include="DisplayListTitle.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
