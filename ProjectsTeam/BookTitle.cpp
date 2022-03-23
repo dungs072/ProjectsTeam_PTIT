@@ -226,7 +226,7 @@ void BookTitle::OnEnter(wxCommandEvent& WXUNUSED(event))
 	}
 	checkInput->ModifyTextInput(wxstr);
 	//checkInput->UpperWxString(wxstr);
-	if (!CheckDuplicateISBN(wxstr))
+	if (!CheckDuplicateISBN(wxstr,-1))
 	{
 		checkInput->ErrorMessageBox("TRUNG ISBN CO TRONG DANH SACH");
 		enterText[0]->SetFocus();
@@ -275,8 +275,6 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 {
 	int row = grid->GetGridCursorRow();
 	int col = grid->GetGridCursorCol();
-	string ISBN = string(grid->GetCellValue(row, 0).mb_str());
-	linearList->Delete(ISBN);
 	wxString wxOldText = event.GetString();
 	if (wxOldText == wxT(""))
 	{
@@ -303,7 +301,7 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 			return;
 		}
 		checkInput->UpperWxString(wxNewText);
-		if (!CheckDuplicateISBN(wxNewText))
+		if (!CheckDuplicateISBN(wxNewText,row))
 		{
 			checkInput->ErrorMessageBox("TRUNG VOI ISBN CO TRONG DANH SACH");
 			grid->SetCellValue(row, col, wxOldText);
@@ -359,6 +357,14 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 		}
 		checkInput->UpperWxString(wxNewText);
 	}
+
+
+	string ISBN = string(grid->GetCellValue(row, 0).mb_str());
+	if (col == 0)
+	{
+		ISBN = string(wxOldText.mb_str());
+	}
+	linearList->Delete(ISBN);
 	grid->SetCellValue(row, col, wxNewText);
 	ISBN = string(grid->GetCellValue(row, 0).mb_str());
 	string bookName = string(grid->GetCellValue(row, 1).mb_str());
@@ -730,10 +736,14 @@ bool BookTitle::CheckType(wxString text)
 {
 	return checkInput->IsWord(text);
 }
-bool BookTitle::CheckDuplicateISBN(wxString text)
+bool BookTitle::CheckDuplicateISBN(wxString text,int row)
 {
 	for (int i = 0; i < maxItem; i++)
 	{
+		if (row == i)
+		{
+			continue;
+		}
 		if (text == grid->GetCellValue(i, 0))
 		{
 			return false;

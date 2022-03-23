@@ -635,6 +635,15 @@ void ReaderCard::EditCurrentCell(wxGridEvent& event)
 		}
 		grid->SetCellValue(row, col, stateText[num]);
 	}
+	ulong key = CastWxStringToUlong(grid->GetCellValue(row, 0));
+	string lastName = string(grid->GetCellValue(row, 1).mb_str());
+	string firstName = string(grid->GetCellValue(row, 2).mb_str());
+	string sex = string(grid->GetCellValue(row, 3).mb_str());
+	string stateStr = string(grid->GetCellValue(row, 4).mb_str());
+	int i = cardReaderTree->Delete(key);
+	wxMessageBox(wxString::Format(grid->GetCellValue(row, 1)));
+	CardReader* temp = new CardReader(key, lastName, firstName, sex, stateStr);
+	cardReaderTree->Add(temp);
 	//wxMessageBox(event.GetString());
 	event.Skip();
 }

@@ -18,10 +18,10 @@ public:
 IMPLEMENT_APP(ReaderCardApp);
 bool ReaderCardApp::OnInit()
 {
-	/*CardReaderMenu* cardReaderMenu = new CardReaderMenu("Card Reader Menu");
-	cardReaderMenu->Show(true);*/
-	BookTitle* title = new BookTitle("DAU SACH");
-	title->Show(true);
+	CardReaderMenu* cardReaderMenu = new CardReaderMenu("Card Reader Menu");
+	cardReaderMenu->Show(true);
+	/*BookTitle* title = new BookTitle("DAU SACH");
+	title->Show(true);*/
 	/*DisplayListTitle* displayTitle = new DisplayListTitle("IN DANH SACH DAU SACH");
 	displayTitle->Show(true);*/
 	return true;

@@ -46,7 +46,7 @@ private:
 	bool CheckAuthor(wxString text);
 	bool CheckYearPublic(wxString text);
 	bool CheckType(wxString text);
-	bool CheckDuplicateISBN(wxString text);
+	bool CheckDuplicateISBN(wxString text,int row);
 	int CompareTitle(Title* t1, Title* t2);
 	//quick sort
 	void Swap(Title* t1, Title* t2);
