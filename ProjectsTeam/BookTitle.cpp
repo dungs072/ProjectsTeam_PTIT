@@ -25,6 +25,9 @@ BookTitle::BookTitle(const wxString& title) : wxFrame(NULL, -1,
 		wxDefaultPosition, wxSize(375, 220));
 	wxPanel* keyNotePanel = new wxPanel(mainPanel, -1,
 		wxDefaultPosition, wxSize(570, 30));
+	//Create Button
+	wxButton* exitMenu = new wxButton(mainPanel, -1,
+		wxT("EXIT MENU"), wxPoint(10, 600), wxSize(100, 25));
 	
 	//create wxStatic Text
 	wxStaticText* gridTitle = new wxStaticText(mainPanel, -1,
@@ -54,12 +57,13 @@ BookTitle::BookTitle(const wxString& title) : wxFrame(NULL, -1,
 	grid->SetRowLabelSize(50);
 	grid->DisableDragColSize();
 	grid->DisableDragRowSize();
+	//Set sizer
 	vGridBox->Add(gridTitle, 0, wxTOP | wxALIGN_CENTER_HORIZONTAL, 20);
 	vGridBox->Add(grid, 0, wxLEFT | wxTOP, 20);
 	vGridBox->Add(keyNotePanel, 0, wxTOP | wxALIGN_CENTER, 10);
 	vRightBox->Add(enterPanel, 0, wxLEFT | wxTOP, 10);
 	vRightBox->Add(takeNotePanel, 0, wxLEFT | wxTOP, 10);
-	mainHBox->Add(vGridBox);
+	mainHBox->Add(vGridBox,0,wxLEFT,30);
 	mainHBox->Add(vRightBox);
 	mainPanel->SetSizer(mainHBox);
 
@@ -70,16 +74,15 @@ BookTitle::BookTitle(const wxString& title) : wxFrame(NULL, -1,
 
 	//Register event
 	grid->Bind(wxEVT_GRID_CELL_CHANGED, &BookTitle::EditCurrentCell, this);
-
+	exitMenu->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &BookTitle::OnExitMenu, this);
 	Bind(wxEVT_TEXT_ENTER, &BookTitle::OnEnter, this);
-
+	Bind(wxEVT_SHOW, &BookTitle::OnShow, this);
 	//Set Color
 	gridTitle->SetBackgroundColour(lightBlue);
 	enterPanel->SetBackgroundColour(lightYellow);
 	takeNotePanel->SetBackgroundColour(middleYellow);
 	keyNotePanel->SetBackgroundColour(lightYellow);
-	
-	LoadFile();
+	exitMenu->SetBackgroundColour(red);
 	Centre();
 }
 
@@ -273,6 +276,20 @@ void BookTitle::OnEnter(wxCommandEvent& WXUNUSED(event))
 
 	SaveToList();
 
+}
+void BookTitle::OnExitMenu(wxCommandEvent& WXUNUSED(event))
+{
+	this->Show(false);
+	GetParent()->Show();
+}
+void BookTitle::OnShow(wxShowEvent& event)
+{
+	if (event.IsShown())
+	{
+		LoadFile();
+		maxItem = saveFile->GetSizeArray();
+	}
+	event.Skip();
 }
 void BookTitle::EditCurrentCell(wxGridEvent& event)
 {

@@ -29,6 +29,8 @@ private:
 	void OnKeyDownTextCltrToUpper(wxCommandEvent& event);
 	void OnEnter(wxCommandEvent& event);
 	void EditCurrentCell(wxGridEvent& event);
+	void OnExitMenu(wxCommandEvent& event);
+	void OnShow(wxShowEvent& event);
 	
 	void EditTable(Title* title,int row);
 	void SwitchPanel(bool state);

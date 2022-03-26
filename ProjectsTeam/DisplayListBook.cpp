@@ -31,6 +31,7 @@ DisplayListBook::DisplayListBook(const wxString& title) :wxFrame(NULL, -1,
 		, wxDefaultPosition, wxSize(500, 30), wxALIGN_CENTER);
 	checkInput->SetTextSize(titleGrid, 15);
 	//Create Button
+	
 	backButton = new wxButton(enterPanel, -1, wxT("<<--BACK"), wxPoint(20, 220), wxSize(75, 20));
 	//Create BoxSizer
 	wxBoxSizer* mainHBox = new wxBoxSizer(wxHORIZONTAL);

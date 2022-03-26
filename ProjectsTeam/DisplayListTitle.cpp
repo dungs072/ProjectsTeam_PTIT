@@ -30,6 +30,8 @@ DisplayListTitle::DisplayListTitle(const wxString& title) : wxFrame(NULL, -1, ti
 	//Create button
 	bookButton = new wxButton(functionPanel, -1,
 		wxT("MUC SACH->>"), wxPoint(170,250 ), wxSize(100, 20));
+	wxButton* exitMenu = new wxButton(mainPanel, -1,
+		wxT("EXIT MENU"), wxPoint(10, 600), wxSize(100, 25));
 	//create wxStatic Text
 	wxStaticText* gridTitle = new wxStaticText(mainPanel, -1,
 		wxT("DANH SACH DAU SACH"), wxPoint(-1, -1), wxSize(400, 40), wxALIGN_CENTER);
@@ -62,7 +64,7 @@ DisplayListTitle::DisplayListTitle(const wxString& title) : wxFrame(NULL, -1, ti
 	vGridBox->Add(grid, 0, wxLEFT | wxTOP, 20);
 	vGridBox->Add(keyNotePanel, 0, wxTOP | wxALIGN_CENTER, 10);
 	vRightBox->Add(functionPanel, 0, wxTOP, 80);
-	mainHBox->Add(vGridBox);
+	mainHBox->Add(vGridBox,0,wxLEFT,40);
 	mainHBox->Add(vRightBox, 0, wxLEFT, 70);
 	mainPanel->SetSizer(mainHBox);
 
@@ -70,18 +72,20 @@ DisplayListTitle::DisplayListTitle(const wxString& title) : wxFrame(NULL, -1, ti
 	CreateKeyNoteArea(keyNotePanel);
 	CreateFunctionArea();
 	//Register event
+	this->Bind(wxEVT_SHOW, &DisplayListTitle::OnShow, this);
 	grid->Bind(wxEVT_GRID_CELL_CHANGED, &DisplayListTitle::EditCurrentCell, this);
 	grid->Bind(wxEVT_GRID_RANGE_SELECTING, &DisplayListTitle::OnSelectingGrid, this);
 	grid->Bind(wxEVT_GRID_SELECT_CELL, &DisplayListTitle::OnSelectedGrid, this);
 	grid->Bind(wxEVT_GRID_LABEL_LEFT_CLICK, &DisplayListTitle::OnSelectedLabelGrid, this);
 	bookButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DisplayListTitle::OnButtonDown, this);
+	exitMenu->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DisplayListTitle::OnExitMenu, this);
 	//Set Color
 	gridTitle->SetBackgroundColour(lightBlue);
 	keyNotePanel->SetBackgroundColour(lightYellow);
 	functionPanel->SetBackgroundColour(lightYellow);
 	grid->SetSelectionBackground(organColor);
 	bookButton->SetBackgroundColour(greenColor);
-	LoadFile();
+	exitMenu->SetBackgroundColour(red);
 	Centre();
 }
 void DisplayListTitle::CreateFunctionArea()
@@ -296,7 +300,6 @@ void DisplayListTitle::EditCurrentCell(wxGridEvent& event)
 	}
 	string ISBN = string(grid->GetCellValue(row, 0).mb_str());
 	linearList->Delete(ISBN);
-	wxMessageBox("Delete finished");
 	if (col == 0)
 	{
 		ISBN = string(wxOldText.mb_str());
@@ -314,7 +317,6 @@ void DisplayListTitle::EditCurrentCell(wxGridEvent& event)
 		EditTable(title, row);
 	}
 	linearList->AddLast(title);
-	wxMessageBox("Add finished");
 	event.Skip();
 }
 void DisplayListTitle::OnButtonDown(wxCommandEvent& WXUNUSED(event))
@@ -323,6 +325,26 @@ void DisplayListTitle::OnButtonDown(wxCommandEvent& WXUNUSED(event))
 	listBook->SetTitle(selectedTitle);
 	listBook->Show(true);
 	this->Show(false);
+}
+void DisplayListTitle::OnExitMenu(wxCommandEvent& WXUNUSED(event))
+{
+	this->Hide();
+	this->GetParent()->Show();
+}
+void DisplayListTitle::OnShow(wxShowEvent& event)
+{
+	if (event.IsShown())
+	{
+		maxItem = saveFile->GetSizeArray();
+		LoadFile();
+		
+	}
+	else
+	{
+		isTurnOn = false;
+		ShowFunctionPanel();
+	}
+	event.Skip();
 }
 void DisplayListTitle::EditTable(Title* title, int row)
 {

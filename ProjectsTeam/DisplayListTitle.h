@@ -33,6 +33,8 @@ private:
 	void OnSelectedGrid(wxCommandEvent& event);
 	void OnSelectedLabelGrid(wxCommandEvent& event);
 	void OnButtonDown(wxCommandEvent& event);
+	void OnExitMenu(wxCommandEvent& event);
+	void OnShow(wxShowEvent& event);
 	void LoadFile();
 	void SaveFile();
 	void LoadListToTable();
