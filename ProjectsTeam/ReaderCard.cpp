@@ -73,7 +73,7 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 	CreateSearchArea();
 	CreateNoteArea();
 	MakeStateCodeText();
-	DisplayDataInFile();
+	//LoadFile();
 	
 
 
@@ -89,6 +89,7 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 	noteBook->AddPage(enterTextBackGround, wxT("NHAP"));
 	noteBook->AddPage(searchTextBackGround, wxT("TIM KIEM"));
 	//Register event
+	Bind(wxEVT_SHOW, &ReaderCard::OnShow, this);
 	Bind(wxEVT_TEXT_ENTER, &ReaderCard::OnEnter, this);
 	grid->Bind(wxEVT_GRID_CELL_CHANGED, &ReaderCard::EditCurrentCell, this);
 	noteBook->Bind(wxEVT_NOTEBOOK_PAGE_CHANGED, &ReaderCard::OnChangedPageNoteBook, this);
@@ -409,6 +410,16 @@ void ReaderCard::OnCardMenu(wxCommandEvent& WXUNUSED(event))
 	this->GetParent()->Show(true);
 	this->Show(false);
 }
+void ReaderCard::OnShow(wxShowEvent& event)
+{
+	if (event.IsShown())
+	{
+		numberRowIsFilled = saveFile->GetSizeArray();
+		LoadFile();
+		
+	}
+	event.Skip();
+}
 void ReaderCard::SetDefaultColorForRow()
 {
 	if (rowChangedColor == -1) { return; }
@@ -429,11 +440,37 @@ void ReaderCard::SaveFile()
 		saveFile->ClearData();
 		return;
 	}
-	CardReader** arr = cardReaderTree->ToArray();
-	
 	int length = cardReaderTree->GetNumberNodes();
+	CardReader** arr = cardReaderTree->ToArray();
 	saveFile->WriteToFile(arr, length);
 	wxMessageBox(wxString::Format("LIST IS SAVED SUCCESSFULLY"));
+}
+void ReaderCard::LoadFile()
+{
+	cardReaderTree->Clear();
+	CardReader** arr = new CardReader* [numberRowIsFilled];
+	saveFile->ReadFile(arr);
+	if (numberRowIsFilled > grid->GetNumberRows())
+	{
+		grid->AppendRows(numberRowIsFilled - grid->GetNumberRows() + 1);
+	}
+
+	for (int i = 0; i < numberRowIsFilled; i++)
+	{
+		cardReaderTree->Add(arr[i]);
+		ulong cardCode = arr[i]->GetCardCode();
+		wxString cardCodeStr = EditCardCode(cardCode, 10);
+		grid->SetCellValue(i, 0, cardCodeStr);
+		grid->SetCellValue(i, 1, arr[i]->GetFirstName());
+		grid->SetCellValue(i, 2, arr[i]->GetLastName());
+		grid->SetCellValue(i, 3, arr[i]->GetSex());
+		grid->SetCellValue(i, 4, arr[i]->GetState());
+		for (int j = 0; j < 5; j++)
+		{
+			grid->SetCellAlignment(i, j, wxALIGN_CENTER, wxALIGN_CENTER);
+		}
+
+	}
 }
 void ReaderCard::DeleteSelectedRows()
 {
@@ -641,7 +678,7 @@ void ReaderCard::EditCurrentCell(wxGridEvent& event)
 	string sex = string(grid->GetCellValue(row, 3).mb_str());
 	string stateStr = string(grid->GetCellValue(row, 4).mb_str());
 	int i = cardReaderTree->Delete(key);
-	wxMessageBox(wxString::Format("%i", cardReaderTree->GetNumberNodes()));
+	
 	CardReader* temp = new CardReader(key, lastName, firstName, sex, stateStr);
 	cardReaderTree->Add(temp);
 	//wxMessageBox(event.GetString());
@@ -659,34 +696,7 @@ void ReaderCard::CastWxStringIntoString(wxString text, string& str)
 {
 	str = std::string(text.mb_str());
 }
-void ReaderCard::DisplayDataInFile()
-{
-	cardReaderTree->Clear();
-	int length = saveFile->GetLineCount();
-	CardReader** arr = new CardReader * [length];
-	saveFile->ReadFile(arr);
-	if (length > grid->GetNumberRows())
-	{
-		grid->AppendRows(length - grid->GetNumberRows() + 1);
-	}
-	
-	for (int i = 0; i < length; i++)
-	{
-		cardReaderTree->Add(arr[i]);
-		ulong cardCode = arr[i]->GetCardCode();
-		wxString cardCodeStr = EditCardCode(cardCode, 10);
-		grid->SetCellValue(i, 0, cardCodeStr);
-		grid->SetCellValue(i, 1, arr[i]->GetFirstName());
-		grid->SetCellValue(i, 2,arr[i]->GetLastName());
-		grid->SetCellValue(i, 3, arr[i]->GetSex());
-		grid->SetCellValue(i, 4, arr[i]->GetState());
-		for (int j = 0; j < 5; j++)
-		{
-			grid->SetCellAlignment(i, j, wxALIGN_CENTER, wxALIGN_CENTER);
-		}	
-		
-	}
-}
+
 CardReader* ReaderCard::CreateCardReader(wxTextCtrl** textCtrlList, ulong cardCode)
 {
 	string firstName = "";

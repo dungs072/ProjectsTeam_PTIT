@@ -1,5 +1,6 @@
 #include "BookTitle.h"
-BookTitle::BookTitle(const wxString& title) : wxFrame(NULL, -1, title, wxDefaultPosition, wxSize(1280, 680))
+BookTitle::BookTitle(const wxString& title) : wxFrame(NULL, -1,
+	title, wxDefaultPosition, wxSize(1280, 680))
 {
 	//back end
 	saveFile = new SaveTextFile<Title>("BookTitle.txt");
@@ -24,6 +25,7 @@ BookTitle::BookTitle(const wxString& title) : wxFrame(NULL, -1, title, wxDefault
 		wxDefaultPosition, wxSize(375, 220));
 	wxPanel* keyNotePanel = new wxPanel(mainPanel, -1,
 		wxDefaultPosition, wxSize(570, 30));
+	
 	//create wxStatic Text
 	wxStaticText* gridTitle = new wxStaticText(mainPanel, -1,
 		wxT("DANH SACH DAU SACH"), wxPoint(-1, -1), wxSize(400, 40), wxALIGN_CENTER);
@@ -76,6 +78,7 @@ BookTitle::BookTitle(const wxString& title) : wxFrame(NULL, -1, title, wxDefault
 	enterPanel->SetBackgroundColour(lightYellow);
 	takeNotePanel->SetBackgroundColour(middleYellow);
 	keyNotePanel->SetBackgroundColour(lightYellow);
+	
 	LoadFile();
 	Centre();
 }
@@ -596,23 +599,20 @@ void BookTitle::SaveFile()
 }
 void BookTitle::LoadFile()
 {
-
 	linearList->Clear();
-	int length = saveFile->GetLineCount();
-
+	//wxMessageBox(wxString::Format("%i", saveFile->GetSizeArray()));
+	int length = saveFile->GetSizeArray();
 	if (length > linearList->MaxLength())
 	{
 		wxMessageBox("Danh sach trong file qua lon, khong the load duoc");
 		return;
 	}
-	Title** arr = new Title * [length];
-
+	Title** arr = new Title*[length];
 	saveFile->ReadFile(arr);
 
 	for (int i = 0; i < length; i++)
 	{
 		linearList->AddLast(arr[i]);
-		//wxMessageBox(wxString::Format("%i",i));
 	}
 	LoadListToTable();
 

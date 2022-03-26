@@ -15,7 +15,7 @@ DisplayListCardReader::DisplayListCardReader(const wxString& title)
 	red.Set(wxT("#F74A4A"));
 	//Create SaveFile
 	saveFile = new SaveTextFile<CardReader>("ListReaders.txt");
-	
+	length = saveFile->GetSizeArray();
 	//create panel
 	wxPanel* mainPanel = new wxPanel(this, -1, wxDefaultPosition, wxDefaultSize);
 	wxPanel* takeNotePanel = new wxPanel(mainPanel, -1, wxDefaultPosition, wxSize(300, 100));
@@ -87,26 +87,40 @@ DisplayListCardReader::DisplayListCardReader(const wxString& title)
 }
 void DisplayListCardReader::OnSortCode(wxCommandEvent& WXUNUSED(event))
 {
-	if (arr != nullptr) { delete arr; }
-	int length = saveFile->GetLineCount();
-	arr = new CardReader * [length];
+	if (arr != nullptr)
+	{
+		for (int i = 0; i < length; i++)
+		{
+			delete arr[i];
+		}
+		delete arr;
+		arr = nullptr;
+	}
+	length = saveFile->GetSizeArray();
+	arr = new CardReader* [length];
 	saveFile->ReadFile(arr);
 	DisplayCell(arr, length);
 }
 void DisplayListCardReader::OnSortName(wxCommandEvent& WXUNUSED(event))
 {
-	if (arr != nullptr) { delete arr; }
-	int length = saveFile->GetLineCount();
-	arr = new CardReader * [length];
+	if (arr != nullptr)
+	{
+		for (int i = 0; i < length; i++)
+		{
+			delete arr[i];
+		}
+		delete arr;
+		arr = nullptr;
+	}
+	length = saveFile->GetSizeArray();
+	arr = new CardReader* [length];
 	saveFile->ReadFile(arr);
 	QuickSort(arr, 0, length);
 	DisplayCell(arr, length);
 	grid->Refresh();
-
 }
 void DisplayListCardReader::EditCurrentCell(wxGridEvent& event)
 {
-	lengthTextInFile = saveFile->GetLineCount();
 	int row = grid->GetGridCursorRow();
 	int col = grid->GetGridCursorCol();
 	wxString wxOldText = event.GetString();
@@ -199,18 +213,18 @@ void DisplayListCardReader::SaveFile()
 	if (arr == nullptr) { return; }
 
 	BSTree<CardReader>* tempTree = new BSTree<CardReader>();
-	for (int i = 0; i < lengthTextInFile; i++)
+	for (int i = 0; i < length; i++)
 	{
 		tempTree->Add(arr[i]);
 	}
 	arr = tempTree->ToArray();
-	saveFile->WriteToFile(arr, lengthTextInFile);
+	saveFile->WriteToFile(arr, length);
 	tempTree->Clear();
 	delete tempTree;
 	tempTree = nullptr;
 	wxMessageBox(wxString::Format("LIST IS SAVED SUCCESSFULLY"));
-	if (readerCard == nullptr) { return; }
-	readerCard->DisplayDataInFile();
+	//if (readerCard == nullptr) { return; }
+	//readerCard->LoadFile();
 }
 bool DisplayListCardReader::IsWhiteSpaceAllText(wxString text)
 {

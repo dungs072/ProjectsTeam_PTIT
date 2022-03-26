@@ -13,5 +13,10 @@ public:
 		leftNode = nullptr;
 		rightNode = nullptr;
 	}
-	BSTNode() {}
+	BSTNode() 
+	{
+		data = nullptr;
+		leftNode = nullptr;
+		rightNode = nullptr;
+	}
 };

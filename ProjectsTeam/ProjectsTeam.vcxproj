@@ -150,6 +150,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AdminMenu.cpp" />
+    <ClCompile Include="Book.cpp" />
     <ClCompile Include="BookTitle.cpp" />
     <ClCompile Include="BSTNode.cpp" />
     <ClCompile Include="BSTree.cpp" />
@@ -157,6 +159,7 @@
     <ClCompile Include="CardReaderMenu.cpp" />
     <ClCompile Include="CheckInput.cpp" />
     <ClCompile Include="DateTime.cpp" />
+    <ClCompile Include="DisplayListBook.cpp" />
     <ClCompile Include="DisplayListCardReader.cpp" />
     <ClCompile Include="DisplayListTitle.cpp" />
     <ClCompile Include="DoublyLinkedList.cpp" />
@@ -173,6 +176,8 @@
     <ClCompile Include="Title.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AdminMenu.h" />
+    <ClInclude Include="Book.h" />
     <ClInclude Include="BookTitle.h" />
     <ClInclude Include="BSTNode.h" />
     <ClInclude Include="BSTree.h" />
@@ -180,6 +185,7 @@
     <ClInclude Include="CardReaderMenu.h" />
     <ClInclude Include="CheckInput.h" />
     <ClInclude Include="DateTime.h" />
+    <ClInclude Include="DisplayListBook.h" />
     <ClInclude Include="DisplayListCardReader.h" />
     <ClInclude Include="DisplayListTitle.h" />
     <ClInclude Include="DoublyLinkedList.h" />

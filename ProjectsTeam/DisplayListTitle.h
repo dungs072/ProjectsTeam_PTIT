@@ -5,6 +5,7 @@
 #include"CheckInput.h"
 #include"SaveTextFile.h"
 #include"LinearList.h"
+#include"DisplayListBook.h"
 typedef unsigned int uint;
 using namespace DataStructure;
 class DisplayListTitle :public wxFrame
@@ -14,16 +15,29 @@ private:
 	CheckInput* checkInput = new CheckInput();
 	SaveTextFile<Title>* saveFile;
 	LinearList<Title>* linearList;
+	Title* selectedTitle = nullptr;
 	//Frontend
+	DisplayListBook* listBook;
 	wxGrid* grid;
+	wxPanel* functionPanel;
+	wxBoxSizer* mainHBox;
+	wxStaticText* bookNameText;
+	wxButton* bookButton;
+	bool isTurnOn = true;
 	void CreateTakeNoteArea(wxPanel* takeNotePanel);
 	void CreateKeyNoteArea(wxPanel* keyNotePanel);
+	void CreateFunctionArea();
 	void EditCurrentCell(wxGridEvent& event);
 	void OnKeyDown(wxKeyEvent& event);
+	void OnSelectingGrid(wxGridRangeSelectEvent& event);
+	void OnSelectedGrid(wxCommandEvent& event);
+	void OnSelectedLabelGrid(wxCommandEvent& event);
+	void OnButtonDown(wxCommandEvent& event);
 	void LoadFile();
 	void SaveFile();
 	void LoadListToTable();
 	void EditTable(Title* title, int row);
+	void ShowFunctionPanel();
 	//check
 	bool CheckISBN(wxString text);
 	bool CheckBookName(wxString text);
@@ -38,4 +52,5 @@ public:
 	DisplayListTitle(const wxString& title);
 	DECLARE_EVENT_TABLE();
 };
+const int BOOK_ID = 20;
 

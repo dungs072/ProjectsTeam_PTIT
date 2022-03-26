@@ -3,12 +3,16 @@ DisplayListTitle::DisplayListTitle(const wxString& title) : wxFrame(NULL, -1, ti
 {
 	//back end
 	saveFile = new SaveTextFile<Title>("BookTitle.txt");
-	maxItem = saveFile->GetLineCount();
+	maxItem = saveFile->GetSizeArray();
 	linearList = new LinearList<Title>(100);
+	//child window
+	listBook = new DisplayListBook(wxT("DANH MUC SACH"));
+	this->AddChild(listBook);
 	//catch error
 	checkInput = new CheckInput();
 	//create color;
-	wxColour lightYellow, greenColor, organColor, lightBlue, eggYellow, lightRed, red, middleYellow;
+	wxColour lightYellow, greenColor, organColor, lightBlue, 
+			eggYellow, lightRed, red, middleYellow;
 	middleYellow.Set("#ECFF82");
 	lightYellow.Set(wxT("#E0EBB7"));
 	greenColor.Set(wxT("#03FF29"));
@@ -21,6 +25,11 @@ DisplayListTitle::DisplayListTitle(const wxString& title) : wxFrame(NULL, -1, ti
 	wxPanel* mainPanel = new wxPanel(this, -1);
 	wxPanel* keyNotePanel = new wxPanel(mainPanel, -1,
 		wxDefaultPosition, wxSize(570, 30));
+	functionPanel = new wxPanel(mainPanel, -1,
+		wxDefaultPosition, wxSize(300, 300));
+	//Create button
+	bookButton = new wxButton(functionPanel, -1,
+		wxT("MUC SACH->>"), wxPoint(170,250 ), wxSize(100, 20));
 	//create wxStatic Text
 	wxStaticText* gridTitle = new wxStaticText(mainPanel, -1,
 		wxT("DANH SACH DAU SACH"), wxPoint(-1, -1), wxSize(400, 40), wxALIGN_CENTER);
@@ -29,7 +38,7 @@ DisplayListTitle::DisplayListTitle(const wxString& title) : wxFrame(NULL, -1, ti
 	//create BoxSizer
 	wxBoxSizer* vGridBox = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer* vRightBox = new wxBoxSizer(wxVERTICAL);
-	wxBoxSizer* mainHBox = new wxBoxSizer(wxHORIZONTAL);
+	mainHBox = new wxBoxSizer(wxHORIZONTAL);
 	//create Grid
 	grid = new wxGrid(mainPanel, -1, wxPoint(-1, -1), wxSize(745, 500));
 	grid->CreateGrid(26, 6);
@@ -45,29 +54,54 @@ DisplayListTitle::DisplayListTitle(const wxString& title) : wxFrame(NULL, -1, ti
 		if (i == 1) { grid->SetColSize(i, 200); continue; }
 		grid->SetColSize(i, 164);
 	}
+	grid->SetSelectionMode(wxGrid::wxGridSelectionModes::wxGridSelectRows);
 	grid->SetRowLabelSize(50);
 	grid->DisableDragColSize();
 	grid->DisableDragRowSize();
 	vGridBox->Add(gridTitle, 0, wxTOP | wxALIGN_CENTER_HORIZONTAL, 20);
 	vGridBox->Add(grid, 0, wxLEFT | wxTOP, 20);
 	vGridBox->Add(keyNotePanel, 0, wxTOP | wxALIGN_CENTER, 10);
+	vRightBox->Add(functionPanel, 0, wxTOP, 80);
 	mainHBox->Add(vGridBox);
-	mainHBox->Add(vRightBox);
+	mainHBox->Add(vRightBox, 0, wxLEFT, 70);
 	mainPanel->SetSizer(mainHBox);
 
 	//Create areas;
 	CreateKeyNoteArea(keyNotePanel);
+	CreateFunctionArea();
 	//Register event
 	grid->Bind(wxEVT_GRID_CELL_CHANGED, &DisplayListTitle::EditCurrentCell, this);
-
-
+	grid->Bind(wxEVT_GRID_RANGE_SELECTING, &DisplayListTitle::OnSelectingGrid, this);
+	grid->Bind(wxEVT_GRID_SELECT_CELL, &DisplayListTitle::OnSelectedGrid, this);
+	grid->Bind(wxEVT_GRID_LABEL_LEFT_CLICK, &DisplayListTitle::OnSelectedLabelGrid, this);
+	bookButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DisplayListTitle::OnButtonDown, this);
 	//Set Color
 	gridTitle->SetBackgroundColour(lightBlue);
 	keyNotePanel->SetBackgroundColour(lightYellow);
+	functionPanel->SetBackgroundColour(lightYellow);
+	grid->SetSelectionBackground(organColor);
+	bookButton->SetBackgroundColour(greenColor);
 	LoadFile();
 	Centre();
 }
-
+void DisplayListTitle::CreateFunctionArea()
+{
+	wxColor lightRed, lightBlue;
+	lightBlue.Set(wxT("#7FB1E3"));
+	lightRed.Set(wxT("#FA8E8E"));
+	wxStaticText* titleFunction = new wxStaticText(functionPanel, -1,
+		wxT("CHON DAU SACH"), wxPoint(50, 20), wxSize(200, 20), wxALIGN_CENTER);
+	checkInput->SetTextSize(titleFunction, 10);
+	wxStaticText* titleBookName = new wxStaticText(functionPanel, -1,
+		wxT("TEN SACH: "), wxPoint(10, 100), wxSize(75,20));
+	checkInput->SetTextSize(titleBookName, 10);
+	bookNameText = new wxStaticText(functionPanel, -1,
+		wxT("NONE"), wxPoint(75, 100), wxSize(200, 20),wxALIGN_CENTER);
+	checkInput->SetTextSize(bookNameText, 10);
+	selectedTitle = nullptr;
+	bookNameText->SetBackgroundColour(lightRed);
+	titleFunction->SetBackgroundColour(lightBlue);
+}
 void DisplayListTitle::CreateTakeNoteArea(wxPanel* takeNotePanel)
 {
 	wxColor lightYellow, orange;
@@ -114,18 +148,65 @@ void DisplayListTitle::CreateTakeNoteArea(wxPanel* takeNotePanel)
 void DisplayListTitle::CreateKeyNoteArea(wxPanel* keyNotePanel)
 {
 	wxStaticText* keyNoteText = new wxStaticText(keyNotePanel, -1,
-		wxT("KEYHOT :   F2 - SAVE FILE, F4 - NHAP LIEU ( ENTER - LUU DAU SACH, DELETE - XOA DAU SACH )"),
+		wxT("KEYHOT :   F2 - SAVE FILE, F9 - CHON DAU SACH, CHINH SUA CLICK VAO O CAN CHINH SUA"),
 		wxPoint(10, 10), wxSize(550, 20), wxALIGN_CENTER_HORIZONTAL);
 }
 void DisplayListTitle::OnKeyDown(wxKeyEvent& event)
 {
-	
+
 	if (event.GetKeyCode() == WXK_F2)
 	{
 		SaveFile();
 	}
-
+	else if (event.GetKeyCode() == WXK_F9)
+	{
+		ShowFunctionPanel();
+	}
 	event.Skip();
+}
+void DisplayListTitle::OnSelectingGrid(wxGridRangeSelectEvent& event)
+{
+	grid->ClearSelection();
+	event.Skip();
+}
+void DisplayListTitle::OnSelectedGrid(wxCommandEvent& event)
+{
+	if (isTurnOn)
+	{
+		grid->ClearSelection();
+		return;
+	}
+	int row = -1;
+	if (grid->GetSelectedRows().Count() > 0)
+	{
+		row = grid->GetSelectedRows()[0];
+	}
+	if (row == -1)
+	{
+		bookNameText->SetLabelText("NONE");
+		selectedTitle = nullptr;
+		bookButton->Show(false);
+		return;
+	}
+	string ISBN = string(grid->GetCellValue(row, 0).mb_str());
+	if (ISBN == "")
+	{
+		wxMessageBox(wxT("KHONG CO SACH NAO DUOC CHON"));
+		grid->DeselectRow(row);
+		bookNameText->SetLabelText("NONE");
+		selectedTitle = nullptr;
+		bookButton->Show(false);
+		return;
+	}
+
+	selectedTitle = linearList->GetData(ISBN);
+	bookNameText->SetLabelText(selectedTitle->GetBookName());
+	bookButton->Show(true);
+
+}
+void DisplayListTitle::OnSelectedLabelGrid(wxCommandEvent& event)
+{
+	grid->ClearSelection();
 }
 void DisplayListTitle::EditCurrentCell(wxGridEvent& event)
 {
@@ -157,7 +238,7 @@ void DisplayListTitle::EditCurrentCell(wxGridEvent& event)
 			return;
 		}
 		checkInput->UpperWxString(wxNewText);
-		if (!CheckDuplicateISBN(wxNewText,row))
+		if (!CheckDuplicateISBN(wxNewText, row))
 		{
 			checkInput->ErrorMessageBox("TRUNG VOI ISBN CO TRONG DANH SACH");
 			grid->SetCellValue(row, col, wxOldText);
@@ -214,6 +295,8 @@ void DisplayListTitle::EditCurrentCell(wxGridEvent& event)
 		checkInput->UpperWxString(wxNewText);
 	}
 	string ISBN = string(grid->GetCellValue(row, 0).mb_str());
+	linearList->Delete(ISBN);
+	wxMessageBox("Delete finished");
 	if (col == 0)
 	{
 		ISBN = string(wxOldText.mb_str());
@@ -230,7 +313,16 @@ void DisplayListTitle::EditCurrentCell(wxGridEvent& event)
 	{
 		EditTable(title, row);
 	}
+	linearList->AddLast(title);
+	wxMessageBox("Add finished");
 	event.Skip();
+}
+void DisplayListTitle::OnButtonDown(wxCommandEvent& WXUNUSED(event))
+{
+	listBook->SetListTitle(linearList);
+	listBook->SetTitle(selectedTitle);
+	listBook->Show(true);
+	this->Show(false);
 }
 void DisplayListTitle::EditTable(Title* title, int row)
 {
@@ -318,22 +410,19 @@ void DisplayListTitle::SaveFile()
 }
 void DisplayListTitle::LoadFile()
 {
-	linearList->Clear();
-	int length = maxItem;
 
-	if (length > linearList->MaxLength())
+	functionPanel->Hide();
+	linearList->Clear();
+	if (maxItem > linearList->MaxLength())
 	{
 		wxMessageBox("Danh sach trong file qua lon, khong the load duoc");
 		return;
 	}
-	Title** arr = new Title * [length];
-
+	Title** arr = new Title * [maxItem];
 	saveFile->ReadFile(arr);
-
-	for (int i = 0; i < length; i++)
+	for (int i = 0; i < maxItem; i++)
 	{
 		linearList->AddLast(arr[i]);
-		//wxMessageBox(wxString::Format("%i",i));
 	}
 	LoadListToTable();
 }
@@ -343,7 +432,7 @@ void DisplayListTitle::LoadListToTable()
 	{
 		grid->AppendRows(maxItem - grid->GetNumberRows());
 	}
-	for (int i = 0; i < maxItem; i++)
+	for (int i = 0; i < linearList->Length(); i++)
 	{
 		grid->SetCellValue(i, 0, linearList->GetData(i)->GetISBN());
 		grid->SetCellValue(i, 1, linearList->GetData(i)->GetBookName());
@@ -357,7 +446,22 @@ void DisplayListTitle::LoadListToTable()
 		}
 	}
 }
+void DisplayListTitle::ShowFunctionPanel()
+{
+	grid->EnableEditing(!isTurnOn);
+	grid->ClearSelection();
 
+	functionPanel->Show(isTurnOn);
+	bookButton->Show(false);
+	Refresh();
+	functionPanel->Update();
+	mainHBox->Layout();
+	//Update();
+	isTurnOn = !isTurnOn;
+
+	bookNameText->SetLabel("NONE");
+	selectedTitle = nullptr;
+}
 bool DisplayListTitle::CheckISBN(wxString text)
 {
 	//ISBN CO 4 CHARS AND ALL IS CHAR NOT HAVE NUMBER;
@@ -394,7 +498,7 @@ bool DisplayListTitle::CheckType(wxString text)
 {
 	return checkInput->IsWord(text);
 }
-bool DisplayListTitle::CheckDuplicateISBN(wxString text,int row)
+bool DisplayListTitle::CheckDuplicateISBN(wxString text, int row)
 {
 	for (int i = 0; i < maxItem; i++)
 	{
@@ -424,4 +528,6 @@ int DisplayListTitle::CompareTitle(Title* t1, Title* t2)
 
 BEGIN_EVENT_TABLE(DisplayListTitle, wxFrame)
 EVT_CHAR_HOOK(DisplayListTitle::OnKeyDown)
+//EVT_GRID_RANGE_SELECT(DisplayListTitle::OnSelect)
+//EVT_GRID_CELL_LEFT_CLICK(DisplayListTitle::OnCellLeftClick)
 END_EVENT_TABLE()

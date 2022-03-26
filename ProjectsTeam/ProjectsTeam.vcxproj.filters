@@ -90,6 +90,15 @@
     <ClCompile Include="DisplayListTitle.cpp">
       <Filter>Source Files\FrontEnd</Filter>
     </ClCompile>
+    <ClCompile Include="Book.cpp">
+      <Filter>Source Files\BackEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="DisplayListBook.cpp">
+      <Filter>Source Files\FrontEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="AdminMenu.cpp">
+      <Filter>Source Files\FrontEnd</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ReaderCard.h">
@@ -150,6 +159,15 @@
       <Filter>Header Files\Fomat</Filter>
     </ClInclude>
     <ClInclude Include="DisplayListTitle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Book.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DisplayListBook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AdminMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

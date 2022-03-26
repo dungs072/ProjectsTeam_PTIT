@@ -29,3 +29,4 @@ uint Title::GetPageNumber() { return pageNumber; }
 string Title::GetAuthor() { return author; }
 uint Title::GetPublicYear() { return publicYear; }
 string Title::GetType() { return type; }
+SinglyLinkedList<Book>* Title:: GetListBook() { return bookList; }

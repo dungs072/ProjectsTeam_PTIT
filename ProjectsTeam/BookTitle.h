@@ -19,8 +19,8 @@ private:
 	wxPanel* enterPanel;
 	wxPanel* takeNotePanel;
 	wxGrid* grid;
-	CheckInput* checkInput;
 	wxTextCtrl** enterText;
+	CheckInput* checkInput;
 	//method
 	void CreateEnterArea(wxPanel* enterPanel);
 	void CreateTakeNoteArea(wxPanel* takeNotePanel);
@@ -49,7 +49,7 @@ private:
 	bool CheckDuplicateISBN(wxString text,int row);
 	int CompareTitle(Title* t1, Title* t2);
 	//quick sort
-	void Swap(Title* t1, Title* t2);
+	void Swap(Title*t1, Title* t2);
 	int partition( int l, int h);
 	void QuickSort( int l, int h);
 public:

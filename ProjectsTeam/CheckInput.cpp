@@ -1,4 +1,8 @@
 #include "CheckInput.h"
+bool CheckInput::IsInRangeNumber(int startNumber, int endNumber,int number)
+{
+	return number >= startNumber && number <= endNumber;
+}
 bool CheckInput::IsNumber(wxString text)
 {
 	string strText = string(text.mb_str());
@@ -32,6 +36,26 @@ bool CheckInput::IsWhiteSpaceAllText(wxString text)
 	for (char str : strText)
 	{
 		if (str != ' ')
+		{
+			return false;
+		}
+	}
+	return true;
+}
+bool CheckInput::HasNumberAlphabetAndComma(wxString text)
+{
+	std::string strText = std::string(text.mb_str());
+	for (int i = 0; i < strText.length(); i++)
+	{
+		if ((strText[i] >= 'A' && strText[i] <= 'Z') ||
+			(strText[i] >= 'a' && strText[i] <= 'z') ||
+			(strText[i] >= '0' && strText[i] <= '9') ||
+			(strText[i]==',')||
+			(strText[i] == ' '))
+		{
+			continue;
+		}
+		else
 		{
 			return false;
 		}
@@ -140,6 +164,22 @@ string CheckInput::UpperText(string text)
 	}
 	return text;
 }
+string CheckInput::CastIntToString(int data)
+{
+	string strTemp = "";
+	while (data) {
+		int temp = data % 10;
+		strTemp += temp + '0';
+		data /= 10;
+	}
+	string str = "";
+	int i;
+	for (i = strTemp.length() - 1; i >= 0; i--)
+	{
+		str += strTemp[i];
+	}
+	return str;
+}
 int CheckInput::CastWxStringToInt(wxString text)
 {
 	int i, j;
@@ -203,5 +243,12 @@ void CheckInput::MoveUpToAnotherTextCtrl(wxTextCtrl** textCtrl, int length)
 				return;
 			}
 		}
+	}
+}
+void CheckInput::ClearInforInEnterText(wxTextCtrl** enterText,int length)
+{
+	for (int i = 0; i < length; i++)
+	{
+		enterText[i]->Clear();
 	}
 }

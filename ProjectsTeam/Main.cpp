@@ -6,6 +6,8 @@
 #include"CardReaderMenu.h"
 #include"BookTitle.h"
 #include"DisplayListTitle.h"
+#include"DisplayListBook.h"
+#include"AdminMenu.h"
 using std::cout;
 using std::endl;
 using namespace DataStructure;
@@ -18,12 +20,18 @@ public:
 IMPLEMENT_APP(ReaderCardApp);
 bool ReaderCardApp::OnInit()
 {
+	/*ReaderCard* readerCard = new ReaderCard("THE DOC GIA");
+	readerCard->Show();*/
 	/*CardReaderMenu* cardReaderMenu = new CardReaderMenu("Card Reader Menu");
 	cardReaderMenu->Show(true);*/
 	/*BookTitle* title = new BookTitle("DAU SACH");
 	title->Show(true);*/
-	DisplayListTitle* displayTitle = new DisplayListTitle("IN DANH SACH DAU SACH");
-	displayTitle->Show(true);
+	/*DisplayListTitle* displayTitle = new DisplayListTitle("IN DANH SACH DAU SACH");
+	displayTitle->Show(true);*/
+	/*DisplayListBook* displayBook = new DisplayListBook("DANH SACH MUC SACH CUA DAU SACH");
+	displayBook->Show(true);*/
+	AdminMenu* menu = new AdminMenu("ADMINISTRATOR MENU");
+	menu->Show(true);
 	return true;
 }
 //class ReaderCardApp :public wxApp

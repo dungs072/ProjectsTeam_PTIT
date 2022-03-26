@@ -1,7 +1,9 @@
 #pragma once
 #include<iostream>
 #include<string>
+#include"SinglyLinkedList.h"
 typedef unsigned long long ulong;
+using namespace DataStructure;
 using  std::string;
 using std::cout;
 using std::endl;
@@ -13,7 +15,7 @@ private:
 	string firstName;
 	string sex;
 	string state;
-	//create pointer;
+	
 public:
 	CardReader(ulong cardCode ,string firstName,string lastName, string sex,string state)
 	{
@@ -22,6 +24,7 @@ public:
 		this->firstName = firstName;
 		this->sex = sex;
 		this->state = state;
+		
 	}
 	CardReader() 
 	{
@@ -30,13 +33,13 @@ public:
 		firstName = "";
 		sex = "";
 		state = "";
-
 	}
 	ulong GetCardCode() { return cardCode; }
 	string GetLastName() { return lastName; }
 	string GetFirstName() { return firstName; }
 	string GetSex() { return sex; }
 	string GetState() { return state; }
+	
 	void SetCardCode(ulong cardCode)
 	{
 		this->cardCode = cardCode;

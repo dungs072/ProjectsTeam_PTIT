@@ -90,6 +90,13 @@ namespace DataStructure
 		{
 			return Search(pos);
 		}
+		T* GetData(string ISBN)
+		{
+			int pos = -1;
+			if (!HasInList(ISBN, pos)) { return nullptr; }
+			if (pos == -1) { return nullptr; }
+			return list[pos];
+		}
 		bool HasInList(string ISBN, int& pos)
 		{
 			for (int i = 0; i < currentLength; i++)

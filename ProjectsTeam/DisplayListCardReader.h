@@ -6,7 +6,7 @@
 #include"BSTree.h"
 #include"CardReader.h"
 #include"SaveTextFile.h"
-#include"ReaderCard.h"
+//#include"ReaderCard.h"
 using namespace DataStructure;
 typedef unsigned long long ulong;
 using std::string;
@@ -14,7 +14,7 @@ using std::string;
 class DisplayListCardReader:public wxFrame
 {
 private:
-	ReaderCard* readerCard = nullptr;
+	//ReaderCard* readerCard = nullptr;
 	BSTree<CardReader>* cardReaderTree;
 	string* stateText;
 	CardReader** arr = nullptr;
@@ -52,13 +52,13 @@ private:
 	void QuickSort(CardReader** A, int l, int h);
 
 	//field
-	int lengthTextInFile = 0;
+	int length = 0;
 public:
 	DisplayListCardReader(const wxString& title);
-	void SetReaderCard(ReaderCard* readerCard)
+	/*void SetReaderCard(ReaderCard* readerCard)
 	{
 		this->readerCard = readerCard;
-	}
+	}*/
 	DECLARE_EVENT_TABLE();
 };
 const int DefaultRow = 26;

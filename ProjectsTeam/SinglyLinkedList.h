@@ -1,6 +1,7 @@
 #pragma once
 #include<iostream>
 #include"SinglyNode.h"
+using std::string;
 namespace DataStructure
 {
 	template<typename T>
@@ -90,6 +91,38 @@ namespace DataStructure
 			firstSinglyNode = temp;
 
 		}
+		void Remove(string code)
+		{
+
+			if (firstSinglyNode == nullptr) { return; }
+			SinglyNode<T>* p = firstSinglyNode;
+
+			if (code == firstSinglyNode->data.GetBookCode()) {
+				if (firstSinglyNode->next != nullptr) {
+					firstSinglyNode = firstSinglyNode->next;
+				}
+				else {
+					SetListnullptr();
+				}
+				delete p;
+				p = nullptr;
+				lengthList--;
+				return;
+			}
+
+			p = FindSinglyNode(code);
+			if (p == nullptr) { return; }// not have data in linked List
+			SinglyNode<T>* prevSinglyNode = FindPreviousSinglyNode(code);
+			prevSinglyNode->next = p->next;
+			if (p == lastSinglyNode)
+			{
+				lastSinglyNode = prevSinglyNode;
+			}
+			p->next = nullptr;
+			delete p;
+			p = nullptr;
+			lengthList--;
+		}
 		void Remove(T dataDelete)
 		{
 			if (firstSinglyNode == nullptr) { return; }
@@ -169,6 +202,24 @@ namespace DataStructure
 			}
 			return nullptr;
 		}
+		SinglyNode<T>* FindPreviousSinglyNode(string code)
+		{
+			if (firstSinglyNode == nullptr) { return nullptr; }
+			if (code == firstSinglyNode->data.GetBookCode())
+			{
+				return nullptr;
+			}
+			SinglyNode<T>* p = firstSinglyNode;
+			while (p->next != nullptr)
+			{
+				if (p->next->data.GetBookCode() == code)
+				{
+					return p;
+				}
+				p = p->next;
+			}
+			return nullptr;
+		}
 		SinglyNode<T>* FindPreviousSinglyNode(SinglyNode<T>* singlyNode)
 		{
 			if (firstSinglyNode == nullptr) { return nullptr; }
@@ -229,6 +280,20 @@ namespace DataStructure
 			while (p != nullptr)
 			{
 				if (p->data == data)
+				{
+					return p;
+				}
+				p = p->next;
+			}
+			return nullptr;
+		}
+		SinglyNode<T>* FindSinglyNode(string code)
+		{
+			if (firstSinglyNode == nullptr) { return nullptr; }
+			SinglyNode<T>* p = firstSinglyNode;
+			while (p != nullptr)
+			{
+				if (p->data.GetBookCode() == code)
 				{
 					return p;
 				}

@@ -51,7 +51,7 @@ private:
 	void OnKeyDown(wxKeyEvent& event);
 	void EditCurrentCell(wxGridEvent& event);
 	void OnCardMenu(wxCommandEvent& event);
-
+	void OnShow(wxShowEvent& event);
 	void SaveFile();
 	void ShowMessageClear();
 	void DeleteSelectedRows();
@@ -89,7 +89,7 @@ private:
 	DECLARE_EVENT_TABLE();
 public:
 	ReaderCard(const wxString& title);
-	void DisplayDataInFile();
+	void LoadFile();
 };
 const int CARD_MENU = 3;
 const int SAVE_FILE = 2;

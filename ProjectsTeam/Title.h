@@ -1,6 +1,9 @@
 #pragma once
 #include<iostream>
 #include<string>
+#include"SinglyLinkedList.h"
+#include"Book.h"
+using namespace DataStructure;
 using std::string;
 typedef unsigned int uint;
 class Title
@@ -12,6 +15,7 @@ private:
 	string author;
 	uint publicYear;
 	string type;
+	SinglyLinkedList<Book>* bookList = nullptr;
 	//con tro nua;
 public:
 	Title(string ISBN, string bookName, uint pageNumber,
@@ -23,8 +27,18 @@ public:
 		this->author = author;
 		this->publicYear = publicYear;
 		this->type = type;
+		bookList = new SinglyLinkedList<Book>();
 	}
-	Title(){}
+	Title()
+	{
+		this->ISBN = "";
+		this->bookName = "";
+		this->pageNumber = 0;
+		this->author = "";
+		this->publicYear = 0;
+		this->type = "";
+		bookList = new SinglyLinkedList<Book>();
+	}
 	//Set field;
 	void SetISBN(string isbn);
 	void SetBookName(string bookName);
@@ -48,5 +62,6 @@ public:
 	string GetAuthor();
 	uint GetPublicYear();
 	string GetType();
+	SinglyLinkedList<Book>* GetListBook();
 };
 
