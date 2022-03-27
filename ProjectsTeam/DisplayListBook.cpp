@@ -314,10 +314,15 @@ void DisplayListBook::SaveToList()
 		grid->SetCellAlignment(maxItem, i, wxALIGN_CENTER, wxALIGN_CENTER);
 	}
 	grid->SetReadOnly(maxItem, 0);
+	
 	Book tempBook(bookCode, index - 1, string(enterText->GetValue().mb_str()));
 	enterText->Clear();
 	stateChoice->SetSelection(0);
 	currentTitle->GetListBook()->Add(tempBook);
+	if (maxItem > grid->GetNumberRows())
+	{
+		grid->AppendRows(maxItem+25);
+	}
 	maxItem++;
 }
 void DisplayListBook::SaveFile()
@@ -348,7 +353,8 @@ void DisplayListBook::LoadFile()
 		maxItem++;
 		tempBook = tempBook->next;
 	}
-	count = maxItem+1;
+	string bookCode = string(grid->GetCellValue(maxItem - 1, 0).mb_str());
+	count = bookCode[4]-'0' + 1;
 }
 bool DisplayListBook::CheckStateBook(wxString text)
 {
