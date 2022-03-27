@@ -581,6 +581,7 @@ void BookTitle::SaveToList()
 			pos = i;
 			tempT->GetListBook()->Clear();
 			delete tempT;
+			tempT = nullptr;
 			break;
 		}
 		tempT->GetListBook()->Clear();
@@ -601,6 +602,10 @@ void BookTitle::SaveToList()
 	ClearInforInEnterText();
 	linearList->AddLast(curTitle);
 	maxItem++;
+	if (maxItem + 1 > grid->GetNumberRows())
+	{
+		grid->AppendRows(30);
+	}
 }
 void BookTitle::SaveFile()
 {
@@ -633,6 +638,7 @@ void BookTitle::LoadFile()
 	{
 		linearList->AddLast(arr[i]);
 	}
+	delete []arr;
 	LoadListToTable();
 
 }
@@ -640,7 +646,7 @@ void BookTitle::LoadListToTable()
 {
 	if (linearList->Length() > grid->GetNumberRows())
 	{
-		grid->AppendRows(linearList->Length() - grid->GetNumberRows());
+		grid->AppendRows(linearList->Length()-grid->GetNumberRows()+1);
 	}
 	for (int i = 0; i < linearList->Length(); i++)
 	{
@@ -667,6 +673,8 @@ void BookTitle::ShowMessageClear()
 	{
 		DeleteSelectedRows();
 	}
+	delete dialog;
+
 }
 void BookTitle::DeleteSelectedRows()
 {

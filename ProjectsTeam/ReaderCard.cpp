@@ -452,7 +452,7 @@ void ReaderCard::LoadFile()
 	saveFile->ReadFile(arr);
 	if (numberRowIsFilled > grid->GetNumberRows())
 	{
-		grid->AppendRows(numberRowIsFilled - grid->GetNumberRows() + 1);
+		grid->AppendRows(30);
 	}
 
 	for (int i = 0; i < numberRowIsFilled; i++)
@@ -518,6 +518,7 @@ void ReaderCard::ShowMessageClear()
 
 		DeleteSelectedRows();
 	}
+	delete dialog;
 }
 void ReaderCard::MoveDownToAnotherTextCtrl(wxTextCtrl** textCtrl, int length)
 {

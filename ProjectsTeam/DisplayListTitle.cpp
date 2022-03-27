@@ -434,10 +434,11 @@ void DisplayListTitle::EditTable(Title* title, int row)
 		if (sort->Compare(title, tempT) < 1)
 		{
 			pos = i;
-
+			tempT->GetListBook()->Clear();
 			delete tempT;
 			break;
 		}
+		tempT->GetListBook()->Clear();
 		delete tempT;
 		tempT = nullptr;
 	}
@@ -480,6 +481,7 @@ void DisplayListTitle::LoadFile()
 	{
 		linearList->AddLast(arr[i]);
 	}
+	delete[]arr;
 	LoadListToTable();
 }
 void DisplayListTitle::LoadListToTable()

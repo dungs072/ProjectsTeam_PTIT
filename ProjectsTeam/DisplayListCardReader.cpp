@@ -93,11 +93,12 @@ void DisplayListCardReader::OnSortCode(wxCommandEvent& WXUNUSED(event))
 		{
 			delete arr[i];
 		}
-		delete arr;
+		delete []arr;
 		arr = nullptr;
 	}
 	length = saveFile->GetSizeArray();
 	arr = new CardReader* [length];
+
 	saveFile->ReadFile(arr);
 	DisplayCell(arr, length);
 }
@@ -109,7 +110,7 @@ void DisplayListCardReader::OnSortName(wxCommandEvent& WXUNUSED(event))
 		{
 			delete arr[i];
 		}
-		delete arr;
+		delete []arr;
 		arr = nullptr;
 	}
 	length = saveFile->GetSizeArray();
@@ -217,6 +218,7 @@ void DisplayListCardReader::SaveFile()
 	{
 		tempTree->Add(arr[i]);
 	}
+	//to sort with code reader//dont missunderstand:))
 	arr = tempTree->ToArray();
 	saveFile->WriteToFile(arr, length);
 	tempTree->Clear();
@@ -343,6 +345,10 @@ void DisplayListCardReader::ErrorMessageBox(string message)
 }
 void DisplayListCardReader::DisplayCell(CardReader** arr, int length)
 {
+	if (length > DefaultRow)
+	{
+		grid->AppendRows(length - DefaultRow + 1);
+	}
 	for (int i = 0; i < length; i++)
 	{
 		string cardCodestr = EditCardCode(arr[i]->GetCardCode(), 10);
@@ -357,10 +363,7 @@ void DisplayListCardReader::DisplayCell(CardReader** arr, int length)
 		}
 		
 	}
-	if (length > DefaultRow)
-	{
-		grid->AppendRows(length - DefaultRow + 1);
-	}
+	
 	grid->Refresh();
 }
 wxString DisplayListCardReader::CastUlongToWxString(ulong number)

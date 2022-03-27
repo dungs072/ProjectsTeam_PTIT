@@ -26,5 +26,15 @@ public:
 	void MoveDownToAnotherTextCtrl(wxTextCtrl** textCtrl, int length);
 	void MoveUpToAnotherTextCtrl(wxTextCtrl** textCtrl, int length);
 	void ClearInforInEnterText(wxTextCtrl** enterText, int length);
+
+	template<typename T>
+	void DeleteObject(T** arr, int length)
+	{
+		for (int i = 0; i < length; i++)
+		{
+			delete arr[i];
+		}
+		delete []arr;
+	}
 };
 
