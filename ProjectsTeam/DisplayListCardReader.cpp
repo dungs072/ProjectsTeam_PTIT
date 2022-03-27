@@ -345,9 +345,9 @@ void DisplayListCardReader::ErrorMessageBox(string message)
 }
 void DisplayListCardReader::DisplayCell(CardReader** arr, int length)
 {
-	if (length > DefaultRow)
+	if (length > grid->GetNumberRows())
 	{
-		grid->AppendRows(length - DefaultRow + 1);
+		grid->AppendRows(length - grid->GetNumberRows() + 1);
 	}
 	for (int i = 0; i < length; i++)
 	{
