@@ -323,7 +323,7 @@ void DisplayListBook::SaveToList()
 	
 	if (maxItem+1 > grid->GetNumberRows())
 	{
-		grid->AppendRows(maxItem + 30);
+		grid->AppendRows(30);
 	}
 }
 void DisplayListBook::SaveFile()
@@ -352,7 +352,16 @@ void DisplayListBook::LoadFile()
 		}
 		grid->SetReadOnly(maxItem, 0);
 		maxItem++;
+		if (maxItem + 1 > grid->GetNumberRows())
+		{
+			grid->AppendRows(30);
+		}
 		tempBook = tempBook->next;
+	}
+	if (maxItem == 0) 
+	{
+		count = 1;
+		return;
 	}
 	string bookCode = string(grid->GetCellValue(maxItem - 1, 0).mb_str());
 	string numberText = "";
