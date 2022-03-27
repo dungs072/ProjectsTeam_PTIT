@@ -87,7 +87,7 @@ DisplayListCardReader::DisplayListCardReader(const wxString& title)
 }
 void DisplayListCardReader::OnSortCode(wxCommandEvent& WXUNUSED(event))
 {
-	ClearGridValue();
+	
 	if (arr != nullptr)
 	{
 		for (int i = 0; i < length; i++)
@@ -105,7 +105,6 @@ void DisplayListCardReader::OnSortCode(wxCommandEvent& WXUNUSED(event))
 }
 void DisplayListCardReader::OnSortName(wxCommandEvent& WXUNUSED(event))
 {
-	ClearGridValue();
 	if (arr != nullptr)
 	{
 		for (int i = 0; i < length; i++)
@@ -347,6 +346,8 @@ void DisplayListCardReader::ErrorMessageBox(string message)
 }
 void DisplayListCardReader::DisplayCell(CardReader** arr, int length)
 {
+
+	ClearGridValue();
 	if (length > grid->GetNumberRows())
 	{
 		grid->AppendRows(length - grid->GetNumberRows() + 1);
@@ -438,7 +439,7 @@ void DisplayListCardReader::ClearGridValue()
 {
 	for (int i = 0; i < length; i++)
 	{
-		for (int j = 0; j < grid->GetNumberCols(); i++)
+		for (int j = 0; j < grid->GetNumberCols(); j++)
 		{
 			grid->SetCellValue(i, j, wxT(""));
 		}
