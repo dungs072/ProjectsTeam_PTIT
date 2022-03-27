@@ -33,6 +33,7 @@ private:
 	void SaveFile();
 	void DisplayCell(CardReader** arr,int length);
 	void ErrorMessageBox(string message);
+	void ClearGridValue();
 	wxString CastUlongToWxString(ulong number);
 	string EditCardCode(ulong number, int maxLengthCode);
 	//Check Error InPut
