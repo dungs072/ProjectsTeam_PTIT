@@ -39,6 +39,10 @@ public:
 		this->type = "";
 		bookList = new SinglyLinkedList<Book>();
 	}
+	/*~Title()
+	{
+		bookList->Clear();
+	}*/
 	//Set field;
 	void SetISBN(string isbn);
 	void SetBookName(string bookName);

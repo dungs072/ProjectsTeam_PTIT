@@ -7,6 +7,15 @@ public:
 	BSTNode* leftNode;
 	BSTNode* rightNode;
 	T* data;
+	~BSTNode()
+	{
+		delete data;
+		delete leftNode;
+		delete rightNode;
+		data = nullptr;
+		leftNode = nullptr;
+		rightNode = nullptr;
+	}
 	BSTNode(T* value)
 	{
 		data = value;

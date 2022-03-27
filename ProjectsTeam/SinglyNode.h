@@ -7,6 +7,10 @@ public:
 	T data;
 	SinglyNode* next;
 	SinglyNode() {};
-	~SinglyNode() {};
+	~SinglyNode()
+	{
+		delete next;
+		next = nullptr;
+	}
 };
 

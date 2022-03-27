@@ -16,5 +16,12 @@ namespace DataStructure
 			next = nullptr;
 		}
 		DoublyNode() {}
+		~DoublyNode()
+		{
+			delete prev;
+			delete next;
+			prev = nullptr;
+			next = nullptr;
+		}
 	};
 }
