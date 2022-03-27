@@ -2,6 +2,18 @@
 DisplayListTitle::DisplayListTitle(const wxString& title) : wxFrame(NULL, -1, title, wxDefaultPosition, wxSize(1280, 680))
 {
 	//back end
+	sort = new SortAlgorithm<Title>();
+	sort->Compare = [](Title* t1, Title* t2)
+	{
+		if (t1->GetType() > t2->GetType()) { return 1; }
+		else if (t1->GetType() < t2->GetType()) { return -1; }
+		else
+		{
+			if (t1->GetBookName() > t2->GetBookName()) { return 1; }
+			else if (t1->GetBookName() < t2->GetBookName()) { return -1; }
+			else return 0;
+		}
+	};
 	saveFile = new SaveTextFile<Title>("BookTitle.txt");
 	maxItem = saveFile->GetSizeArray();
 	linearList = new LinearList<Title>(100);
@@ -299,19 +311,42 @@ void DisplayListTitle::EditCurrentCell(wxGridEvent& event)
 		checkInput->UpperWxString(wxNewText);
 	}
 	string ISBN = string(grid->GetCellValue(row, 0).mb_str());
-	linearList->Delete(ISBN);
 	if (col == 0)
 	{
 		ISBN = string(wxOldText.mb_str());
+		
 	}
+	//set all book again acording to changing ISBN
+	SinglyLinkedList<Book>* tempBookList = linearList->GetData(ISBN)->GetListBook();
+	SinglyNode<Book>* tempBook = tempBookList->First();
+
+	linearList->Delete(ISBN);
 	grid->SetCellValue(row, col, wxNewText);
+
 	ISBN = string(grid->GetCellValue(row, 0).mb_str());
+	while (tempBook != nullptr)
+	{
+		string bookCode = tempBook->data.GetBookCode();
+		for (int i = 0; i < bookCode.length(); i++)
+		{
+			if (bookCode[i] < '0' || bookCode[i]>'9')
+			{
+				bookCode[i] = ISBN[i];
+			}
+		}
+		tempBook->data.SetBookCode(bookCode);
+		tempBook = tempBook->next;
+	}
+	//
+
+
 	string bookName = string(grid->GetCellValue(row, 1).mb_str());
 	uint numberPage = checkInput->CastWxStringToInt(grid->GetCellValue(row, 2));
 	string author = string(grid->GetCellValue(row, 3).mb_str());
 	uint nxb = checkInput->CastWxStringToInt(grid->GetCellValue(row, 4));
 	string type = string(grid->GetCellValue(row, 5).mb_str());
 	Title* title = new Title(ISBN, bookName, numberPage, author, nxb, type);
+	title->SetListBook(tempBookList);
 	if (col == 5 || col == 1)
 	{
 		EditTable(title, row);
@@ -396,7 +431,7 @@ void DisplayListTitle::EditTable(Title* title, int row)
 			}
 		}
 		//wxMessageBox(wxString::Format("Tempt: %s and cur: %s", tempT->GetType(), curTitle->GetType()));
-		if (CompareTitle(title, tempT) < 1)
+		if (sort->Compare(title, tempT) < 1)
 		{
 			pos = i;
 
@@ -411,8 +446,6 @@ void DisplayListTitle::EditTable(Title* title, int row)
 		pos = maxItem;
 	}
 	grid->InsertRows(pos, 1);
-	/*wxMessageBox(wxString::Format("%i", pos));
-	wxMessageBox(wxString::Format("%i", row));*/
 	if (row > pos)
 	{
 		row++;
@@ -427,12 +460,13 @@ void DisplayListTitle::EditTable(Title* title, int row)
 void DisplayListTitle::SaveFile()
 {
 	Title** arr = linearList->ToArray();
+	sort->QuickSort(arr, 0, linearList->Length());
 	saveFile->WriteToFile(arr, maxItem);
 	wxMessageBox(wxT("LIST IS SAVED SUCCESSFULLY"));
+
 }
 void DisplayListTitle::LoadFile()
 {
-
 	functionPanel->Hide();
 	linearList->Clear();
 	if (maxItem > linearList->MaxLength())
@@ -535,21 +569,19 @@ bool DisplayListTitle::CheckDuplicateISBN(wxString text, int row)
 	}
 	return true;
 }
-int DisplayListTitle::CompareTitle(Title* t1, Title* t2)
-{
-	if (t1->GetType() > t2->GetType()) { return 1; }
-	else if (t1->GetType() < t2->GetType()) { return -1; }
-	else
-	{
-		if (t1->GetBookName() > t2->GetBookName()) { return 1; }
-		else if (t1->GetBookName() < t2->GetBookName()) { return -1; }
-		else return 0;
-	}
-}
+//int DisplayListTitle::CompareTitle(Title* t1, Title* t2)
+//{
+//	if (t1->GetType() > t2->GetType()) { return 1; }
+//	else if (t1->GetType() < t2->GetType()) { return -1; }
+//	else
+//	{
+//		if (t1->GetBookName() > t2->GetBookName()) { return 1; }
+//		else if (t1->GetBookName() < t2->GetBookName()) { return -1; }
+//		else return 0;
+//	}
+//}
 
 
 BEGIN_EVENT_TABLE(DisplayListTitle, wxFrame)
 EVT_CHAR_HOOK(DisplayListTitle::OnKeyDown)
-//EVT_GRID_RANGE_SELECT(DisplayListTitle::OnSelect)
-//EVT_GRID_CELL_LEFT_CLICK(DisplayListTitle::OnCellLeftClick)
 END_EVENT_TABLE()

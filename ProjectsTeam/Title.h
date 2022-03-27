@@ -46,6 +46,10 @@ public:
 	void SetAuthor(string author);
 	void SetPublicYear(uint publicYear);
 	void SetType(string type);
+	void SetListBook(SinglyLinkedList<Book>* list)
+	{
+		bookList = list;
+	}
 	void Display()
 	{
 		std::cout << "ISBN: " << ISBN << std::endl;

@@ -172,6 +172,7 @@
     <ClCompile Include="SaveTextFile.cpp" />
     <ClCompile Include="SinglyLinkedList.cpp" />
     <ClCompile Include="SinglyNode.cpp" />
+    <ClCompile Include="SortAlgorithm.cpp" />
     <ClCompile Include="Stack.cpp" />
     <ClCompile Include="Title.cpp" />
   </ItemGroup>
@@ -197,6 +198,7 @@
     <ClInclude Include="SaveTextFile.h" />
     <ClInclude Include="SinglyLinkedList.h" />
     <ClInclude Include="SinglyNode.h" />
+    <ClInclude Include="SortAlgorithm.h" />
     <ClInclude Include="Stack.h" />
     <ClInclude Include="Title.h" />
   </ItemGroup>
