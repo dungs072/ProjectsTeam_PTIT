@@ -261,6 +261,7 @@ void DisplayListBook::ShowMessageClear()
 	{
 		DeleteSelectedRows();
 	}
+	delete dialog;
 }
 void DisplayListBook::DeleteSelectedRows()
 {
