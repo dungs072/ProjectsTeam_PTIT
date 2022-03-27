@@ -297,7 +297,10 @@ void DisplayListBook::DeleteSelectedRows()
 }
 void DisplayListBook::SaveToList()
 {
-	
+	if (maxItem + 1 > grid->GetNumberRows())
+	{
+		grid->AppendRows(30);
+	}
 	string bookCode = currentTitle->GetISBN() + checkInput->CastIntToString(count);
 	count++;
 	int index = stateChoice->GetSelection();
@@ -322,10 +325,7 @@ void DisplayListBook::SaveToList()
 	currentTitle->GetListBook()->Add(tempBook);
 	maxItem++;
 	
-	if (maxItem+1 > grid->GetNumberRows())
-	{
-		grid->AppendRows(30);
-	}
+	
 }
 void DisplayListBook::SaveFile()
 {
