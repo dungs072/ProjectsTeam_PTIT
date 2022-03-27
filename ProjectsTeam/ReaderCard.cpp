@@ -416,7 +416,6 @@ void ReaderCard::OnShow(wxShowEvent& event)
 	{
 		numberRowIsFilled = saveFile->GetSizeArray();
 		LoadFile();
-		
 	}
 	event.Skip();
 }
