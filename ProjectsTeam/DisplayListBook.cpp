@@ -319,11 +319,12 @@ void DisplayListBook::SaveToList()
 	enterText->Clear();
 	stateChoice->SetSelection(0);
 	currentTitle->GetListBook()->Add(tempBook);
-	if (maxItem > grid->GetNumberRows())
-	{
-		grid->AppendRows(maxItem+25);
-	}
 	maxItem++;
+	
+	if (maxItem+1 > grid->GetNumberRows())
+	{
+		grid->AppendRows(maxItem + 30);
+	}
 }
 void DisplayListBook::SaveFile()
 {
@@ -354,7 +355,13 @@ void DisplayListBook::LoadFile()
 		tempBook = tempBook->next;
 	}
 	string bookCode = string(grid->GetCellValue(maxItem - 1, 0).mb_str());
-	count = bookCode[4]-'0' + 1;
+	string numberText = "";
+	for (int i = 4; i < bookCode.length(); i++)
+	{
+		numberText += bookCode[i];
+	}
+
+	count =checkInput->CastStringToNumber(numberText) + 1;
 }
 bool DisplayListBook::CheckStateBook(wxString text)
 {

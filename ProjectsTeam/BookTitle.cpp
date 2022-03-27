@@ -451,10 +451,11 @@ void BookTitle::EditTable(Title* title, int row)
 		if (CompareTitle(title, tempT) < 1)
 		{
 			pos = i;
-
+			tempT->GetListBook()->Clear();
 			delete tempT;
 			break;
 		}
+		tempT->GetListBook()->Clear();
 		delete tempT;
 		tempT = nullptr;
 	}
@@ -578,10 +579,11 @@ void BookTitle::SaveToList()
 		if (CompareTitle(curTitle, tempT) < 1)
 		{
 			pos = i;
-
+			tempT->GetListBook()->Clear();
 			delete tempT;
 			break;
 		}
+		tempT->GetListBook()->Clear();
 		delete tempT;
 		tempT = nullptr;
 	}
@@ -680,6 +682,7 @@ void BookTitle::DeleteSelectedRows()
 				string ISBN = string(grid->GetCellValue(i, 0).mbc_str());
 				if (ISBN != "")
 				{
+					linearList->GetData(ISBN)->GetListBook()->Clear();
 					linearList->Delete(ISBN);
 					maxItem--;
 

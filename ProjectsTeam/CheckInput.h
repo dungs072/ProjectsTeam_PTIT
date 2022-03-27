@@ -19,6 +19,7 @@ public:
 	void UpperWxString(wxString& text);
 	string UpperText(string str);
 	string CastIntToString(int data);
+	int CastStringToNumber(string text);
 	int CastWxStringToInt(wxString text);
 	void ErrorMessageBox(string message);
 	void SetTextSize(wxStaticText* text, int size);

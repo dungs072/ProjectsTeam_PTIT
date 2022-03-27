@@ -1,4 +1,18 @@
 #include "CheckInput.h"
+int CheckInput::CastStringToNumber(string strText)
+{
+	int i, j;
+	int number = 0;
+	for (i = strText.length() - 1, j = 0; i >= 0; i--, j++)
+	{
+		if (strText[i] < '0' || strText[i]>'9')
+		{
+			return -1;
+		}
+		number += (strText[i] - '0') * pow(10, j);
+	}
+	return number;
+}
 bool CheckInput::IsInRangeNumber(int startNumber, int endNumber,int number)
 {
 	return number >= startNumber && number <= endNumber;
