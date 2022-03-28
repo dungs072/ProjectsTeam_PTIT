@@ -7,6 +7,9 @@ public:
 	T data;
 	SinglyNode* next;
 	SinglyNode() {};
-	~SinglyNode() {};
+	~SinglyNode()
+	{
+		
+	}
 };
 

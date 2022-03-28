@@ -8,6 +8,7 @@
 #include"DisplayListTitle.h"
 #include"DisplayListBook.h"
 #include"AdminMenu.h"
+#include"FindInforBook.h"
 using std::cout;
 using std::endl;
 using namespace DataStructure;
@@ -32,6 +33,8 @@ bool ReaderCardApp::OnInit()
 	displayBook->Show(true);*/
 	AdminMenu* menu = new AdminMenu("ADMINISTRATOR MENU");
 	menu->Show(true);
+	/*FindInforBook* search = new FindInforBook("TIM KIEM THONG TIN DAU SACH");
+	search->Show();*/
 	return true;
 }
 //class ReaderCardApp :public wxApp

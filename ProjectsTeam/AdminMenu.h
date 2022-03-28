@@ -4,6 +4,7 @@
 #include"DisplayListCardReader.h"
 #include"BookTitle.h"
 #include"DisplayListTitle.h"
+#include"FindInforBook.h"
 class AdminMenu:public wxFrame
 {
 private:
@@ -11,6 +12,7 @@ private:
 	DisplayListCardReader* displayCardReader;
 	BookTitle* bookTitle;
 	DisplayListTitle* displayTitle;
+	FindInforBook* findInforBook;
 	CheckInput* checkInput;
 	wxPanel** choicePanel;
 	void CreateReaderCardChoice();
@@ -21,6 +23,7 @@ private:
 	void OnDisplayCardReader(wxCommandEvent& event);
 	void OnTitle(wxCommandEvent& event);
 	void OnDisplayTitle(wxCommandEvent& event);
+	void OnFindInforBook(wxCommandEvent& event);
 	void OnReaderCardPanel(wxCommandEvent& event);
 	void OnTitlePanel(wxCommandEvent& event);
 	void TurnOnPanel(int index);

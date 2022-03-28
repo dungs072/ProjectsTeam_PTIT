@@ -138,7 +138,7 @@ namespace DataStructure
 				delete list[i];
 				list[i] = nullptr;
 			}
-			delete list;
+			delete []list;
 			list = nullptr;
 			currentLength = 0;
 		}

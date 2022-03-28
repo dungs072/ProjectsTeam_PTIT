@@ -7,6 +7,7 @@ public:
 	BSTNode* leftNode;
 	BSTNode* rightNode;
 	T* data;
+	~BSTNode() {}
 	BSTNode(T* value)
 	{
 		data = value;

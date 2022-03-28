@@ -170,6 +170,7 @@ namespace DataStructure
 				}
 			}
 			delete temp, pointedTemp;
+			delete queue;
 			return height;
 		}
 		int Height()
@@ -228,6 +229,7 @@ namespace DataStructure
 					t = t->rightNode;
 				}
 			}
+			delete stack;
 
 		}
 		void InOrderTravelsal()
@@ -259,6 +261,7 @@ namespace DataStructure
 					t = t->rightNode;
 				}
 			}
+			delete stack;
 			return arr;
 		}
 		bool IsDifferentNode(ulong key)
