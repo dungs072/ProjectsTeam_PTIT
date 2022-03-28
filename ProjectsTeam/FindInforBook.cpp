@@ -351,7 +351,7 @@ void FindInforBook::OnEnter(wxCommandEvent& WXUNUSED(event))
 			}
 			if (!CheckType(tempwxstr))
 			{
-				checkInput->ErrorMessageBox("LOI NAM XUAT BAN");
+				checkInput->ErrorMessageBox("LOI THE LOAI");
 				UndoTitleData(5);
 				return;
 			}
