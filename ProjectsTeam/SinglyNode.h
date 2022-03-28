@@ -9,8 +9,7 @@ public:
 	SinglyNode() {};
 	~SinglyNode()
 	{
-		delete next;
-		next = nullptr;
+		
 	}
 };
 

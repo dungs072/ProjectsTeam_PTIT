@@ -163,6 +163,7 @@
     <ClCompile Include="DisplayListCardReader.cpp" />
     <ClCompile Include="DisplayListTitle.cpp" />
     <ClCompile Include="DoublyLinkedList.cpp" />
+    <ClCompile Include="FindInforBook.cpp" />
     <ClCompile Include="FormatText.cpp" />
     <ClCompile Include="LinearList.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -191,6 +192,7 @@
     <ClInclude Include="DisplayListTitle.h" />
     <ClInclude Include="DoublyLinkedList.h" />
     <ClInclude Include="DoublyNode.h" />
+    <ClInclude Include="FindInforBook.h" />
     <ClInclude Include="FormatText.h" />
     <ClInclude Include="LinearList.h" />
     <ClInclude Include="Queue.h" />

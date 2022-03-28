@@ -7,10 +7,12 @@ AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
 	displayCardReader = new DisplayListCardReader("DANH SACH THE DOC GIA");
 	bookTitle = new BookTitle("DAU SACH");
 	displayTitle = new DisplayListTitle("DANH SACH DAU SACH");
+	findInforBook = new FindInforBook("TIM KIEM THONG TIN DAU SACH");
 	this->AddChild(readerCard);
 	this->AddChild(displayCardReader);
 	this->AddChild(bookTitle);
 	this->AddChild(displayTitle);
+	this->AddChild(findInforBook);
 
 	checkInput = new CheckInput();
 	//create color;
@@ -89,10 +91,12 @@ void AdminMenu::CreateTitleChoice()
 		wxPoint(50, 50), wxSize(300, 25));
 	wxButton* displayTitle = new wxButton(choicePanel[1], -1, wxT("HIEN THI DANH SACH TAT CA DAU SACH"),
 		wxPoint(50, 100), wxSize(300, 25));
+	wxButton* findInforBook = new wxButton(choicePanel[1], -1, wxT("TIM THONG TIN DAU SACH"),
+		wxPoint(50, 150), wxSize(300, 25));
 	//Register event
 	titleButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnTitle, this);
 	displayTitle->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnDisplayTitle, this);
-
+	findInforBook->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnFindInforBook, this);
 }
 
 void AdminMenu::OnReaderCard(wxCommandEvent& WXUNUSED(event))
@@ -113,6 +117,11 @@ void AdminMenu::OnTitle(wxCommandEvent& WXUNUSED(event))
 void AdminMenu::OnDisplayTitle(wxCommandEvent& WXUNUSED(event))
 {
 	displayTitle->Show();
+	this->Hide();
+}
+void AdminMenu::OnFindInforBook(wxCommandEvent& WXUNUSED(event))
+{
+	findInforBook->Show();
 	this->Hide();
 }
 void AdminMenu::OnReaderCardPanel(wxCommandEvent& WXUNUSED(event))

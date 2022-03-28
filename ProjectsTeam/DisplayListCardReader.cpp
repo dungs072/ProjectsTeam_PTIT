@@ -218,6 +218,7 @@ void DisplayListCardReader::SaveFile()
 	for (int i = 0; i < length; i++)
 	{
 		tempTree->Add(arr[i]);
+
 	}
 	//to sort with code reader//dont missunderstand:))
 	arr = tempTree->ToArray();
@@ -346,12 +347,12 @@ void DisplayListCardReader::ErrorMessageBox(string message)
 }
 void DisplayListCardReader::DisplayCell(CardReader** arr, int length)
 {
-
-	ClearGridValue();
+	
 	if (length > grid->GetNumberRows())
 	{
 		grid->AppendRows(length - grid->GetNumberRows() + 1);
 	}
+	ClearGridValue();
 	for (int i = 0; i < length; i++)
 	{
 		string cardCodestr = EditCardCode(arr[i]->GetCardCode(), 10);
