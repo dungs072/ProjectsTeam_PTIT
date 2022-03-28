@@ -55,7 +55,7 @@ DisplayListTitle::DisplayListTitle(const wxString& title) : wxFrame(NULL, -1, ti
 	mainHBox = new wxBoxSizer(wxHORIZONTAL);
 	//create Grid
 	grid = new wxGrid(mainPanel, -1, wxPoint(-1, -1), wxSize(745, 500));
-	grid->CreateGrid(26, 6);
+	grid->CreateGrid(30, 6);
 	grid->SetColLabelValue(0, wxT("ISBN"));
 	grid->SetColLabelValue(1, wxT("TEN SACH"));
 	grid->SetColLabelValue(2, wxT("SO TR"));
@@ -370,6 +370,10 @@ void DisplayListTitle::OnShow(wxShowEvent& event)
 {
 	if (event.IsShown())
 	{
+		if (maxItem > 30)
+		{
+			grid->DeleteRows(30, maxItem - 30);
+		}
 		maxItem = saveFile->GetSizeArray();
 		LoadFile();
 		
@@ -488,7 +492,7 @@ void DisplayListTitle::LoadListToTable()
 {
 	if (maxItem > grid->GetNumberRows())
 	{
-		grid->AppendRows(maxItem - grid->GetNumberRows());
+		grid->AppendRows(maxItem - grid->GetNumberRows()+1);
 	}
 	for (int i = 0; i < linearList->Length(); i++)
 	{

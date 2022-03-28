@@ -278,7 +278,7 @@ void ReaderCard::SaveToList(wxTextCtrl** textCtrlList, int length, int& pos)
 	int i = 0;
 	if (pos == grid->GetNumberRows())
 	{
-		grid->AppendRows(DefaultRows);
+		grid->AppendRows(1);
 		for (int i = pos; i < grid->GetNumberRows(); i++)
 		{
 			grid->SetReadOnly(i, 0);
@@ -322,7 +322,7 @@ void ReaderCard::SaveToList(wxTextCtrl** textCtrlList, int length, int& pos)
 	count++;
 	if (pos == grid->GetNumberRows())
 	{
-		grid->AppendRows(DefaultRows);
+		grid->AppendRows(1);
 		for (int i = pos; i < grid->GetNumberRows(); i++)
 		{
 			grid->SetReadOnly(i, 0);
@@ -414,6 +414,10 @@ void ReaderCard::OnShow(wxShowEvent& event)
 {
 	if (event.IsShown())
 	{
+		if (numberRowIsFilled > 30)
+		{
+			grid->DeleteRows(30, numberRowIsFilled - 30);
+		}
 		numberRowIsFilled = saveFile->GetSizeArray();
 		LoadFile();
 	}
@@ -451,7 +455,7 @@ void ReaderCard::LoadFile()
 	saveFile->ReadFile(arr);
 	if (numberRowIsFilled > grid->GetNumberRows())
 	{
-		grid->AppendRows(30);
+		grid->AppendRows(numberRowIsFilled-grid->GetNumberRows()+1);
 	}
 
 	for (int i = 0; i < numberRowIsFilled; i++)

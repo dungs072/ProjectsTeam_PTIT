@@ -114,6 +114,10 @@ void DisplayListCardReader::OnSortName(wxCommandEvent& WXUNUSED(event))
 		delete []arr;
 		arr = nullptr;
 	}
+	if (length > 30)
+	{
+		grid->DeleteRows(30, length - 30);
+	}
 	length = saveFile->GetSizeArray();
 	arr = new CardReader* [length];
 	saveFile->ReadFile(arr);
@@ -347,10 +351,9 @@ void DisplayListCardReader::ErrorMessageBox(string message)
 }
 void DisplayListCardReader::DisplayCell(CardReader** arr, int length)
 {
-	
 	if (length > grid->GetNumberRows())
 	{
-		grid->AppendRows(length - grid->GetNumberRows() + 1);
+		grid->AppendRows(length-grid->GetNumberRows()+1);
 	}
 	ClearGridValue();
 	for (int i = 0; i < length; i++)

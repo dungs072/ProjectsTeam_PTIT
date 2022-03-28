@@ -149,6 +149,10 @@ void DisplayListBook::OnShow(wxShowEvent& event)
 				grid->SetCellValue(i, j, wxT(""));
 			}
 		}
+		if (maxItem > 30)
+		{
+			grid->DeleteRows(30,maxItem-30);
+		}
 		maxItem = 0;
 		LoadFile();
 	}
@@ -283,9 +287,9 @@ void DisplayListBook::DeleteSelectedRows()
 
 				}
 				grid->DeleteRows(i, 1);
-				if (grid->GetNumberRows() < 26)
+				if (grid->GetNumberRows() < 30)
 				{
-					int numberRowsNeed = 26 - grid->GetNumberRows();
+					int numberRowsNeed = 30 - grid->GetNumberRows();
 
 					grid->AppendRows(numberRowsNeed);
 				}
@@ -299,7 +303,7 @@ void DisplayListBook::SaveToList()
 {
 	if (maxItem + 1 > grid->GetNumberRows())
 	{
-		grid->AppendRows(30);
+		grid->AppendRows(maxItem-grid->GetNumberRows()+1);
 	}
 	string bookCode = currentTitle->GetISBN() + checkInput->CastIntToString(count);
 	count++;
@@ -355,7 +359,7 @@ void DisplayListBook::LoadFile()
 		maxItem++;
 		if (maxItem + 1 > grid->GetNumberRows())
 		{
-			grid->AppendRows(30);
+			grid->AppendRows(1);
 		}
 		tempBook = tempBook->next;
 	}

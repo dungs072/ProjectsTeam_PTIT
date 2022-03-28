@@ -113,6 +113,12 @@ void FindInforBook::CreateDisplayArea()
 		displayText[i]->Connect(wxID_ANY, wxEVT_COMMAND_TEXT_UPDATED,
 			(wxObjectEventFunction)&FindInforBook::OnKeyDownTextCltrToUpper);
 	}
+	displayText[0]->SetMaxLength(4);
+	displayText[1]->SetMaxLength(24);
+	displayText[2]->SetMaxLength(6);
+	displayText[3]->SetMaxLength(17);
+	displayText[4]->SetMaxLength(4);
+	displayText[5]->SetMaxLength(11);
 	//register event
 	searchEnterText->Connect(wxID_ANY, wxEVT_COMMAND_TEXT_UPDATED,
 		(wxObjectEventFunction)&FindInforBook::OnKeyDownTextCltrToUpper);
@@ -552,6 +558,10 @@ void FindInforBook::ClearAllOldData()
 		{
 			grid->SetCellValue(i,j,"");
 		}
+	}
+	if (maxItem > 30)
+	{
+		grid->DeleteRows(30, maxItem - 30);
 	}
 }
 bool FindInforBook::CheckBookName(wxString text)

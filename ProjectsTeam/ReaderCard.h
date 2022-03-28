@@ -93,6 +93,6 @@ public:
 };
 const int CARD_MENU = 3;
 const int SAVE_FILE = 2;
-const int DefaultRows = 25;
+const int DefaultRows = 30;
 
 

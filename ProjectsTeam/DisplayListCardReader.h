@@ -62,7 +62,7 @@ public:
 	}*/
 	DECLARE_EVENT_TABLE();
 };
-const int DefaultRow = 26;
+const int DefaultRow = 30;
 const int SORT_CODE = 1;
 const int SORT_NAME = 2;
 const int EXIT_MENU = 3;

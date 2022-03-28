@@ -41,7 +41,7 @@ BookTitle::BookTitle(const wxString& title) : wxFrame(NULL, -1,
 	wxBoxSizer* mainHBox = new wxBoxSizer(wxHORIZONTAL);
 	//create Grid
 	grid = new wxGrid(mainPanel, -1, wxPoint(-1, -1), wxSize(745, 500));
-	grid->CreateGrid(26, 6);
+	grid->CreateGrid(30, 6);
 	grid->SetColLabelValue(0, wxT("ISBN"));
 	grid->SetColLabelValue(1, wxT("TEN SACH"));
 	grid->SetColLabelValue(2, wxT("SO TR"));
@@ -286,6 +286,10 @@ void BookTitle::OnShow(wxShowEvent& event)
 {
 	if (event.IsShown())
 	{
+		if (maxItem > 30)
+		{
+			grid->DeleteRows(30, maxItem - 30);
+		}
 		LoadFile();
 		maxItem = saveFile->GetSizeArray();
 	}
@@ -604,7 +608,7 @@ void BookTitle::SaveToList()
 	maxItem++;
 	if (maxItem + 1 > grid->GetNumberRows())
 	{
-		grid->AppendRows(30);
+		grid->AppendRows(maxItem-grid->GetNumberRows()+1);
 	}
 }
 void BookTitle::SaveFile()
@@ -696,9 +700,9 @@ void BookTitle::DeleteSelectedRows()
 
 				}
 				grid->DeleteRows(i, 1);
-				if (grid->GetNumberRows() < 26)
+				if (grid->GetNumberRows() < 30)
 				{
-					int numberRowsNeed = 26 - grid->GetNumberRows();
+					int numberRowsNeed = 30 - grid->GetNumberRows();
 
 					grid->AppendRows(numberRowsNeed);
 				}
