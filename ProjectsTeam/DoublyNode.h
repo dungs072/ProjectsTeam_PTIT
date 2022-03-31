@@ -15,10 +15,10 @@ namespace DataStructure
 			prev = nullptr;
 			next = nullptr;
 		}
-		DoublyNode() {}
-		~DoublyNode()
+		DoublyNode() 
 		{
-			
+			prev = nullptr;
+			next = nullptr;
 		}
 	};
 }

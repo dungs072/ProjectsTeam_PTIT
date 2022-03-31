@@ -153,6 +153,7 @@
     <ClCompile Include="AdminMenu.cpp" />
     <ClCompile Include="Book.cpp" />
     <ClCompile Include="BookTitle.cpp" />
+    <ClCompile Include="BorrowBook.cpp" />
     <ClCompile Include="BSTNode.cpp" />
     <ClCompile Include="BSTree.cpp" />
     <ClCompile Include="CardReader.cpp" />
@@ -165,6 +166,7 @@
     <ClCompile Include="DoublyLinkedList.cpp" />
     <ClCompile Include="FindInforBook.cpp" />
     <ClCompile Include="FormatText.cpp" />
+    <ClCompile Include="LendBook.cpp" />
     <ClCompile Include="LinearList.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="DoublyNode.cpp" />
@@ -181,6 +183,7 @@
     <ClInclude Include="AdminMenu.h" />
     <ClInclude Include="Book.h" />
     <ClInclude Include="BookTitle.h" />
+    <ClInclude Include="BorrowBook.h" />
     <ClInclude Include="BSTNode.h" />
     <ClInclude Include="BSTree.h" />
     <ClInclude Include="CardReader.h" />
@@ -194,6 +197,7 @@
     <ClInclude Include="DoublyNode.h" />
     <ClInclude Include="FindInforBook.h" />
     <ClInclude Include="FormatText.h" />
+    <ClInclude Include="LendBook.h" />
     <ClInclude Include="LinearList.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="ReaderCard.h" />

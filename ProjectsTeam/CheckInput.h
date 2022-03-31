@@ -1,9 +1,13 @@
 #pragma once
 #include<wx/wx.h>
 #include<iostream>
+#include"DateTime.h"
 using std::string;
+typedef unsigned long long ulong;
 class CheckInput
 {
+	string* cardState = new string[2]{ "KHOA","HOAT DONG" };
+	string* stateBook = new string[3]{ "CHO MUON DUOC","DA CO DOC GIA MUON","DA THANH LY" };
 public:
 	bool IsInRangeNumber(int startNumber, int endNumber,int number);
 	bool IsNumber(wxString text);
@@ -20,7 +24,7 @@ public:
 	string UpperText(string str);
 	string CastIntToString(int data);
 	int CastStringToNumber(string text);
-	int CastWxStringToInt(wxString text);
+	int CastWxStringToInt(wxString text); 
 	void ErrorMessageBox(string message);
 	void SetTextSize(wxStaticText* text, int size);
 	void MoveDownToAnotherTextCtrl(wxTextCtrl** textCtrl, int length);
@@ -35,6 +39,31 @@ public:
 			delete arr[i];
 		}
 		delete []arr;
+	}
+	template<typename T>
+	T ToNumber(wxString strText)
+	{
+		int i, j;
+		T number = 0;
+		for (i = strText.length() - 1, j = 0; i >= 0; i--, j++)
+		{
+			if (strText[i] < '0' || strText[i]>'9')
+			{
+				return -1;
+			}
+			number += (strText[i] - '0') * pow(10, j);
+		}
+		return number;
+	}
+	string GetCardState(int index)
+	{
+		if (index < 0 || index>1) { return""; }
+		return cardState[index];
+	}
+	string GetBookState(int index)
+	{
+		if (index < 0 || index>2) { return""; }
+		return stateBook[index];
 	}
 };
 

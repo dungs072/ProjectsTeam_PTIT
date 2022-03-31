@@ -9,6 +9,8 @@
 #include"DisplayListBook.h"
 #include"AdminMenu.h"
 #include"FindInforBook.h"
+#include"LendBook.h"
+#include"DateTime.h"
 using std::cout;
 using std::endl;
 using namespace DataStructure;
@@ -31,10 +33,12 @@ bool ReaderCardApp::OnInit()
 	displayTitle->Show(true);*/
 	/*DisplayListBook* displayBook = new DisplayListBook("DANH SACH MUC SACH CUA DAU SACH");
 	displayBook->Show(true);*/
-	AdminMenu* menu = new AdminMenu("ADMINISTRATOR MENU");
-	menu->Show(true);
+	//AdminMenu* menu = new AdminMenu("ADMINISTRATOR MENU");
+	//menu->Show(true);
 	/*FindInforBook* search = new FindInforBook("TIM KIEM THONG TIN DAU SACH");
 	search->Show();*/
+	LendBook* lendBook = new LendBook("CHO MUON SACH");
+	lendBook->Show();
 	return true;
 }
 //class ReaderCardApp :public wxApp
@@ -249,5 +253,12 @@ bool ReaderCardApp::OnInit()
 //		linearList->GetData(i)->Display();
 //		cout << endl;
 //	}
+//	return 0;
+//}
+//int main()
+//{
+//	DateTime* date = new DateTime(12,2,2002);
+//	date->CastDate("12/02/2002");
+//	cout << date->GetDay() << "/" << date->GetMonth() << "/" << date->GetYear() << endl;
 //	return 0;
 //}

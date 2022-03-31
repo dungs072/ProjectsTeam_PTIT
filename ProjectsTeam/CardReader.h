@@ -1,7 +1,8 @@
 #pragma once
 #include<iostream>
 #include<string>
-#include"SinglyLinkedList.h"
+#include"DoublyLinkedList.h"
+#include"BorrowBook.h"
 typedef unsigned long long ulong;
 using namespace DataStructure;
 using  std::string;
@@ -15,7 +16,7 @@ private:
 	string firstName;
 	string sex;
 	string state;
-	
+	DoublyLinkedList<BorrowBook>* listBorrowBook;
 public:
 	CardReader(ulong cardCode ,string firstName,string lastName, string sex,string state)
 	{
@@ -24,7 +25,7 @@ public:
 		this->firstName = firstName;
 		this->sex = sex;
 		this->state = state;
-		
+		listBorrowBook = new DoublyLinkedList<BorrowBook>();
 	}
 	CardReader() 
 	{
@@ -33,12 +34,14 @@ public:
 		firstName = "";
 		sex = "";
 		state = "";
+		listBorrowBook = new DoublyLinkedList<BorrowBook>();
 	}
 	ulong GetCardCode() { return cardCode; }
 	string GetLastName() { return lastName; }
 	string GetFirstName() { return firstName; }
 	string GetSex() { return sex; }
 	string GetState() { return state; }
+	DoublyLinkedList<BorrowBook>* GetListBorrowBook() { return listBorrowBook; }
 	
 	void SetCardCode(ulong cardCode)
 	{

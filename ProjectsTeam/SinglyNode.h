@@ -6,10 +6,9 @@ class SinglyNode
 public:
 	T data;
 	SinglyNode* next;
-	SinglyNode() {};
-	~SinglyNode()
+	SinglyNode()
 	{
-		
+		next = nullptr;
 	}
 };
 

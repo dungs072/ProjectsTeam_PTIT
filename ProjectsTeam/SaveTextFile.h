@@ -4,6 +4,7 @@
 #include"CardReader.h"
 #include"Title.h"
 #include"wx/wx.h"
+#include"CheckInput.h"
 typedef unsigned long long ulong;
 using std::string;
 using std::fstream;
@@ -16,6 +17,7 @@ class SaveTextFile
 private:
 	string nameFile = "";
 	int lengthList = 0;
+	CheckInput* checkInput = new CheckInput();
 private:
 	template<typename data_type>
 	data_type CastStringToNumber(string strText)
@@ -56,6 +58,18 @@ public:
 					osFile << p[i]->GetLastName() << "  ";
 					osFile << p[i]->GetSex() << "  ";
 					osFile << p[i]->GetState() << "\n";
+					if (p[i]->GetListBorrowBook()->Length() > 0)
+					{
+						DoublyNode<BorrowBook>* temp = p[i]->GetListBorrowBook()->First();
+						while (temp != nullptr)
+						{
+							osFile << " -" << temp->data.GetBookCode()
+								<< "  " << temp->data.GetBorrowDate()->ToString()
+								<< "  " << temp->data.GetReturnDate()->ToString()
+								<< "  " <<temp->data.GetStateBorrow() << endl;
+							temp = temp->next;
+						}
+					}
 				}
 			}
 			else if (std::is_same<T, Title>::value)
@@ -107,6 +121,31 @@ public:
 					{
 						isOneTime = true;
 						continue;
+					}
+					if (myLine.find(" -") < myLine.length())
+					{
+						string* childText = new string[4];
+						int childIndex = 0;
+						for (int i = 2; i < myLine.length(); i++)
+						{
+							if (i + 1 != myLine.length() &&
+								myLine[i] == ' ' && myLine[i + 1] == ' ')
+							{
+								childIndex++;
+								i++;
+							}
+							else
+							{
+								childText[childIndex] += myLine[i];
+							}
+						}
+						DateTime* borrowDate = new DateTime();
+						borrowDate->CastDate(childText[1]);
+						DateTime* returnDate = new DateTime();
+						returnDate->CastDate(childText[2]);
+						int state = CastStringToNumber<int>(childText[3]);
+						BorrowBook borrowBook(childText[0], borrowDate, returnDate, state);
+						p[mainIndex - 1]->GetListBorrowBook()->AddLast(borrowBook);
 					}
 					string* text = new string[5];
 					int index = 0;
