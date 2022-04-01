@@ -56,17 +56,22 @@ bool ReaderCardApp::OnInit()
 //	return true;
 //}
 
-//int main()
-//{
+int main()
+{
 
 	/*//=====BO TAT CA COMMENT O FILE DateTime.cpp LA SE HIEU RO.======
 	DateTime* x = new DateTime();
 	string temp = "30/03/2000";
 	if (x->CheckDate(temp)) {
 		cout << "nhap dung het roi kkk" << endl;
-	}
+	}*/
+
+	DateTime x(30 , 11 , 2022);
+	cout << x.IsGreaterThanNow() << endl;
+	//DateTime y(29, 2, 2021);
+	//cout << x - y << endl;
 	return 0;
-  }*/
+}
 
 
 //	CardReader* cardReader1 = new CardReader(1, "D", "Hoang", "Nam","KHOA");

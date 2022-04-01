@@ -28,6 +28,9 @@ public:
 	int CompareDate(string date);
 	
 	bool IsGreaterThanNow();
+
+	int operator -(DateTime&);
+
 	/*bool FormatDate(string& data);
 	string Day(string data);
 	string Month(string data);
