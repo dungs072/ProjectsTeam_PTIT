@@ -270,6 +270,12 @@ void LendBook::OnEnter(wxCommandEvent& WXUNUSED(event))
 		checkInput->ErrorMessageBox("Khong the tim thay the doc can tim");
 		SetDefaultGrid();
 		ClearOldDataInInforPanel();
+		foundCardReader = nullptr;
+		selectedTitle = nullptr;
+		selectedBook = nullptr;
+		borrowBookCount = 0;
+		selectedTitleButton->Hide();
+		titleGrid->ClearSelection();
 		return;
 	}
 	borrowBookCount = 0;
@@ -421,6 +427,7 @@ void LendBook::OnOkButton(wxCommandEvent& WXUNUSED(event))
 	selectedBook->SetState(1);
 	bookGrid->SetCellValue(bookRowChange, 1, checkInput->GetBookState(1));
 	bookGrid->Refresh();
+	bookGrid->ClearSelection();
 	string bookCode = string(bookGrid->GetCellValue(bookRowChange, 0).mb_str());
 	string date = controlDateTime->GetDay()[dayChoice->GetSelection()]+
 					"/"+controlDateTime->GetMonth()[monthChoice->GetSelection()]+
@@ -430,6 +437,7 @@ void LendBook::OnOkButton(wxCommandEvent& WXUNUSED(event))
 	BorrowBook borrowBook(bookCode, dateChosen, nullptr, 0);
 	foundCardReader->GetListBorrowBook()->AddLast(borrowBook);
 	DisplayBookBorrow();
+	
 	dialog->Close();
 
 }
@@ -488,6 +496,7 @@ void LendBook::OnMonthSelection(wxCommandEvent& event)
 	}
 	else if (selection == 1)
 	{
+
 		int yearSelectIndex = yearChoice->GetSelection();
 		string strYear = controlDateTime->GetYear()[yearSelectIndex];
 		int numYear = checkInput->CastStringToNumber(strYear);
