@@ -442,12 +442,14 @@ void LendBook::OnOkButton(wxCommandEvent& WXUNUSED(event))
 	BorrowBook borrowBook(bookCode, dateChosen, nullptr, 0);
 	foundCardReader->GetListBorrowBook()->AddLast(borrowBook);
 	DisplayBookBorrow();
-	
+	selectedBook = nullptr;
+	selectedBookButton->Hide();
 	dialog->Close();
 
 }
 void LendBook::OnCancelButton(wxCommandEvent& WXUNUSED(event))
 {
+	selectedBook = nullptr;
 	dialog->Close();
 }
 
@@ -470,7 +472,6 @@ void LendBook::ProccessYearSelection()
 		{
 			if (dayArray.GetCount() < 28)
 			{
-				
 				for (int i = dayArray.GetCount(); i < 28; i++)
 				{
 					dayArray.Add(controlDateTime->GetDay()[i]);
@@ -551,24 +552,26 @@ void LendBook::ProccessMonthSelection()
 }
 void LendBook::ProccessCurrentDate()
 {
-	/*if (yearChoice->GetSelection() == 20)
+	if (yearChoice->GetSelection() == 20)
 	{
-		for (int i = controlDateTime->GetCurrentMonth() - 1; i < 12; i++)
+		for (int i = controlDateTime->GetCurrentMonth(); i < 12; i++)
 		{
 			monthArray.pop_back();
 		}
-		if (monthChoice->GetSelection() == controlDateTime->GetCurrentMonth() - 1)
+		/*if (monthChoice->GetSelection() == controlDateTime->GetCurrentMonth() - 1)
 		{
 			for (int i = controlDateTime->GetCurrenDay() - 1; i < 31; i++)
 			{
 				dayArray.pop_back();
 			}
-		}
+		}*/
 		monthChoice->Clear();
 		dayChoice->Clear();
 		monthChoice->Append(monthArray);
 		dayChoice->Append(dayArray);
-	}*/
+		monthChoice->SetSelection(controlDateTime->GetCurrentMonth() - 1);
+		dayChoice->SetSelection(controlDateTime->GetCurrenDay() - 1);
+	}
 }
 
 void LendBook::DisplayCardOnPanel()
