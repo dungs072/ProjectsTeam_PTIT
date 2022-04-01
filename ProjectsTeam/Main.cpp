@@ -264,6 +264,9 @@ int main()
 //{
 //	DateTime* date = new DateTime(12,2,2002);
 //	date->CastDate("12/02/2002");
-//	cout << date->GetDay() << "/" << date->GetMonth() << "/" << date->GetYear() << endl;
+//	cout << date->CompareDate("12/03/1999") << endl;
+//	string day = "12/06/2001";
+//	date->ReverseDate(day);
+//	cout << day << endl;
 //	return 0;
 //}

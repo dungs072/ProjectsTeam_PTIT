@@ -120,6 +120,9 @@
     <ClCompile Include="LendBook.cpp">
       <Filter>Source Files\FrontEnd</Filter>
     </ClCompile>
+    <ClCompile Include="ControlDateTime.cpp">
+      <Filter>Source Files\BackEnd</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ReaderCard.h">
@@ -202,6 +205,9 @@
     </ClInclude>
     <ClInclude Include="LendBook.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ControlDateTime.h">
+      <Filter>Header Files\Functional</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
