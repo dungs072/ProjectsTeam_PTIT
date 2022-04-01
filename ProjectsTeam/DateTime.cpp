@@ -2,11 +2,12 @@
 using namespace std;
 DateTime::DateTime(int day,int month,int year)
 {
+
 	this->day = day;
 	this->month = month;
 	this->year = year;
 }
-bool DateTime::IsGreaterThanNow()
+bool DateTime::IsGreaterThanNow() //=>ERROR 30/11/2022
 {
 	string inputDate = Format(day, month, year);
 	string nowDate = Format(GetCurrentDay(), GetCurrentMonth(), GetCurrentYear());
@@ -28,7 +29,7 @@ int DateTime::CompareDate(string date)
 	else if (selfDate < date) { return -1; }
 	else { return 0; }
 }
-int DateTime::CompareDates(string date1, string date2)
+int DateTime::CompareDates(string date1, string date2)  //ERROR 30/11/2022
 {
 	reverse(date1.begin(), date1.end());
 	reverse(date2.begin(), date2.end());
@@ -111,6 +112,58 @@ void DateTime::CastDate(string date)
 int DateTime::GetDay() { return day; }
 int DateTime::GetMonth() { return month; }
 int DateTime::GetYear() { return year; }
+
+
+bool LeapYear(int year) {
+	return (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0));
+}
+int SoNgayCuaThang(int month, int year)
+{
+	if (LeapYear(year) && month == 2)
+		return 29;
+	int monthTable[] = { 0,31,28,31,30,31,30,31,31,30,31,30,31 };
+	return monthTable[month];
+}
+int SoNgayTrongNam(const int day, const int month, const int year)
+{
+	int d = day;
+	int t = month;
+	while (t > 1)
+	{
+		d += SoNgayCuaThang(t - 1, year);
+		--t;
+	}
+	return d;
+}
+
+int DateTime::operator -(DateTime& D) {
+	int res;
+	int temp1 = SoNgayTrongNam(day, month, year);
+	int temp2 = SoNgayTrongNam(D.day, D.month, D.year);
+	if (year == D.year)
+	{
+		return temp1 - temp2 + 1;
+	}
+	else
+	{
+		int tempYear = year;
+		res = temp1;
+		while (tempYear != D.year) {
+			tempYear--;
+			if (LeapYear(tempYear)) {
+				res += 366;
+			}
+			else {
+				res += 365;
+			}
+		}
+		res -= temp2 + 1;
+	}
+	return res;
+}
+
+
+
 //bool DateTime::FormatDate(string& data) {
 //	size_t len = data.length();
 //	if (len < 10) {	
