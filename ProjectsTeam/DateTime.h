@@ -16,12 +16,13 @@ private:
 	string CastNumberToString(int number, int length);
 	int CastStringToNumber(string numStr);
 	string Format(int day, int month, int year);
+	
 	int CompareDates(string date1, string date2);
 
 public:
 	DateTime(){}
 	DateTime(int day, int month, int year);
-	
+	void ReverseDate(string& date);
 	string ToString();
 	
 	int CompareDate(string date);

@@ -22,16 +22,35 @@ int DateTime::GetCurrentYear() { return currentDate->tm_year + 1900; }
 int DateTime::CompareDate(string date)
 {
 	string selfDate = this->ToString();
-	reverse(selfDate.begin(), selfDate.end());
-	reverse(date.begin(), date.end());
+	ReverseDate(selfDate);
+	ReverseDate(date);
 	if (selfDate > date) { return 1; }
 	else if (selfDate < date) { return -1; }
 	else { return 0; }
 }
+void DateTime::ReverseDate(string& date)
+{
+	if (date.length() != 10) { return; }
+	string dayStr, monthStr, yearStr;
+	for (int i = 0; i < 2; i++)
+	{
+		dayStr += date[i];
+	}
+	for (int i = 3; i < 5; i++)
+	{
+		monthStr += date[i];
+	}
+	for (int i = 6; i < 10; i++)
+	{
+		yearStr += date[i];
+	}
+	date = "";
+	date = yearStr+ monthStr + dayStr;
+}
 int DateTime::CompareDates(string date1, string date2)
 {
-	reverse(date1.begin(), date1.end());
-	reverse(date2.begin(), date2.end());
+	ReverseDate(date1);
+	ReverseDate(date2);
 	if (date1 > date2) { return 1; }
 	else if (date1 < date2) { return -1; }
 	else return 0;

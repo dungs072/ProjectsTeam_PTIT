@@ -159,6 +159,7 @@
     <ClCompile Include="CardReader.cpp" />
     <ClCompile Include="CardReaderMenu.cpp" />
     <ClCompile Include="CheckInput.cpp" />
+    <ClCompile Include="ControlDateTime.cpp" />
     <ClCompile Include="DateTime.cpp" />
     <ClCompile Include="DisplayListBook.cpp" />
     <ClCompile Include="DisplayListCardReader.cpp" />
@@ -189,6 +190,7 @@
     <ClInclude Include="CardReader.h" />
     <ClInclude Include="CardReaderMenu.h" />
     <ClInclude Include="CheckInput.h" />
+    <ClInclude Include="ControlDateTime.h" />
     <ClInclude Include="DateTime.h" />
     <ClInclude Include="DisplayListBook.h" />
     <ClInclude Include="DisplayListCardReader.h" />
