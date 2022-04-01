@@ -81,7 +81,11 @@ private:
 
 	void OnYearSelection(wxCommandEvent& event);
 	void OnMonthSelection(wxCommandEvent& event);
-	void OnDaySelection(wxCommandEvent& event);
+
+	void ProccessYearSelection();
+	void ProccessMonthSelection();
+
+	void ProccessCurrentDate();
 
 	const int maxBookLend = 3;
 	int maxCard = 0;

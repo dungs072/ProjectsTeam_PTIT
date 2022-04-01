@@ -141,7 +141,6 @@ LendBook::LendBook(const wxString& title) :
 		&LendBook::OnCancelButton, this);
 
 	//register for selection event of wxChoice
-	dayChoice->Bind(wxEVT_CHOICE, &LendBook::OnDaySelection, this);
 	monthChoice->Bind(wxEVT_CHOICE, &LendBook::OnMonthSelection, this);
 	yearChoice->Bind(wxEVT_CHOICE, &LendBook::OnYearSelection, this);
 
@@ -246,10 +245,13 @@ void LendBook::OnShow(wxShowEvent& event)
 		selectedBookButton->Hide();
 		backTitleButton->Hide();
 
-
-		dayChoice->SetSelection(controlDateTime->GetCurrenDay() - 1);
 		monthChoice->SetSelection(controlDateTime->GetCurrentMonth() - 1);
 		yearChoice->SetSelection(20);
+		ProccessYearSelection();
+		ProccessMonthSelection();
+		ProccessCurrentDate();
+		dayChoice->SetSelection(controlDateTime->GetCurrenDay() - 1);
+		
 	}
 	else
 	{
@@ -263,6 +265,7 @@ void LendBook::OnShow(wxShowEvent& event)
 }
 void LendBook::OnEnter(wxCommandEvent& WXUNUSED(event))
 {
+	
 	ulong hashCode = checkInput->ToNumber<ulong>(enterSearchText->GetValue());
 	BSTNode<CardReader>* searchNode = treeCardReader->Search(hashCode);
 	if (searchNode == nullptr)
@@ -280,6 +283,8 @@ void LendBook::OnEnter(wxCommandEvent& WXUNUSED(event))
 	}
 	borrowBookCount = 0;
 	foundCardReader = searchNode->data;
+	ClearOldDataInInforPanel();
+	SetDefaultGrid();
 	DisplayCardOnPanel();
 	hideFocusText->SetFocus();
 	//enterSearchText->Clear();
@@ -446,15 +451,34 @@ void LendBook::OnCancelButton(wxCommandEvent& WXUNUSED(event))
 	dialog->Close();
 }
 
-void LendBook::OnYearSelection(wxCommandEvent& event)
+void LendBook::OnYearSelection(wxCommandEvent& WXUNUSED(event))
 {
-	wxString strYear = event.GetString();
+	ProccessYearSelection();
+}
+void LendBook::OnMonthSelection(wxCommandEvent& WXUNUSED(event))
+{
+	ProccessMonthSelection();
+}
+void LendBook::ProccessYearSelection()
+{
+	string strYear = controlDateTime->GetYear()[yearChoice->GetSelection()];
 	int numYear = checkInput->CastWxStringToInt(strYear);
-	int monthSelection = monthChoice->GetSelection();
 	if (controlDateTime->IsLeapYear(numYear))
 	{
+		int monthSelection = monthChoice->GetSelection();
 		if (monthSelection == 1)
 		{
+			if (dayArray.GetCount() < 28)
+			{
+				
+				for (int i = dayArray.GetCount(); i < 28; i++)
+				{
+					dayArray.Add(controlDateTime->GetDay()[i]);
+				}		
+				dayChoice->Clear();
+				dayChoice->Append(dayArray);
+				return;
+			}
 			if (dayArray.GetCount() == 28)
 			{
 				dayArray.Add(controlDateTime->GetDay()[dayArray.GetCount()]);
@@ -480,7 +504,7 @@ void LendBook::OnYearSelection(wxCommandEvent& event)
 		dayChoice->Append(dayArray);
 	}
 }
-void LendBook::OnMonthSelection(wxCommandEvent& event)
+void LendBook::ProccessMonthSelection()
 {
 	int selection = monthChoice->GetSelection();
 	if (selection == 0 || selection == 2 ||
@@ -496,38 +520,20 @@ void LendBook::OnMonthSelection(wxCommandEvent& event)
 	}
 	else if (selection == 1)
 	{
-
-		int yearSelectIndex = yearChoice->GetSelection();
-		string strYear = controlDateTime->GetYear()[yearSelectIndex];
-		int numYear = checkInput->CastStringToNumber(strYear);
-		if (controlDateTime->IsLeapYear(numYear))
-		{
-			if (dayArray.GetCount() == 28)
-			{
-				dayArray.Add(controlDateTime->GetDay()[dayArray.GetCount()]);
-				dayChoice->Clear();
-				dayChoice->Append(dayArray);
-				return;
-			}
-			for (int i = dayArray.GetCount(); i > 29; i--)
-			{
-				dayArray.pop_back();
-			}
-			dayChoice->Clear();
-			dayChoice->Append(dayArray);
-		}
-		else
-		{
-			for (int i = dayArray.GetCount(); i > 28; i--)
-			{
-				dayArray.pop_back();
-			}
-			dayChoice->Clear();
-			dayChoice->Append(dayArray);
-		}
+		ProccessYearSelection();
 	}
 	else
 	{
+		if (dayArray.GetCount() < 31)
+		{
+			for (int i = dayArray.GetCount(); i < 30; i++)
+			{
+				dayArray.Add(controlDateTime->GetDay()[i]);
+			}
+			dayChoice->Clear();
+			dayChoice->Append(dayArray);
+			return;
+		}
 		if (dayArray.GetCount() == 31)
 		{
 			dayArray.pop_back();
@@ -543,10 +549,28 @@ void LendBook::OnMonthSelection(wxCommandEvent& event)
 		dayChoice->Append(dayArray);
 	}
 }
-void LendBook::OnDaySelection(wxCommandEvent& event)
+void LendBook::ProccessCurrentDate()
 {
-
+	/*if (yearChoice->GetSelection() == 20)
+	{
+		for (int i = controlDateTime->GetCurrentMonth() - 1; i < 12; i++)
+		{
+			monthArray.pop_back();
+		}
+		if (monthChoice->GetSelection() == controlDateTime->GetCurrentMonth() - 1)
+		{
+			for (int i = controlDateTime->GetCurrenDay() - 1; i < 31; i++)
+			{
+				dayArray.pop_back();
+			}
+		}
+		monthChoice->Clear();
+		dayChoice->Clear();
+		monthChoice->Append(monthArray);
+		dayChoice->Append(dayArray);
+	}*/
 }
+
 void LendBook::DisplayCardOnPanel()
 {
 
@@ -649,7 +673,6 @@ void LendBook::LoadListBookToTable()
 }
 void LendBook::ClearOldDataInInforPanel()
 {
-	enterSearchText->Clear();
 	for (int i = 0; i < 3; i++)
 	{
 		displayPersonText[i]->SetLabel("");

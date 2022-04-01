@@ -49,7 +49,6 @@ void DateTime::ReverseDate(string& date)
 	date = yearStr+ monthStr + dayStr;
 }
 int DateTime::CompareDates(string date1, string date2)
-int DateTime::CompareDates(string date1, string date2)  //ERROR 30/11/2022
 {
 	ReverseDate(date1);
 	ReverseDate(date2);
