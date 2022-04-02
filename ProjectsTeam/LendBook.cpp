@@ -311,7 +311,13 @@ void LendBook::OnSelectedTitleGrid(wxCommandEvent& WXUNUSED(event))
 		titleGrid->ClearSelection();
 		return;
 	}
-
+	if (foundCardReader->GetState() == "KHOA")
+	{
+		checkInput->ErrorMessageBox("THE DA BI KHOA KHONG THE MUON SACH");
+		titleGrid->ClearSelection();
+		selectedTitleButton->Hide();
+		return;
+	}
 	int row = -1;
 	if (titleGrid->GetSelectedRows().Count() > 0)
 	{
