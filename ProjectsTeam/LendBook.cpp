@@ -25,8 +25,8 @@ LendBook::LendBook(const wxString& title) :
 
 	//Create panel
 	wxPanel* mainPanel = new wxPanel(this, -1);
-	searchPanel = new wxPanel(mainPanel, -1, wxPoint(-1, -1), wxSize(400, 600));
-	displayInforPanel = new wxPanel(searchPanel, -1, wxPoint(10, 90), wxSize(380, 500));
+	searchPanel = new wxPanel(mainPanel, -1, wxPoint(-1, -1), wxSize(450, 600));
+	displayInforPanel = new wxPanel(searchPanel, -1, wxPoint(10, 90), wxSize(430, 500));
 
 	//Create Button
 
@@ -112,6 +112,29 @@ LendBook::LendBook(const wxString& title) :
 	bookGrid->DisableDragRowSize();
 	bookGrid->SetSelectionMode(wxGrid::wxGridSelectionModes::wxGridSelectRows);
 	bookGrid->Hide();
+	// borrowingBookGrid
+	borrowingBookGrid = new wxGrid(displayInforPanel, -1, wxPoint(5, 230), wxSize(420, 108));
+	borrowingBookGrid->CreateGrid(3, 3);
+	borrowingBookGrid->SetRowLabelSize(25);
+
+	borrowingBookGrid->SetColLabelValue(0, wxT("MA SACH"));
+	borrowingBookGrid->SetColLabelValue(1, wxT("TEN SACH"));
+	borrowingBookGrid->SetColLabelValue(2, wxT("NGAY MUON"));
+	borrowingBookGrid->SetColSize(0,70);
+	borrowingBookGrid->SetColSize(1, 200);
+	borrowingBookGrid->SetColSize(2, 125);
+
+	for (int i = 0; i < 3; i++)
+	{
+		borrowingBookGrid->SetRowSize(i, 25);
+		for (int j = 0; j < 2; j++)
+		{
+			borrowingBookGrid->SetReadOnly(i, j);
+		}
+	}
+	borrowingBookGrid->DisableDragColSize();
+	borrowingBookGrid->DisableDragRowSize();
+	borrowingBookGrid->SetSelectionMode(wxGrid::wxGridSelectionModes::wxGridSelectRows);
 	//Set BoxSizer
 	vRightBox->Add(searchPanel, 0, wxTOP, 30);
 	mainHBox->Add(vRightBox, 0, wxLEFT, 20);
@@ -131,6 +154,11 @@ LendBook::LendBook(const wxString& title) :
 	bookGrid->Bind(wxEVT_GRID_LABEL_LEFT_CLICK, &LendBook::OnSelectedLabelBookGrid, this);
 	selectedBookButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED,
 		&LendBook::OnSelectedBookButtonClicked, this);
+
+	borrowingBookGrid->Bind(wxEVT_GRID_RANGE_SELECTING, 
+		&LendBook::OnSelectingBorrowingBookGrid, this);
+	borrowingBookGrid->Bind(wxEVT_GRID_LABEL_LEFT_CLICK,
+		&LendBook::OnSelectedLabelBorrowingBookGrid, this);
 
 	backTitleButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED,
 		&LendBook::OnBackTitleButtonClicked, this);
@@ -161,10 +189,10 @@ void LendBook::CreateSearchPanel()
 	eggYellow.Set(wxT("#FDFF69"));
 	wxStaticText* titleLendBook = new wxStaticText(searchPanel, -1,
 		wxT("HAY NHAP VAO MA THE DOC GIA DE MUON SACH"),
-		wxPoint(20, 10), wxSize(400, 30));
+		wxPoint(50, 10), wxSize(400, 30));
 	checkInput->SetTextSize(titleLendBook, 12);
 	enterSearchText = new wxTextCtrl(searchPanel, -1, wxT(""),
-		wxPoint(50, 50), wxSize(300, 25), wxTE_PROCESS_ENTER | wxTE_CENTRE);
+		wxPoint(75, 50), wxSize(300, 25), wxTE_PROCESS_ENTER | wxTE_CENTRE);
 	enterSearchText->SetMaxLength(10);
 	hideFocusText = new wxTextCtrl(searchPanel, -1, wxT(""),
 		wxPoint(-1, -1), wxSize(10, 10));
@@ -172,7 +200,7 @@ void LendBook::CreateSearchPanel()
 
 	//Create display infor for card reader
 	wxStaticText* titleInforCard = new wxStaticText(displayInforPanel, -1,
-		wxT("THONG TIN DOC GIA"), wxPoint(115, 10), wxSize(200, 30));
+		wxT("THONG TIN DOC GIA"), wxPoint(140, 10), wxSize(200, 30));
 	checkInput->SetTextSize(titleInforCard, 11);
 
 	wxStaticText* title0 = new wxStaticText(displayInforPanel, -1, wxT("Ho va ten: "),
@@ -195,25 +223,7 @@ void LendBook::CreateSearchPanel()
 
 	//create for display infor about book borrowed
 	wxStaticText* bookBorrowedTitle = new wxStaticText(displayInforPanel, -1,
-		wxT("CAC SACH DANG MUON"), wxPoint(115, 200), wxSize(300, 30));
-	wxStaticText* bookTitle = new wxStaticText(displayInforPanel, -1,
-		wxT("TEN SACH"), wxPoint(85, 230), wxSize(75, 30));
-	wxStaticText* dateTitle = new wxStaticText(displayInforPanel, -1,
-		wxT("NGAY MUON"), wxPoint(275, 230), wxSize(75, 30));
-	displayNameBookText = new wxStaticText * [maxBookLend];
-	for (int i = 0; i < maxBookLend; i++)
-	{
-		displayNameBookText[i] = new wxStaticText(displayInforPanel, -1, wxT(""),
-			wxPoint(10, 275 + i * 50), wxSize(200, 20), wxALIGN_CENTER);
-		displayNameBookText[i]->SetBackgroundColour(eggYellow);
-	}
-	displayDateBookText = new wxStaticText * [maxBookLend];
-	for (int i = 0; i < maxBookLend; i++)
-	{
-		displayDateBookText[i] = new wxStaticText(displayInforPanel, -1, wxT(""),
-			wxPoint(250, 275 + i * 50), wxSize(115, 20), wxALIGN_CENTER);
-		displayDateBookText[i]->SetBackgroundColour(eggYellow);
-	}
+		wxT("CAC SACH DANG MUON"), wxPoint(140, 200), wxSize(300, 30));
 }
 void LendBook::LoadFile()
 {
@@ -229,8 +239,8 @@ void LendBook::LoadFile()
 	{
 		linearList->AddLast(arrTitle[i]);
 	}
-	delete[]arrCard;
-	delete[]arrTitle;
+	//delete arrCard;
+	//delete[]arrTitle;
 }
 void LendBook::OnShow(wxShowEvent& event)
 {
@@ -299,6 +309,16 @@ void LendBook::SetDefaultGrid()
 	titleGridText->SetLabel("DANH SACH DAU SACH");
 	this->Refresh();
 }
+void LendBook::OnSelectingBorrowingBookGrid(wxGridRangeSelectEvent& event)
+{
+	borrowingBookGrid->ClearSelection();
+	event.Skip();
+}
+void LendBook::OnSelectedLabelBorrowingBookGrid(wxCommandEvent& WXUNUSED(event))
+{
+	borrowingBookGrid->ClearSelection();
+}
+
 void LendBook::OnSelectingTitleGrid(wxGridRangeSelectEvent& event)
 {
 	titleGrid->ClearSelection();
@@ -344,10 +364,9 @@ void LendBook::OnSelectedTitleGrid(wxCommandEvent& WXUNUSED(event))
 
 
 }
-void LendBook::OnSelectedLabelTitleGrid(wxCommandEvent& event)
+void LendBook::OnSelectedLabelTitleGrid(wxCommandEvent& WXUNUSED(event))
 {
 	titleGrid->ClearSelection();
-	event.Skip();
 }
 void LendBook::OnSelectedTitleButtonClicked(wxCommandEvent& event)
 {
@@ -422,10 +441,9 @@ void LendBook::OnSelectedBookButtonClicked(wxCommandEvent& WXUNUSED(event))
 	dialog->Centre();
 	dialog->ShowModal();
 }
-void LendBook::OnSelectedLabelBookGrid(wxCommandEvent& event)
+void LendBook::OnSelectedLabelBookGrid(wxCommandEvent& WXUNUSED(event))
 {
 	bookGrid->ClearSelection();
-	event.Skip();
 }
 void LendBook::OnBackTitleButtonClicked(wxCommandEvent& WXUNUSED(event))
 {
@@ -466,9 +484,18 @@ void LendBook::DisplayBookJustBorrow()
 		ISBN += tempCard->data.GetBookCode()[j];
 	}
 	Title* tempTitle = linearList->GetData(ISBN);
-	displayNameBookText[borrowingBookCount-1]->SetLabel(tempTitle->GetBookName());
-	displayDateBookText[borrowingBookCount-1]->SetLabel(tempCard->data.GetBorrowDate()->ToString());
-	tempCard = tempCard->next;
+	borrowingBookGrid->SetCellValue(borrowingBookCount - 1, 0,
+		tempCard->data.GetBookCode());
+	borrowingBookGrid->SetCellValue(borrowingBookCount - 1, 1, 
+		tempTitle->GetBookName());
+	borrowingBookGrid->SetCellValue(borrowingBookCount - 1, 2, 
+		tempCard->data.GetBorrowDate()->ToString());
+	for (int i = 0; i < 3; i++)
+	{
+		borrowingBookGrid->SetCellAlignment(borrowingBookCount - 1, i,
+			wxALIGN_CENTER, wxALIGN_CENTER);
+			
+	}
 }
 void LendBook::OnCancelButton(wxCommandEvent& WXUNUSED(event))
 {
@@ -484,7 +511,60 @@ void LendBook::OnMonthSelection(wxCommandEvent& WXUNUSED(event))
 {
 	ProccessMonthSelection();
 }
+
+//5 methods for selecting date 
 void LendBook::ProccessYearSelection()
+{
+	ProccessMonthSelection();
+}
+void LendBook::ProccessMonthSelection()
+{
+	if (ProccessCurrentDate()) { return; }
+	int selection = monthChoice->GetSelection();
+	if (selection == 0 || selection == 2 ||
+		selection == 4 || selection == 6 ||
+		selection == 7 || selection == 9 || selection == 11)
+	{
+		for (int i = dayArray.GetCount(); i < 31; i++)
+		{
+			dayArray.Add(controlDateTime->GetDay()[i]);
+		}
+		int daySelect = min((int)(dayArray.GetCount() - 1), dayChoice->GetSelection());
+		dayChoice->Clear();
+		dayChoice->Append(dayArray);
+		dayChoice->SetSelection(daySelect);
+	}
+	else if (selection == 1)
+	{
+		ProccessLeapYear();
+	}
+	else
+	{
+		if (dayArray.GetCount() < 31)
+		{
+			for (int i = dayArray.GetCount(); i < 30; i++)
+			{
+				dayArray.Add(controlDateTime->GetDay()[i]);
+			}
+		}
+		else if (dayArray.GetCount() == 31)
+		{
+			dayArray.pop_back();
+		}
+		else
+		{
+			for (int i = dayArray.GetCount(); i < 30; i++)
+			{
+				dayArray.Add(controlDateTime->GetDay()[i]);
+			}
+		}
+		int daySelect = min((int)(dayArray.GetCount() - 1), dayChoice->GetSelection());
+		dayChoice->Clear();
+		dayChoice->Append(dayArray);
+		dayChoice->SetSelection(daySelect);
+	}
+}
+void LendBook::ProccessLeapYear()
 {
 	if (ProccessCurrentDate()) { return; }
 	string strYear = controlDateTime->GetYear()[yearChoice->GetSelection()];
@@ -500,24 +580,24 @@ void LendBook::ProccessYearSelection()
 				{
 					dayArray.Add(controlDateTime->GetDay()[i]);
 				}
-				dayChoice->Clear();
-				dayChoice->Append(dayArray);
-				return;
 			}
-			if (dayArray.GetCount() == 28)
+			else if (dayArray.GetCount() == 28)
 			{
 				dayArray.Add(controlDateTime->GetDay()[dayArray.GetCount()]);
-				dayChoice->Clear();
-				dayChoice->Append(dayArray);
-				return;
 			}
-			for (int i = dayArray.GetCount(); i > 29; i--)
+			else
 			{
-				dayArray.pop_back();
+				for (int i = dayArray.GetCount(); i > 29; i--)
+				{
+					dayArray.pop_back();
+				}
 			}
-			dayChoice->Clear();
-			dayChoice->Append(dayArray);
+
 		}
+		int daySelect = min((int)(dayArray.GetCount() - 1), dayChoice->GetSelection());
+		dayChoice->Clear();
+		dayChoice->Append(dayArray);
+		dayChoice->SetSelection(daySelect);
 	}
 	else
 	{
@@ -525,94 +605,53 @@ void LendBook::ProccessYearSelection()
 		{
 			dayArray.pop_back();
 		}
+		int daySelect = min((int)(dayArray.GetCount() - 1), dayChoice->GetSelection());
 		dayChoice->Clear();
 		dayChoice->Append(dayArray);
-	}
-}
-void LendBook::ProccessMonthSelection()
-{
-	if (ProccessCurrentDate()) { return; }
-	int selection = monthChoice->GetSelection();
-	if (selection == 0 || selection == 2 ||
-		selection == 4 || selection == 6 ||
-		selection == 7 || selection == 9 || selection == 11)
-	{
-		for (int i = dayArray.GetCount(); i < 31; i++)
-		{
-			dayArray.Add(controlDateTime->GetDay()[i]);
-		}
-		dayChoice->Clear();
-		dayChoice->Append(dayArray);
-	}
-	else if (selection == 1)
-	{
-		ProccessYearSelection();
-	}
-	else
-	{
-		if (dayArray.GetCount() < 31)
-		{
-			for (int i = dayArray.GetCount(); i < 30; i++)
-			{
-				dayArray.Add(controlDateTime->GetDay()[i]);
-			}
-			dayChoice->Clear();
-			dayChoice->Append(dayArray);
-			return;
-		}
-		if (dayArray.GetCount() == 31)
-		{
-			dayArray.pop_back();
-			dayChoice->Clear();
-			dayChoice->Append(dayArray);
-			return;
-		}
-		for (int i = dayArray.GetCount(); i < 30; i++)
-		{
-			dayArray.Add(controlDateTime->GetDay()[i]);
-		}
-		dayChoice->Clear();
-		dayChoice->Append(dayArray);
+		dayChoice->SetSelection(daySelect);
 	}
 }
 bool LendBook::ProccessCurrentDate()
 {
 	if (yearChoice->GetSelection() == 20)
 	{
-		if (monthChoice->GetSelection() != controlDateTime->GetCurrentMonth() - 1)
-		{
-			return false;
-		}
-		if (monthArray.GetCount() != controlDateTime->GetCurrentMonth())
+		if (monthArray.GetCount() > controlDateTime->GetCurrentMonth())
 		{
 			for (int i = controlDateTime->GetCurrentMonth(); i < 12; i++)
 			{
 				monthArray.pop_back();
 			}
+			int monthSelect = min((int)(monthArray.GetCount()-1), monthChoice->GetSelection());
 			monthChoice->Clear();
 			monthChoice->Append(monthArray);
+			monthChoice->SetSelection(monthSelect);
 		}
-		if (dayArray.GetCount() != controlDateTime->GetCurrenDay())
+		if (monthChoice->GetSelection() != controlDateTime->GetCurrentMonth() - 1)
+		{
+			return false;
+		}
+		if (dayArray.GetCount() > controlDateTime->GetCurrenDay())
 		{
 			int maxDay = dayArray.GetCount();
 			for (int i = controlDateTime->GetCurrenDay(); i < maxDay; i++)
 			{
 				dayArray.pop_back();
 			}
+			int daySelect = min((int)(dayArray.GetCount() - 1), dayChoice->GetSelection());
 			dayChoice->Clear();
 
 			dayChoice->Append(dayArray);
-
+			dayChoice->SetSelection(daySelect);
 		}
 		return true;
 	}
 	if (monthArray.GetCount() < 12)
 	{
-		SetDefaultValueDateTime();
+		SetDefaultRangeDateTime();
 	}
 	return false;
 }
-void LendBook::SetDefaultValueDateTime()
+void LendBook::SetDefaultRangeDateTime()
 {
 	dayArray.Clear();
 	monthArray.Clear();
@@ -625,11 +664,16 @@ void LendBook::SetDefaultValueDateTime()
 	{
 		monthArray.Add(controlDateTime->GetMonth()[i]);
 	}
+	int monthSelect = min((int)(monthArray.GetCount() - 1), monthChoice->GetSelection());
+	int daySelect = min((int)(dayArray.GetCount() - 1), dayChoice->GetSelection());
 	dayChoice->Clear();
 	monthChoice->Clear();
 	dayChoice->Append(dayArray);
+	dayChoice->SetSelection(daySelect);
 	monthChoice->Append(monthArray);
+	monthChoice->SetSelection(monthSelect);
 }
+//----------------------------//
 
 void LendBook::DisplayCardOnPanel()
 {
@@ -646,7 +690,6 @@ void LendBook::DisplayCardOnPanel()
 }
 void LendBook::DisplayBookBorrow()
 {
-	int i = 0;
 	DoublyNode<BorrowBook>* tempCard = foundCardReader->GetListBorrowBook()->First();
 	while (tempCard != nullptr)
 	{
@@ -660,9 +703,17 @@ void LendBook::DisplayBookBorrow()
 			ISBN += tempCard->data.GetBookCode()[j];
 		}
 		Title* tempTitle = linearList->GetData(ISBN);
-		displayNameBookText[i]->SetLabel(tempTitle->GetBookName());
-		displayDateBookText[i]->SetLabel(tempCard->data.GetBorrowDate()->ToString());
-		i++;
+		borrowingBookGrid->SetCellValue(borrowingBookCount, 0,
+			tempCard->data.GetBookCode());
+		borrowingBookGrid->SetCellValue(borrowingBookCount, 1,
+			tempTitle->GetBookName());
+		borrowingBookGrid->SetCellValue(borrowingBookCount, 2,
+			tempCard->data.GetBorrowDate()->ToString());
+		for (int i = 0; i < 3; i++)
+		{
+			borrowingBookGrid->SetCellAlignment(borrowingBookCount, i,
+				wxALIGN_CENTER, wxALIGN_CENTER);
+		}
 		borrowingBookCount++;
 		tempCard = tempCard->next;
 	}
@@ -735,9 +786,10 @@ void LendBook::ClearOldDataInInforPanel()
 {
 	for (int i = 0; i < 3; i++)
 	{
-		displayPersonText[i]->SetLabel("");
-		displayNameBookText[i]->SetLabel("");
-		displayDateBookText[i]->SetLabel("");
+		for (int j = 0; j < 3; j++)
+		{
+			borrowingBookGrid->SetCellValue(i, j, "");
+		}
 	}
 }
 void LendBook::ClearOldDataInTitleGrid()
@@ -783,6 +835,58 @@ void LendBook::OnKeyDown(wxKeyEvent& event)
 		event.Skip();
 	}
 
+	if (event.GetKeyCode() == WXK_DELETE)
+	{
+		DeleteBorrowingBook();
+		event.Skip();
+	}
+	if (event.GetKeyCode() == WXK_F2)
+	{
+		SaveFile();
+		event.Skip();
+	}
+
+}
+void LendBook::SaveFile()
+{
+	CardReader** arr = treeCardReader->ToArray();
+	saveFile->WriteToFile(arr, treeCardReader->GetNumberNodes());
+	wxMessageBox("Thong tin the doc da duoc luu");
+}
+void LendBook::DeleteBorrowingBook()
+{
+	if (foundCardReader == nullptr) { return; }
+	if (borrowingBookGrid->IsSelection())
+	{
+		int row = borrowingBookGrid->GetSelectedRows()[0];
+		string bookCode = string(borrowingBookGrid->GetCellValue(row, 0).mb_str());
+		if (bookCode == "") { return; }
+		SetValueAfterDelete(bookCode);
+
+		foundCardReader->GetListBorrowBook()->Remove(bookCode);
+
+		borrowingBookGrid->DeleteRows(row, 1);
+		borrowingBookGrid->AppendRows(1);
+		borrowingBookGrid->SetRowSize(2, 25);
+		for (int i = 0; i < 3; i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				borrowingBookGrid->SetReadOnly(i, j);
+			}
+		}
+		borrowingBookCount--;
+	}
+}
+void LendBook::SetValueAfterDelete(string bookCode)
+{
+	string ISBN = bookCode.substr(0, 4);
+	Title* tempTitle = linearList->GetData(ISBN);
+	if (tempTitle == nullptr) { return; }
+	SinglyNode<Book>* tempBook = tempTitle->GetListBook()->FindSinglyNode(bookCode);
+	tempBook->data.SetState(0);
+	LoadListBookToTable();
+	
 }
 BEGIN_EVENT_TABLE(LendBook, wxFrame)
 EVT_CHAR_HOOK(LendBook::OnKeyDown)

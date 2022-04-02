@@ -33,8 +33,8 @@ bool ReaderCardApp::OnInit()
 	displayTitle->Show(true);*/
 	/*DisplayListBook* displayBook = new DisplayListBook("DANH SACH MUC SACH CUA DAU SACH");
 	displayBook->Show(true);*/
-	/*AdminMenu* menu = new AdminMenu("ADMINISTRATOR MENU");
-	menu->Show(true);*/
+	//AdminMenu* menu = new AdminMenu("ADMINISTRATOR MENU");
+	//menu->Show(true);
 	/*FindInforBook* search = new FindInforBook("TIM KIEM THONG TIN DAU SACH");
 	search->Show();*/
 	LendBook* lendBook = new LendBook("CHO MUON SACH");

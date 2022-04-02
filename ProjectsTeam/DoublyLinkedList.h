@@ -2,6 +2,7 @@
 #include<iostream>
 #include"DoublyNode.h"
 #include<string>
+using std::string;
 namespace DataStructure
 {
 	template<typename T>
@@ -325,6 +326,35 @@ namespace DataStructure
 				}
 				p = p->next;
 			}
+		}
+		bool Remove(string bookCode)
+		{
+			if (bookCode == first->data.GetBookCode())
+			{
+				RemoveFirst();
+				return true;
+			}
+			DoublyNode<T>* p = first;
+			while (p != nullptr)
+			{
+				if (p->data.GetBookCode() == bookCode)
+				{
+					if (p == last)
+					{
+						RemoveLast();
+						return true;
+					}
+					DoublyNode<T>* t = p;
+					if (p->prev) { p->prev->next = p->next; }
+					if (p->next) { p->next->prev = p->prev; }
+					delete t;
+					t = nullptr;
+					length--;
+					return true;
+				}
+				p = p->next;
+			}
+			return false;
 		}
 		void Reverse()
 		{

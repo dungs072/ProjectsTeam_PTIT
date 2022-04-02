@@ -1,6 +1,7 @@
 #pragma once
 #include<wx/wx.h>
 #include<wx/grid.h>
+#include<cmath>
 #include"CardReader.h"
 #include"SaveTextFile.h"
 #include"CheckInput.h"
@@ -28,6 +29,7 @@ private:
 	
 	wxGrid* titleGrid;
 	wxGrid* bookGrid;
+	wxGrid* borrowingBookGrid;
 
 	wxButton* selectedTitleButton;
 	wxButton* selectedBookButton;
@@ -49,8 +51,6 @@ private:
 	wxTextCtrl* hideFocusText;
 	wxStaticText* titleGridText;
 	wxStaticText** displayPersonText;
-	wxStaticText** displayNameBookText;
-	wxStaticText** displayDateBookText;
 	void CreateSearchPanel();
 	void DisplayCardOnPanel();
 	void DisplayBookBorrow();
@@ -61,6 +61,9 @@ private:
 	void ClearOldDataInTitleGrid();
 	void ClearOldDataInBookGrid();
 	void SetDefaultGrid();
+	void DeleteBorrowingBook();
+	void SetValueAfterDelete(string bookCode);
+	void SaveFile();
 	void LoadFile();
 
 	void OnShow(wxShowEvent& event);
@@ -76,6 +79,9 @@ private:
 	void OnSelectedLabelBookGrid(wxCommandEvent& event);
 	void OnSelectedBookButtonClicked(wxCommandEvent& event);
 
+	void OnSelectingBorrowingBookGrid(wxGridRangeSelectEvent& event);
+	void OnSelectedLabelBorrowingBookGrid(wxCommandEvent& event);
+
 	void OnBackTitleButtonClicked(wxCommandEvent& event);
 	void OnOkButton(wxCommandEvent& event);
 	void OnCancelButton(wxCommandEvent& event);
@@ -85,8 +91,9 @@ private:
 
 	void ProccessYearSelection();
 	void ProccessMonthSelection();
-	void SetDefaultValueDateTime();
 
+	void SetDefaultRangeDateTime();
+	void ProccessLeapYear();
 	bool ProccessCurrentDate();
 
 	const int maxBookLend = 3;

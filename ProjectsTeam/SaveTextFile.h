@@ -63,9 +63,11 @@ public:
 						DoublyNode<BorrowBook>* temp = p[i]->GetListBorrowBook()->First();
 						while (temp != nullptr)
 						{
+							string returnDateStr = temp->data.GetReturnDate() == nullptr ? 
+											"null" : temp->data.GetReturnDate()->ToString();
 							osFile << " -" << temp->data.GetBookCode()
 								<< "  " << temp->data.GetBorrowDate()->ToString()
-								<< "  " << temp->data.GetReturnDate()->ToString()
+								<< "  " << returnDateStr
 								<< "  " <<temp->data.GetStateBorrow() << endl;
 							temp = temp->next;
 						}
@@ -124,6 +126,7 @@ public:
 					}
 					if (myLine.find(" -") < myLine.length())
 					{
+						
 						string* childText = new string[4];
 						int childIndex = 0;
 						for (int i = 2; i < myLine.length(); i++)
@@ -141,29 +144,36 @@ public:
 						}
 						DateTime* borrowDate = new DateTime();
 						borrowDate->CastDate(childText[1]);
-						DateTime* returnDate = new DateTime();
-						returnDate->CastDate(childText[2]);
+						DateTime* returnDate = nullptr;
+						if (childText[2] != "null")
+						{
+							returnDate = new DateTime();
+							returnDate->CastDate(childText[2]);
+						}					
 						int state = CastStringToNumber<int>(childText[3]);
 						BorrowBook borrowBook(childText[0], borrowDate, returnDate, state);
 						p[mainIndex - 1]->GetListBorrowBook()->AddLast(borrowBook);
 					}
-					string* text = new string[5];
-					int index = 0;
-					for (int i = 0; i < myLine.length(); i++)
+					else
 					{
-						if (i + 1 != myLine.length() && myLine[i] == ' ' && myLine[i + 1] == ' ')
+						string* text = new string[5];
+						int index = 0;
+						for (int i = 0; i < myLine.length(); i++)
 						{
-							index++;
-							i++;
+							if (i + 1 != myLine.length() && myLine[i] == ' ' && myLine[i + 1] == ' ')
+							{
+								index++;
+								i++;
+							}
+							else
+							{
+								text[index] += myLine[i];
+							}
 						}
-						else
-						{
-							text[index] += myLine[i];
-						}
+						ulong number = CastStringToNumber<ulong>(text[0]);
+						p[mainIndex] = new CardReader(number, text[1], text[2], text[3], text[4]);
+						mainIndex++;
 					}
-					ulong number = CastStringToNumber<ulong>(text[0]);
-					p[mainIndex] = new CardReader(number, text[1], text[2], text[3], text[4]);
-					mainIndex++;
 				}
 			}
 			else if (std::is_same<T, Title>::value)
