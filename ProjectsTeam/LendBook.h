@@ -54,6 +54,7 @@ private:
 	void CreateSearchPanel();
 	void DisplayCardOnPanel();
 	void DisplayBookBorrow();
+	void DisplayBookJustBorrow();
 	void LoadListTitleToTable();
 	void LoadListBookToTable();
 	void ClearOldDataInInforPanel();
@@ -84,15 +85,16 @@ private:
 
 	void ProccessYearSelection();
 	void ProccessMonthSelection();
+	void SetDefaultValueDateTime();
 
-	void ProccessCurrentDate();
+	bool ProccessCurrentDate();
 
 	const int maxBookLend = 3;
 	int maxCard = 0;
 	int maxTitle = 0;
 	int maxBook = 0;
 	int bookRowChange = 0;
-	int borrowBookCount = 0;
+	int borrowingBookCount = 0;
 	wxArrayString yearArray, monthArray, dayArray;
 public:
 
