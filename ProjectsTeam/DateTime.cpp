@@ -7,6 +7,10 @@ DateTime::DateTime(int day,int month,int year)
 	this->month = month;
 	this->year = year;
 }
+DateTime::DateTime()
+{
+	SetNow();
+}
 bool DateTime::IsGreaterThanNow() //=>ERROR 30/11/2022
 {
 	string inputDate = Format(day, month, year);

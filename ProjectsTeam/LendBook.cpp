@@ -4,11 +4,11 @@ LendBook::LendBook(const wxString& title) :
 {
 	//back end
 	controlDateTime = new ControlDateTime();
-	saveFile = new SaveTextFile<CardReader>("ListReaders.txt");
-	readFile = new SaveTextFile<Title>("BookTitle.txt");
+	cardFile = new SaveTextFile<CardReader>("ListReaders.txt");
+	titleFile = new SaveTextFile<Title>("BookTitle.txt");
 	checkInput = new CheckInput();
-	maxCard = saveFile->GetSizeArray();
-	maxTitle = readFile->GetSizeArray();
+	maxCard = cardFile->GetSizeArray();
+	maxTitle = titleFile->GetSizeArray();
 	treeCardReader = new BSTree<CardReader>();
 	linearList = new LinearList<Title>();
 	//color
@@ -229,8 +229,8 @@ void LendBook::LoadFile()
 {
 	CardReader** arrCard = new CardReader * [maxCard];
 	Title** arrTitle = new Title * [maxTitle];
-	saveFile->ReadFile(arrCard);
-	readFile->ReadFile(arrTitle);
+	cardFile->ReadFile(arrCard);
+	titleFile->ReadFile(arrTitle);
 	for (int i = 0; i < maxCard; i++)
 	{
 		treeCardReader->Add(arrCard[i]);
@@ -239,6 +239,7 @@ void LendBook::LoadFile()
 	{
 		linearList->AddLast(arrTitle[i]);
 	}
+	//cannot delete scaler 
 	//delete arrCard;
 	//delete[]arrTitle;
 }
@@ -278,6 +279,7 @@ void LendBook::OnEnter(wxCommandEvent& WXUNUSED(event))
 	ulong hashCode = checkInput->ToNumber<ulong>(enterSearchText->GetValue());
 	BSTNode<CardReader>* searchNode = treeCardReader->Search(hashCode);
 	borrowingBookCount = 0;
+	
 	if (searchNode == nullptr)
 	{
 		checkInput->ErrorMessageBox("Khong the tim thay the doc can tim");
@@ -286,7 +288,7 @@ void LendBook::OnEnter(wxCommandEvent& WXUNUSED(event))
 		foundCardReader = nullptr;
 		selectedTitle = nullptr;
 		selectedBook = nullptr;
-		selectedTitleButton->Hide();
+		
 		titleGrid->ClearSelection();
 		return;
 	}
@@ -294,11 +296,13 @@ void LendBook::OnEnter(wxCommandEvent& WXUNUSED(event))
 	ClearOldDataInInforPanel();
 	SetDefaultGrid();
 	DisplayCardOnPanel();
+	selectedTitleButton->Hide();
 	hideFocusText->SetFocus();
 	//enterSearchText->Clear();
 }
 void LendBook::SetDefaultGrid()
 {
+	bookGrid->ClearSelection();
 	bookGrid->Hide();
 	titleGrid->Show();
 	bookGrid->Refresh();
@@ -338,6 +342,12 @@ void LendBook::OnSelectedTitleGrid(wxCommandEvent& WXUNUSED(event))
 		selectedTitleButton->Hide();
 		return;
 	}
+	if (HasBorrowingDayLong())
+	{
+		checkInput->ErrorMessageBox("The doc co sach muon vuot qua 7 ngay");
+		return;
+	}
+	//write code here
 	int row = -1;
 	if (titleGrid->GetSelectedRows().Count() > 0)
 	{
@@ -383,7 +393,7 @@ void LendBook::OnSelectedTitleButtonClicked(wxCommandEvent& event)
 	ClearOldDataInBookGrid();
 	titleGridText->SetLabel("DANH SACH MUC SACH");
 	bookGrid->Show();
-
+	titleGrid->ClearSelection();
 	LoadListBookToTable();
 }
 
@@ -397,6 +407,11 @@ void LendBook::OnSelectedBookGrid(wxCommandEvent& WXUNUSED(event))
 	if (foundCardReader == nullptr)
 	{
 		bookGrid->ClearSelection();
+		return;
+	}
+	if (HasBorrowingDayLong())
+	{
+		checkInput->ErrorMessageBox("The doc co sach muon vuot qua 7 ngay");
 		return;
 	}
 	int row = -1;
@@ -849,8 +864,10 @@ void LendBook::OnKeyDown(wxKeyEvent& event)
 }
 void LendBook::SaveFile()
 {
-	CardReader** arr = treeCardReader->ToArray();
-	saveFile->WriteToFile(arr, treeCardReader->GetNumberNodes());
+	CardReader** arrCard = treeCardReader->ToArray();
+	Title** arrTitle = linearList->ToArray();
+	cardFile->WriteToFile(arrCard, treeCardReader->GetNumberNodes());
+	titleFile->WriteToFile(arrTitle, linearList->Length());
 	wxMessageBox("Thong tin the doc da duoc luu");
 }
 void LendBook::DeleteBorrowingBook()
@@ -887,6 +904,25 @@ void LendBook::SetValueAfterDelete(string bookCode)
 	tempBook->data.SetState(0);
 	LoadListBookToTable();
 	
+}
+bool LendBook::HasBorrowingDayLong()
+{
+	if (foundCardReader == nullptr) { return false; }
+	DoublyNode<BorrowBook>* tempBook = foundCardReader->GetListBorrowBook()->First();
+	DateTime* now = new DateTime();
+	while (tempBook != nullptr)
+	{
+		
+		int numberDayBorrow = now - tempBook->data.GetBorrowDate();
+		if (numberDayBorrow > 7)
+		{
+			delete now;
+			return true;
+		}
+		tempBook = tempBook->next;
+	}
+	delete now;
+	return false;
 }
 BEGIN_EVENT_TABLE(LendBook, wxFrame)
 EVT_CHAR_HOOK(LendBook::OnKeyDown)

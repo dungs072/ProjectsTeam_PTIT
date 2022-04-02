@@ -20,7 +20,7 @@ private:
 	int CompareDates(string date1, string date2);
 
 public:
-	DateTime(){}
+	DateTime();
 	DateTime(int day, int month, int year);
 	void ReverseDate(string& date);
 	string ToString();

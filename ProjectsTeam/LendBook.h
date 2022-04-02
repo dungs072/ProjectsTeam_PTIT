@@ -19,8 +19,8 @@ private:
 	CardReader* foundCardReader = nullptr;
 	Title* selectedTitle = nullptr;
 	Book* selectedBook = nullptr;
-	SaveTextFile<CardReader>* saveFile;
-	SaveTextFile<Title>* readFile;
+	SaveTextFile<CardReader>* cardFile;
+	SaveTextFile<Title>* titleFile;
 	CheckInput* checkInput;
 	ControlDateTime* controlDateTime;
 
@@ -95,6 +95,8 @@ private:
 	void SetDefaultRangeDateTime();
 	void ProccessLeapYear();
 	bool ProccessCurrentDate();
+	
+	bool HasBorrowingDayLong();
 
 	const int maxBookLend = 3;
 	int maxCard = 0;

@@ -66,10 +66,10 @@ int main()
 		cout << "nhap dung het roi kkk" << endl;
 	}*/
 
-	DateTime x(30 , 11 , 2022);
-	cout << x.IsGreaterThanNow() << endl;
-	//DateTime y(29, 2, 2021);
-	//cout << x - y << endl;
+	DateTime* x = new DateTime();
+	//cout << x.IsGreaterThanNow() << endl;
+	DateTime* y = new DateTime(20, 3, 2022);
+	cout << x - y << endl;
 	return 0;
 }
 
