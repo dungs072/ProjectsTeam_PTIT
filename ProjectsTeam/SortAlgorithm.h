@@ -6,6 +6,7 @@ class SortAlgorithm
 {
 public:
 	SortAlgorithm(){}
+	~SortAlgorithm(){}
 	void Swap(T* t1, T* t2)
 	{
 		T temp = *t1;

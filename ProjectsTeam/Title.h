@@ -39,10 +39,10 @@ public:
 		this->type = "";
 		bookList = new SinglyLinkedList<Book>();
 	}
-	/*~Title()
+	~Title()
 	{
-		bookList->Clear();
-	}*/
+		//delete bookList;
+	}
 	//Set field;
 	void SetISBN(string isbn);
 	void SetBookName(string bookName);
@@ -52,6 +52,11 @@ public:
 	void SetType(string type);
 	void SetListBook(SinglyLinkedList<Book>* list)
 	{
+		if (bookList != nullptr)
+		{
+			delete bookList;
+			bookList = nullptr;
+		}
 		bookList = list;
 	}
 	void Display()

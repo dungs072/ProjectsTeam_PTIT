@@ -9,6 +9,7 @@ class CheckInput
 	string* cardState = new string[2]{ "KHOA","HOAT DONG" };
 	string* stateBook = new string[3]{ "CHO MUON DUOC","DA CO DOC GIA MUON","DA THANH LY" };
 public:
+	~CheckInput(){}
 	bool IsInRangeNumber(int startNumber, int endNumber, int number);
 	bool IsNumber(wxString text);
 	bool IsAlphabet(wxString text);

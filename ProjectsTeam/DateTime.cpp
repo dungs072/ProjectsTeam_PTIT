@@ -186,7 +186,6 @@ int DateTime::operator -(DateTime& D) {
 }
 
 
-
 //bool DateTime::FormatDate(string& data) {
 //	size_t len = data.length();
 //	if (len < 10) {	

@@ -98,6 +98,10 @@ void DisplayListCardReader::OnSortCode(wxCommandEvent& WXUNUSED(event))
 		arr = nullptr;
 	}
 	length = saveFile->GetSizeArray();
+	if (length > 30)
+	{
+		grid->DeleteRows(29, length - 30);
+	}
 	arr = new CardReader* [length];
 
 	saveFile->ReadFile(arr);
@@ -114,11 +118,11 @@ void DisplayListCardReader::OnSortName(wxCommandEvent& WXUNUSED(event))
 		delete []arr;
 		arr = nullptr;
 	}
+	length = saveFile->GetSizeArray();
 	if (length > 30)
 	{
-		grid->DeleteRows(30, length - 30);
+		grid->DeleteRows(29, length - 30);
 	}
-	length = saveFile->GetSizeArray();
 	arr = new CardReader* [length];
 	saveFile->ReadFile(arr);
 	QuickSort(arr, 0, length);

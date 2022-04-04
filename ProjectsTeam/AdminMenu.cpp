@@ -8,11 +8,13 @@ AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
 	bookTitle = new BookTitle("DAU SACH");
 	displayTitle = new DisplayListTitle("DANH SACH DAU SACH");
 	findInforBook = new FindInforBook("TIM KIEM THONG TIN DAU SACH");
+	lendBook = new LendBook("MUON SACH");
 	this->AddChild(readerCard);
 	this->AddChild(displayCardReader);
 	this->AddChild(bookTitle);
 	this->AddChild(displayTitle);
 	this->AddChild(findInforBook);
+	this->AddChild(lendBook);
 
 	checkInput = new CheckInput();
 	//create color;
@@ -47,7 +49,7 @@ AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
 		wxT("QUAN LY DOC GIA"), wxPoint(100,30), wxSize(200, 40));
 	wxButton* adminTitleButton = new wxButton(buttonPanel, -1,
 		wxT("QUAN LY DAU SACH"), wxPoint(400, 30), wxSize(200, 40));
-	wxButton* adminBookButton = new wxButton(buttonPanel, -1,
+	wxButton* adminFunctionBookButton = new wxButton(buttonPanel, -1,
 		wxT("QUAN LY SACH"), wxPoint(700, 30), wxSize(200, 40));
 	//Create static text
 	wxStaticText* titleMenu = new wxStaticText(mainPanel, -1,
@@ -61,6 +63,7 @@ AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
 	//Register event
 	adminReaderCardButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnReaderCardPanel, this);
 	adminTitleButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnTitlePanel, this);
+	adminFunctionBookButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnFunctionBookPanel, this);
 	//Set color
 	buttonPanel->SetBackgroundColour(lightYellow);
 	titleMenu->SetBackgroundColour(lightBlue);
@@ -72,6 +75,7 @@ AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
 	}
 	CreateReaderCardChoice();
 	CreateTitleChoice();
+	CreateBookFunctionChoice();
 	Centre();
 }
 void AdminMenu::CreateReaderCardChoice()
@@ -97,6 +101,15 @@ void AdminMenu::CreateTitleChoice()
 	titleButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnTitle, this);
 	displayTitle->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnDisplayTitle, this);
 	findInforBook->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnFindInforBook, this);
+}
+void AdminMenu::CreateBookFunctionChoice()
+{
+	wxButton* borrowBook = new wxButton(choicePanel[2], -1, wxT("MUON SACH"),
+		wxPoint(50, 50), wxSize(300, 25));
+
+
+	//Register event
+	borrowBook->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnBorrowBook, this);
 }
 
 void AdminMenu::OnReaderCard(wxCommandEvent& WXUNUSED(event))
@@ -124,6 +137,11 @@ void AdminMenu::OnFindInforBook(wxCommandEvent& WXUNUSED(event))
 	findInforBook->Show();
 	this->Hide();
 }
+void AdminMenu::OnBorrowBook(wxCommandEvent& WXUNUSED(event))
+{
+	lendBook->Show();
+	this->Hide();
+}
 void AdminMenu::OnReaderCardPanel(wxCommandEvent& WXUNUSED(event))
 {
 	TurnOnPanel(0);
@@ -132,7 +150,10 @@ void AdminMenu::OnTitlePanel(wxCommandEvent& WXUNUSED(event))
 {
 	TurnOnPanel(1);
 }
-
+void AdminMenu::OnFunctionBookPanel(wxCommandEvent& WXUNUSED(event))
+{
+	TurnOnPanel(2);
+}
 void AdminMenu::TurnOnPanel(int index)
 {
 	//enter index>3||index<0 to disable all pannel

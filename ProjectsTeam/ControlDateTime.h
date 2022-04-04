@@ -13,7 +13,12 @@ private:
 	time_t now = time(0);
 	tm* ltm = localtime(&now);
 public:
-
+	~ControlDateTime()
+	{
+		delete[] day;
+		delete[] month;
+		delete[] year;
+	}
 	ControlDateTime();
 	string* GetDay()
 	{

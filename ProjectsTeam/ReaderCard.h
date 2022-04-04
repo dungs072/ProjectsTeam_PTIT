@@ -68,6 +68,12 @@ private:
 	void SetDefaultColorForRow();
 	void CastWxStringIntoString(wxString text, string& str);
 	
+	void OnSelectingGrid(wxGridRangeSelectEvent& event);
+	void OnSelectedGrid(wxCommandEvent& event);
+	void OnSelectedLabelGrid(wxCommandEvent& event);
+
+	void SetModeDelete(bool state);
+
 
 	bool IsWhiteSpaceAllText(wxTextCtrl* textCtrl);
 	bool IsWhiteSpaceAllText(wxString wxStr);
@@ -86,6 +92,7 @@ private:
 	int count = 0;
 	int rowChangedColor = -1;
 	int numberRowIsFilled = 0;
+	bool isModeDelete = false;
 	DECLARE_EVENT_TABLE();
 public:
 	ReaderCard(const wxString& title);

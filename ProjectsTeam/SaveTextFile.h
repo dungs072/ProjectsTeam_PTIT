@@ -4,7 +4,6 @@
 #include"CardReader.h"
 #include"Title.h"
 #include"wx/wx.h"
-#include"CheckInput.h"
 typedef unsigned long long ulong;
 using std::string;
 using std::fstream;
@@ -17,7 +16,6 @@ class SaveTextFile
 private:
 	string nameFile = "";
 	int lengthList = 0;
-	CheckInput* checkInput = new CheckInput();
 private:
 	template<typename data_type>
 	data_type CastStringToNumber(string strText)
@@ -40,6 +38,10 @@ public:
 	{
 		this->nameFile = nameFile;
 		nameFile += ".txt";
+	}
+	~SaveTextFile()
+	{
+		
 	}
 	void WriteToFile(T** arr, int length)
 	{
@@ -153,6 +155,7 @@ public:
 						int state = CastStringToNumber<int>(childText[3]);
 						BorrowBook borrowBook(childText[0], borrowDate, returnDate, state);
 						p[mainIndex - 1]->GetListBorrowBook()->AddLast(borrowBook);
+						delete[] childText;
 					}
 					else
 					{
@@ -173,6 +176,7 @@ public:
 						ulong number = CastStringToNumber<ulong>(text[0]);
 						p[mainIndex] = new CardReader(number, text[1], text[2], text[3], text[4]);
 						mainIndex++;
+						delete[] text;
 					}
 				}
 			}
@@ -210,6 +214,7 @@ public:
 						int state = CastStringToNumber<int>(childText[1]);
 						Book book(childText[0], state, childText[2]);
 						p[mainIndex - 1]->GetListBook()->Add(book);
+						delete []childText;
 					}
 					else
 					{
@@ -232,6 +237,7 @@ public:
 						uint nxb = CastStringToNumber<uint>(text[4]);
 						p[mainIndex] = new Title(text[0], text[1], pageNumber, text[3], nxb, text[5]);
 						mainIndex++;
+						delete[]text;
 					}
 					
 				}

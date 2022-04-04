@@ -41,11 +41,12 @@ namespace DataStructure
 			return false;
 		}
 
+		
+	public:
 		~DoublyLinkedList()
 		{
 			Clear();
 		}
-	public:
 		DoublyLinkedList()
 		{
 			first = nullptr;

@@ -7,8 +7,7 @@ LendBook::LendBook(const wxString& title) :
 	cardFile = new SaveTextFile<CardReader>("ListReaders.txt");
 	titleFile = new SaveTextFile<Title>("BookTitle.txt");
 	checkInput = new CheckInput();
-	maxCard = cardFile->GetSizeArray();
-	maxTitle = titleFile->GetSizeArray();
+	
 	treeCardReader = new BSTree<CardReader>();
 	linearList = new LinearList<Title>();
 	//color
@@ -140,7 +139,12 @@ LendBook::LendBook(const wxString& title) :
 	mainHBox->Add(vRightBox, 0, wxLEFT, 20);
 	mainPanel->SetSizer(mainHBox);
 
+	//create button
+	wxButton* exitMenuButton = new wxButton(displayInforPanel, -1, wxT("Exit Menu"),
+		wxPoint(10, 470), wxSize(70, 25));
+
 	//Register event
+	exitMenuButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &LendBook::OnExitMenuButton, this);
 	Bind(wxEVT_SHOW, &LendBook::OnShow, this);
 	Bind(wxEVT_TEXT_ENTER, &LendBook::OnEnter, this);
 	titleGrid->Bind(wxEVT_GRID_RANGE_SELECTING, &LendBook::OnSelectingTitleGrid, this);
@@ -157,16 +161,21 @@ LendBook::LendBook(const wxString& title) :
 
 	borrowingBookGrid->Bind(wxEVT_GRID_RANGE_SELECTING, 
 		&LendBook::OnSelectingBorrowingBookGrid, this);
+	borrowingBookGrid->Bind(wxEVT_GRID_SELECT_CELL,
+		&LendBook::OnSelectedBorrowingBookGrid, this);
 	borrowingBookGrid->Bind(wxEVT_GRID_LABEL_LEFT_CLICK,
 		&LendBook::OnSelectedLabelBorrowingBookGrid, this);
 
 	backTitleButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED,
 		&LendBook::OnBackTitleButtonClicked, this);
-
 	okButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED,
 		&LendBook::OnOkButton, this);
 	cancelButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED,
 		&LendBook::OnCancelButton, this);
+
+
+
+	dialog->Bind(wxEVT_SHOW, &LendBook::OnShowDialog, this);
 
 	//register for selection event of wxChoice
 	monthChoice->Bind(wxEVT_CHOICE, &LendBook::OnMonthSelection, this);
@@ -180,6 +189,7 @@ LendBook::LendBook(const wxString& title) :
 	selectedTitleButton->SetBackgroundColour(greenColor);
 	selectedBookButton->SetBackgroundColour(greenColor);
 	backTitleButton->SetBackgroundColour(lightRed);
+	exitMenuButton->SetBackgroundColour(red);
 	CreateSearchPanel();
 	Centre();
 }
@@ -220,6 +230,13 @@ void LendBook::CreateSearchPanel()
 		checkInput->SetTextSize(displayPersonText[i], 10);
 		displayPersonText[i]->SetBackgroundColour(eggYellow);
 	}
+	wxStaticText* hotKeyText = new wxStaticText(displayInforPanel, -1,
+		wxT("HOT KEY: F2 - SAVE, DELETE - XOA SACH DANG MUON"), wxPoint(70, 450), wxSize(300, 20));
+
+	
+	//register event
+	
+	enterSearchText->Bind(wxEVT_SET_FOCUS, &LendBook::OnEnterTextFocus, this);
 
 	//create for display infor about book borrowed
 	wxStaticText* bookBorrowedTitle = new wxStaticText(displayInforPanel, -1,
@@ -227,6 +244,10 @@ void LendBook::CreateSearchPanel()
 }
 void LendBook::LoadFile()
 {
+	maxCard = cardFile->GetSizeArray();
+	maxTitle = titleFile->GetSizeArray();
+	treeCardReader->Clear();
+	linearList->Clear();
 	CardReader** arrCard = new CardReader * [maxCard];
 	Title** arrTitle = new Title * [maxTitle];
 	cardFile->ReadFile(arrCard);
@@ -239,6 +260,7 @@ void LendBook::LoadFile()
 	{
 		linearList->AddLast(arrTitle[i]);
 	}
+	
 	//cannot delete scaler 
 	//delete arrCard;
 	//delete[]arrTitle;
@@ -248,6 +270,7 @@ void LendBook::OnShow(wxShowEvent& event)
 	if (event.IsShown())
 	{
 		LoadFile();
+		
 		ClearOldDataInInforPanel();
 		ClearOldDataInTitleGrid();
 		LoadListTitleToTable();
@@ -255,13 +278,7 @@ void LendBook::OnShow(wxShowEvent& event)
 		selectedTitleButton->Hide();
 		selectedBookButton->Hide();
 		backTitleButton->Hide();
-
-		monthChoice->SetSelection(controlDateTime->GetCurrentMonth() - 1);
-		yearChoice->SetSelection(20);
-		ProccessYearSelection();
-		ProccessMonthSelection();
-		monthChoice->SetSelection(controlDateTime->GetCurrentMonth() - 1);
-		dayChoice->SetSelection(controlDateTime->GetCurrenDay() - 1);
+		enterSearchText->Clear();
 
 	}
 	else
@@ -272,6 +289,19 @@ void LendBook::OnShow(wxShowEvent& event)
 		borrowingBookCount = 0;
 	}
 
+	event.Skip();
+}
+void LendBook::OnShowDialog(wxShowEvent& event)
+{
+	if (event.IsShown())
+	{
+		monthChoice->SetSelection(controlDateTime->GetCurrentMonth() - 1);
+		yearChoice->SetSelection(20);
+		ProccessYearSelection();
+		ProccessMonthSelection();
+		monthChoice->SetSelection(controlDateTime->GetCurrentMonth() - 1);
+		dayChoice->SetSelection(controlDateTime->GetCurrenDay() - 1);
+	}
 	event.Skip();
 }
 void LendBook::OnEnter(wxCommandEvent& WXUNUSED(event))
@@ -322,7 +352,10 @@ void LendBook::OnSelectedLabelBorrowingBookGrid(wxCommandEvent& WXUNUSED(event))
 {
 	borrowingBookGrid->ClearSelection();
 }
-
+void LendBook::OnSelectedBorrowingBookGrid(wxCommandEvent& WXUNUSED(event))
+{
+	BorrowingGridFocus();
+}
 void LendBook::OnSelectingTitleGrid(wxGridRangeSelectEvent& event)
 {
 	titleGrid->ClearSelection();
@@ -333,6 +366,8 @@ void LendBook::OnSelectedTitleGrid(wxCommandEvent& WXUNUSED(event))
 	if (foundCardReader == nullptr)
 	{
 		titleGrid->ClearSelection();
+		selectedTitleButton->Hide();
+		TitleGridFocus();
 		return;
 	}
 	if (foundCardReader->GetState() == "KHOA")
@@ -340,14 +375,20 @@ void LendBook::OnSelectedTitleGrid(wxCommandEvent& WXUNUSED(event))
 		checkInput->ErrorMessageBox("THE DA BI KHOA KHONG THE MUON SACH");
 		titleGrid->ClearSelection();
 		selectedTitleButton->Hide();
+		TitleGridFocus();
 		return;
 	}
 	if (HasBorrowingDayLong())
 	{
 		checkInput->ErrorMessageBox("The doc co sach muon vuot qua 7 ngay");
+		titleGrid->ClearSelection();
+		selectedTitleButton->Hide();
+		TitleGridFocus();
 		return;
 	}
-	//write code here
+	//for setting title focus 
+	TitleGridFocus();
+
 	int row = -1;
 	if (titleGrid->GetSelectedRows().Count() > 0)
 	{
@@ -407,13 +448,21 @@ void LendBook::OnSelectedBookGrid(wxCommandEvent& WXUNUSED(event))
 	if (foundCardReader == nullptr)
 	{
 		bookGrid->ClearSelection();
+		selectedBookButton->Hide();
+		BookGridFocus();
 		return;
 	}
 	if (HasBorrowingDayLong())
 	{
 		checkInput->ErrorMessageBox("The doc co sach muon vuot qua 7 ngay");
+		bookGrid->ClearSelection();
+		selectedBookButton->Hide();
+		BookGridFocus();
 		return;
 	}
+	//for setting BookGrid focus
+	BookGridFocus();
+
 	int row = -1;
 	if (bookGrid->GetSelectedRows().Count() > 0)
 	{
@@ -799,8 +848,10 @@ void LendBook::LoadListBookToTable()
 }
 void LendBook::ClearOldDataInInforPanel()
 {
+	
 	for (int i = 0; i < 3; i++)
 	{
+		displayPersonText[i]->SetLabel("");
 		for (int j = 0; j < 3; j++)
 		{
 			borrowingBookGrid->SetCellValue(i, j, "");
@@ -877,9 +928,10 @@ void LendBook::DeleteBorrowingBook()
 	{
 		int row = borrowingBookGrid->GetSelectedRows()[0];
 		string bookCode = string(borrowingBookGrid->GetCellValue(row, 0).mb_str());
+		wxMessageBox(bookCode);
 		if (bookCode == "") { return; }
 		SetValueAfterDelete(bookCode);
-
+		wxMessageBox(bookCode);
 		foundCardReader->GetListBorrowBook()->Remove(bookCode);
 
 		borrowingBookGrid->DeleteRows(row, 1);
@@ -898,6 +950,7 @@ void LendBook::DeleteBorrowingBook()
 void LendBook::SetValueAfterDelete(string bookCode)
 {
 	string ISBN = bookCode.substr(0, 4);
+	wxMessageBox(ISBN);
 	Title* tempTitle = linearList->GetData(ISBN);
 	if (tempTitle == nullptr) { return; }
 	SinglyNode<Book>* tempBook = tempTitle->GetListBook()->FindSinglyNode(bookCode);
@@ -913,7 +966,7 @@ bool LendBook::HasBorrowingDayLong()
 	while (tempBook != nullptr)
 	{
 		
-		int numberDayBorrow = now - tempBook->data.GetBorrowDate();
+		int numberDayBorrow = *now - *(tempBook->data.GetBorrowDate());
 		if (numberDayBorrow > 7)
 		{
 			delete now;
@@ -923,6 +976,77 @@ bool LendBook::HasBorrowingDayLong()
 	}
 	delete now;
 	return false;
+}
+void LendBook::TitleGridFocus()
+{
+	if (borrowingBookGrid->IsSelection())
+	{
+		borrowingBookGrid->ClearSelection();
+	}
+	if (bookGrid->IsSelection())
+	{
+		bookGrid->ClearSelection();
+	}
+}
+void LendBook::BookGridFocus()
+{
+	if (titleGrid->IsSelection())
+	{
+		titleGrid->ClearSelection();
+	}
+	if (borrowingBookGrid->IsSelection())
+	{
+		borrowingBookGrid->ClearSelection();
+	}
+	
+}
+void LendBook::BorrowingGridFocus()
+{
+	if (bookGrid->IsSelection())
+	{
+		bookGrid->ClearSelection();
+	}
+	if (titleGrid->IsSelection())
+	{
+		titleGrid->ClearSelection();
+	}
+	if (selectedTitleButton->IsShown())
+	{
+		selectedTitleButton->Hide();
+	}
+	if (selectedBookButton->IsShown())
+	{
+		selectedBookButton->Hide();
+	}
+}
+void LendBook::OnEnterTextFocus(wxFocusEvent& _rCommandEvent)
+{
+	if (bookGrid->IsSelection())
+	{
+		bookGrid->ClearSelection();
+	}
+	if (titleGrid->IsSelection())
+	{
+		titleGrid->ClearSelection();
+	}
+	if (borrowingBookGrid->IsSelection())
+	{
+		borrowingBookGrid->ClearSelection();
+	}
+	if (selectedBookButton->IsShown())
+	{
+		selectedBookButton->Hide();
+	}
+	if (selectedTitleButton->IsShown())
+	{
+		selectedTitleButton->Hide();
+	}
+	_rCommandEvent.Skip();
+}
+void LendBook::OnExitMenuButton(wxCommandEvent& WXUNUSED(event))
+{
+	this->Hide();
+	this->GetParent()->Show();
 }
 BEGIN_EVENT_TABLE(LendBook, wxFrame)
 EVT_CHAR_HOOK(LendBook::OnKeyDown)

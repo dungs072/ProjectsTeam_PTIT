@@ -57,6 +57,14 @@ private:
 	int foundBookIndex = 0;
 public:
 	FindInforBook(const wxString& title);
+	~FindInforBook()
+	{
+		delete sort;
+		delete checkInput;
+		delete saveFile;
+		delete[] stateBook;
+		delete[]displayText;
+	}
 	DECLARE_EVENT_TABLE();
 };
 

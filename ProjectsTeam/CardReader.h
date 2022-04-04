@@ -16,7 +16,7 @@ private:
 	string firstName;
 	string sex;
 	string state;
-	DoublyLinkedList<BorrowBook>* listBorrowBook;
+	DoublyLinkedList<BorrowBook>* listBorrowBook = nullptr;
 public:
 	CardReader(ulong cardCode ,string firstName,string lastName, string sex,string state)
 	{
@@ -35,6 +35,13 @@ public:
 		sex = "";
 		state = "";
 		listBorrowBook = new DoublyLinkedList<BorrowBook>();
+	}
+	~CardReader()
+	{
+		/*if (listBorrowBook != nullptr&&listBorrowBook->Length()>0)
+		{
+			delete listBorrowBook;
+		}*/
 	}
 	ulong GetCardCode() { return cardCode; }
 	string GetLastName() { return lastName; }
@@ -62,6 +69,15 @@ public:
 	void SetState(string state)
 	{
 		this->state = state;
+	}
+	void SetListBorrowBook(DoublyLinkedList<BorrowBook>* list)
+	{
+		if (listBorrowBook != nullptr)
+		{
+			delete listBorrowBook;
+
+		}
+		listBorrowBook = list;
 	}
 	void DisplayCardReader()
 	{

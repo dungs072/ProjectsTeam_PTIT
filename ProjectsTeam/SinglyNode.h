@@ -10,5 +10,6 @@ public:
 	{
 		next = nullptr;
 	}
+	~SinglyNode() {};
 };
 

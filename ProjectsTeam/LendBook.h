@@ -67,6 +67,7 @@ private:
 	void LoadFile();
 
 	void OnShow(wxShowEvent& event);
+	void OnShowDialog(wxShowEvent& event);
 	void OnEnter(wxCommandEvent& event);
 	void OnKeyDown(wxKeyEvent& event);
 	void OnSelectingTitleGrid(wxGridRangeSelectEvent& event);
@@ -80,6 +81,7 @@ private:
 	void OnSelectedBookButtonClicked(wxCommandEvent& event);
 
 	void OnSelectingBorrowingBookGrid(wxGridRangeSelectEvent& event);
+	void OnSelectedBorrowingBookGrid(wxCommandEvent& event);
 	void OnSelectedLabelBorrowingBookGrid(wxCommandEvent& event);
 
 	void OnBackTitleButtonClicked(wxCommandEvent& event);
@@ -89,6 +91,9 @@ private:
 	void OnYearSelection(wxCommandEvent& event);
 	void OnMonthSelection(wxCommandEvent& event);
 
+	void OnEnterTextFocus(wxFocusEvent& _rCommandEvent);
+	void OnExitMenuButton(wxCommandEvent& event);
+
 	void ProccessYearSelection();
 	void ProccessMonthSelection();
 
@@ -97,6 +102,10 @@ private:
 	bool ProccessCurrentDate();
 	
 	bool HasBorrowingDayLong();
+
+	void TitleGridFocus();
+	void BookGridFocus();
+	void BorrowingGridFocus();
 
 	const int maxBookLend = 3;
 	int maxCard = 0;

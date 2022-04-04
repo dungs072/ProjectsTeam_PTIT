@@ -56,6 +56,12 @@ private:
 	void QuickSort( int l, int h);
 public:
 	BookTitle(const wxString& title);
+	~BookTitle()
+	{
+		delete saveFile;
+		delete linearList;
+		delete[]enterText;
+	}
 	DECLARE_EVENT_TABLE();
 
 };

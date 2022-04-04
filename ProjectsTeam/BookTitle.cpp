@@ -388,6 +388,7 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 	{
 		ISBN = string(wxOldText.mb_str());
 	}
+	SinglyLinkedList<Book>* tempList = linearList->GetData(ISBN)->GetListBook();
 	linearList->Delete(ISBN);
 	grid->SetCellValue(row, col, wxNewText);
 	ISBN = string(grid->GetCellValue(row, 0).mb_str());
@@ -403,7 +404,9 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 		grid->DeleteRows(row, 1);
 		//grid->Refresh();
 	}
+	title->SetListBook(tempList);
 	linearList->AddLast(title);
+
 	event.Skip();
 }
 void BookTitle::EditTable(Title* title, int row)
@@ -694,8 +697,9 @@ void BookTitle::DeleteSelectedRows()
 				string ISBN = string(grid->GetCellValue(i, 0).mbc_str());
 				if (ISBN != "")
 				{
-					linearList->GetData(ISBN)->GetListBook()->Clear();
+					SinglyLinkedList<Book>*tempList = linearList->GetData(ISBN)->GetListBook();
 					linearList->Delete(ISBN);
+					delete tempList;
 					maxItem--;
 
 				}
