@@ -33,6 +33,7 @@ private:
 	void LoadFile();
 	void UndoTitleData(int index);
 	void ChangeTitleData(int index,wxString data);
+	void SetReadOnLyDisplayTable();
 
 	bool CheckChangeData();
 	bool CheckBookName(wxString text);

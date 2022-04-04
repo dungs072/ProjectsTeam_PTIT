@@ -26,7 +26,7 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 	enterTextBackGround = new wxPanel(noteBook, -1, wxPoint(-1, -1), wxSize(300, 300));
 	searchTextBackGround = new wxPanel(noteBook, -1, wxPoint(-1, -1), wxSize(300, 300));
 	guidePanel = new wxPanel(mainPanel, -1, wxPoint(-1, -1), wxSize(450, 500));
-	noteTableBackGround = new wxPanel(mainPanel, -1, wxPoint(1050, 103), wxSize(200, 100));
+	hotKeyPanel = new wxPanel(mainPanel, -1, wxPoint(150, 590), wxSize(550, 30));
 	wxStaticText* labelText = new wxStaticText(labelTitleBackGround, -1,
 		wxT("DANH SACH THE DOC"), wxPoint(50, -1), wxSize(350, 30));
 	SetTextSize(*labelText, 30);
@@ -72,11 +72,9 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 	mainHBox->Add(listBox, 0, wxTOP, 20);
 	CreateEnterArea();
 	CreateSearchArea();
-	CreateNoteArea();
+	CreateHotKeyArea();
 	MakeStateCodeText();
 	//LoadFile();
-
-
 
 	guidePanel->SetBackgroundColour(lightYellow);
 
@@ -84,8 +82,8 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 	vGuideBox->Add(labelGuide, 0, wxLEFT, 175);
 	vGuideBox->Add(guidePanel, 0, wxBOTTOM, 5);
 
-	vRightBox->Add(vGuideBox, 0, wxTOP, 50);
-	mainHBox->Add(vRightBox, 0, wxLEFT, 20);
+	vRightBox->Add(vGuideBox, 0, wxTOP, 10);
+	mainHBox->Add(vRightBox, 0, wxLEFT|wxBOTTOM, 40);
 
 	noteBook->AddPage(enterTextBackGround, wxT("NHAP"));
 	noteBook->AddPage(searchTextBackGround, wxT("TIM KIEM"));
@@ -102,6 +100,7 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 	grid->Bind(wxEVT_GRID_RANGE_SELECTING, &ReaderCard::OnSelectingGrid, this);
 	grid->Bind(wxEVT_GRID_SELECT_CELL, &ReaderCard::OnSelectedGrid, this);
 	grid->Bind(wxEVT_GRID_LABEL_LEFT_CLICK, &ReaderCard::OnSelectedLabelGrid, this);
+
 	//SetSizer for mainPanel runs on it
 	mainPanel->SetSizer(mainHBox);
 	//Create Menu bar
@@ -115,7 +114,7 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 	//Set colors
 	enterTextBackGround->SetBackgroundColour(lightYellow);
 	searchTextBackGround->SetBackgroundColour(lightYellow);
-	noteTableBackGround->SetBackgroundColour(lightYellow);
+	hotKeyPanel->SetBackgroundColour(lightYellow);
 	labelTitleBackGround->SetBackgroundColour(lightBlue);
 	exitMenuButton->SetBackgroundColour(red);
 
@@ -146,8 +145,12 @@ void ReaderCard::CreateEnterArea()
 		enterText[i] = new wxTextCtrl(enterTextBackGround, -1, wxT(""),
 			wxPoint(10, 30 * (i + 1) + i * 20), wxSize(170, -1), wxTE_CENTER | wxTE_PROCESS_ENTER);
 		enterText[i]->SetBackgroundColour(lightBlue2);
+		enterText[i]->Connect(wxID_ANY, wxEVT_COMMAND_TEXT_UPDATED,
+			(wxObjectEventFunction)&ReaderCard::OnKeyDownTextCltrToUpper);
+		
 	}
-
+	enterText[0]->SetMaxLength(16);
+	enterText[1]->SetMaxLength(7);
 	GuideToUser();
 }
 void ReaderCard::CreateSearchArea()
@@ -174,23 +177,11 @@ void ReaderCard::CreateSearchArea()
 		displayText[i]->SetBackgroundColour(*wxWHITE);
 	}
 }
-void ReaderCard::CreateNoteArea()
+void ReaderCard::CreateHotKeyArea()
 {
-	wxColor lightRed, orange;
-	lightRed.Set(wxT("#FA8E8E"));
-	orange.Set(wxT("#FF9B70"));
-	wxStaticText* noteLabel = new wxStaticText(noteTableBackGround, -1,
-		wxT("GHI CHU"), wxPoint(50, 10), wxSize(100, -1), wxALIGN_CENTER_HORIZONTAL);
-	wxStaticText* note1 = new wxStaticText(noteTableBackGround, -1,
-		wxT("0: LA THE BI KHOA"), wxPoint(27, 40), wxSize(150, -1), wxALIGN_CENTER_HORIZONTAL);
-	wxStaticText* note2 = new wxStaticText(noteTableBackGround, -1,
-		wxT("1: LA THE HOAT DONG"), wxPoint(27, 70), wxSize(150, -1), wxALIGN_CENTER_HORIZONTAL);
-
-
-	//Set Color
-	noteLabel->SetBackgroundColour(lightRed);
-	note1->SetBackgroundColour(orange);
-	note2->SetBackgroundColour(orange);
+	wxStaticText* hotKeyText = new wxStaticText(hotKeyPanel, -1,
+		wxT("F2-SAVE, F9-MO HOAC TAT CHE DO XOA (DELETE-XOA THE DOC GIA,ENTER-NHAP THE DOC GIA)"),
+		wxPoint(10, 10), wxSize(-1, -1),wxALIGN_CENTRE);
 }
 void ReaderCard::GuideToUser()
 {
@@ -224,6 +215,19 @@ void ReaderCard::GuideToUser()
 		wxT(": 0 = THE BI KHOA, 1 = THE HOAT DONG"),
 		wxPoint(130, 140), wxSize(300, 20));
 	
+}
+void ReaderCard::OnKeyDownTextCltrToUpper(wxCommandEvent& _rCommandEvent)
+{
+	wxTextCtrl* pTextCtrl = dynamic_cast<wxTextCtrl*>(_rCommandEvent.GetEventObject());
+	if (pTextCtrl != NULL)
+	{
+		if (!pTextCtrl->IsModified())
+			return;
+		long insertionPoint = pTextCtrl->GetInsertionPoint();
+		pTextCtrl->ChangeValue(pTextCtrl->GetValue().Upper());
+		pTextCtrl->SetInsertionPoint(insertionPoint);
+	}
+	_rCommandEvent.Skip();
 }
 void ReaderCard::OnEnter(wxCommandEvent& WXUNUSED(event))
 {

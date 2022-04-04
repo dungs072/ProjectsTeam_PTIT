@@ -34,8 +34,8 @@ private:
 	wxPanel* mainPanel;
 	wxPanel* enterTextBackGround;
 	wxPanel* searchTextBackGround;
+	wxPanel* hotKeyPanel;
 	wxPanel* guidePanel;
-	wxPanel* noteTableBackGround;
 
 	void MoveDownToAnotherTextCtrl(wxTextCtrl** textCtrl, int length);
 	void MoveUpToAnotherTextCtrl(wxTextCtrl** textCtrl, int length);
@@ -43,7 +43,7 @@ private:
 	void SetTextSize(wxStaticText& text, int size);
 	void CreateEnterArea();
 	void CreateSearchArea();
-	void CreateNoteArea();
+	void CreateHotKeyArea();
 
 	void OnChangedPageNoteBook(wxCommandEvent& event);
 	void OnSave(wxCommandEvent& event);
@@ -52,6 +52,7 @@ private:
 	void EditCurrentCell(wxGridEvent& event);
 	void OnCardMenu(wxCommandEvent& event);
 	void OnShow(wxShowEvent& event);
+	void OnKeyDownTextCltrToUpper(wxCommandEvent& event);
 	void SaveFile();
 	void ShowMessageClear();
 	void DeleteSelectedRows();

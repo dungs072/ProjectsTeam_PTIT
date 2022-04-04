@@ -483,9 +483,17 @@ void FindInforBook::OnShow(wxShowEvent& event)
 	{
 		LoadFile();
 		ClearAllOldData();
+		SetReadOnLyDisplayTable();
 		maxItem = 0;
 	}
 	event.Skip();
+}
+void FindInforBook::SetReadOnLyDisplayTable()
+{
+	for (int i = 0; i < 5; i++)
+	{
+		displayText[i]->SetEditable(false);
+	}
 }
 void FindInforBook::DisplayInfor(wxString wxstr)
 {
