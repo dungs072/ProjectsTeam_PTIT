@@ -199,16 +199,30 @@ void ReaderCard::GuideToUser()
 	lightOrange.Set(wxT("#FCD2C0"));
 
 	wxStaticText* cardCodeText = new wxStaticText(guidePanel, -1, wxT("MA DOC GIA "),
-		wxPoint(10, 20), wxSize(100, 20),wxALIGN_CENTER);
+		wxPoint(10, 20), wxSize(100, 20));
 	wxStaticText* cardCodeGuide = new wxStaticText(guidePanel, -1,
 		wxT(": DUOC CHUONG TRINH LAY TU DONG"), 
-		wxPoint(100, 20), wxSize(300, 20), wxALIGN_CENTER);
+		wxPoint(130, 20), wxSize(300, 20));
 	wxStaticText* firstNameText = new wxStaticText(guidePanel, -1, wxT("HO DOC GIA "),
-		wxPoint(10, 50), wxSize(100, 20),wxALIGN_CENTER);
+		wxPoint(10, 50), wxSize(100, 20));
 	wxStaticText* firstNameGuide = new wxStaticText(guidePanel, -1,
-		wxT(": DUOC CHUONG TRINH LAY TU DONG"), 
-		wxPoint(100, 50), wxSize(300, 20), wxALIGN_CENTER);
-
+		wxT(": TOI DA 16 KI TU, CHI LAY KI TU CHU"), 
+		wxPoint(130, 50), wxSize(300, 20));
+	wxStaticText* lastNameText = new wxStaticText(guidePanel, -1, wxT("TEN DOC GIA "),
+		wxPoint(10, 80), wxSize(100, 20));
+	wxStaticText* lastNameGuide = new wxStaticText(guidePanel, -1,
+		wxT(": TOI DA 7 KI TU, CHI LAY KI TU CHU"),
+		wxPoint(130, 80), wxSize(300, 20));
+	wxStaticText* sexText = new wxStaticText(guidePanel, -1, wxT("PHAI"),
+		wxPoint(10, 110), wxSize(100, 20));
+	wxStaticText* sexGuide = new wxStaticText(guidePanel, -1,
+		wxT(": 0 = NAME, 1 = NU"),
+		wxPoint(130, 110), wxSize(300, 20));
+	wxStaticText* stateText = new wxStaticText(guidePanel, -1, wxT("TRANG THAI THE "),
+		wxPoint(10, 140), wxSize(100, 20));
+	wxStaticText* stateGuide = new wxStaticText(guidePanel, -1,
+		wxT(": 0 = THE BI KHOA, 1 = THE HOAT DONG"),
+		wxPoint(130, 140), wxSize(300, 20));
 	
 }
 void ReaderCard::OnEnter(wxCommandEvent& WXUNUSED(event))
