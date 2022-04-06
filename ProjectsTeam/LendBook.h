@@ -105,7 +105,7 @@ private:
 	void TitleGridFocus();
 	void BookGridFocus();
 	void BorrowingGridFocus();
-
+	void ShowMessageClear();
 	const int maxBookLend = 3;
 	int maxCard = 0;
 	int maxTitle = 0;

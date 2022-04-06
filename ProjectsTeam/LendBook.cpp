@@ -904,7 +904,7 @@ void LendBook::OnKeyDown(wxKeyEvent& event)
 
 	if (event.GetKeyCode() == WXK_DELETE)
 	{
-		DeleteBorrowingBook();
+		ShowMessageClear();
 		event.Skip();
 	}
 	if (event.GetKeyCode() == WXK_F2)
@@ -1045,6 +1045,17 @@ void LendBook::OnExitMenuButton(wxCommandEvent& WXUNUSED(event))
 {
 	this->Hide();
 	this->GetParent()->Show();
+}
+void LendBook::ShowMessageClear()
+{
+	wxMessageDialog* dialog = new wxMessageDialog(NULL,
+		wxT("Are you sure to clear?"), wxT("Warning"),
+		wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
+	if (borrowingBookGrid->IsSelection() && dialog->ShowModal() == wxID_YES)
+	{
+		DeleteBorrowingBook();
+	}
+	delete dialog;
 }
 BEGIN_EVENT_TABLE(LendBook, wxFrame)
 EVT_CHAR_HOOK(LendBook::OnKeyDown)

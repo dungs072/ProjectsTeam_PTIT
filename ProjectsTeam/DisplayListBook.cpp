@@ -1,7 +1,7 @@
 #include "DisplayListBook.h"
 DisplayListBook::DisplayListBook(const wxString& title) :wxFrame(NULL, -1,
 	title, wxDefaultPosition, wxSize(1280, 680))
-{	
+{
 	//temp color
 	wxColour lightYellow, greenColor, organColor, lightBlue, eggYellow, lightRed, red, middleYellow;
 	middleYellow.Set("#ECFF82");
@@ -22,7 +22,7 @@ DisplayListBook::DisplayListBook(const wxString& title) :wxFrame(NULL, -1,
 	takeNotePanel = new wxPanel(mainPanel, -1, wxDefaultPosition, wxSize(530, 30));
 	guidePanel = new wxPanel(mainPanel, -1, wxDefaultPosition, wxSize(530, 200));
 	//for hiding enter text
-	hideEnterText = new wxTextCtrl(enterPanel,-1,wxT(""),
+	hideEnterText = new wxTextCtrl(enterPanel, -1, wxT(""),
 		wxDefaultPosition, wxSize(-1, -1), wxTE_PROCESS_ENTER);
 	hideEnterText->SetEditable(false);
 	hideEnterText->Hide();
@@ -31,7 +31,7 @@ DisplayListBook::DisplayListBook(const wxString& title) :wxFrame(NULL, -1,
 		, wxDefaultPosition, wxSize(500, 30), wxALIGN_CENTER);
 	checkInput->SetTextSize(titleGrid, 15);
 	//Create Button
-	
+
 	backButton = new wxButton(enterPanel, -1, wxT("<<--BACK"), wxPoint(20, 220), wxSize(75, 20));
 	//Create BoxSizer
 	wxBoxSizer* mainHBox = new wxBoxSizer(wxHORIZONTAL);
@@ -50,6 +50,7 @@ DisplayListBook::DisplayListBook(const wxString& title) :wxFrame(NULL, -1,
 	//grid->SetRowLabelSize(50);
 	grid->DisableDragColSize();
 	grid->DisableDragRowSize();
+	grid->SetSelectionMode(wxGrid::wxGridSelectionModes::wxGridSelectRows);
 	//set sizer
 	vGridBox->Add(titleGrid, 0, wxTOP | wxALIGN_CENTER, 10);
 	vGridBox->Add(grid, 0, wxTOP, 10);
@@ -69,6 +70,10 @@ DisplayListBook::DisplayListBook(const wxString& title) :wxFrame(NULL, -1,
 	Bind(wxEVT_TEXT_ENTER, &DisplayListBook::OnEnter, this);
 	stateChoice->Bind(wxEVT_CHOICE, &DisplayListBook::OnChoice, this);
 	backButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DisplayListBook::OnButtonClicked, this);
+
+	grid->Bind(wxEVT_GRID_RANGE_SELECTING, &DisplayListBook::OnSelectingGrid, this);
+	grid->Bind(wxEVT_GRID_SELECT_CELL, &DisplayListBook::OnSelectedGrid, this);
+	grid->Bind(wxEVT_GRID_LABEL_LEFT_CLICK, &DisplayListBook::OnSelectedLabelGrid, this);
 
 	//Set color
 	titleGrid->SetBackgroundColour(lightBlue);
@@ -108,9 +113,9 @@ void DisplayListBook::CreateEnterArea()
 }
 void DisplayListBook::CreateKeyNoteArea()
 {
-	wxStaticText* keyNoteText = new wxStaticText(takeNotePanel, -1, 
-		wxT("KEYHOT:  F2 - SAVE FILE, NHAP LIEU ( ENTER - LUU MUC SACH, DELETE - XOA MUC SACH ) "),
-		wxPoint(10, 10), wxSize(500,15), wxALIGN_CENTER_HORIZONTAL);
+	wxStaticText* keyNoteText = new wxStaticText(takeNotePanel, -1,
+		wxT("KEYHOT:  F2 - SAVE FILE, F9 - MO CHE DO XOA (DELETE - XOA MUC SACH ),ENTER - NHAP VAO BANG"),
+		wxPoint(10, 10), wxSize(500, 15), wxALIGN_CENTER_HORIZONTAL);
 }
 void DisplayListBook::CreateGuideArea()
 {
@@ -131,9 +136,9 @@ void DisplayListBook::CreateGuideArea()
 		wxT(": 0 = CHO MUON DUOC, 1 = DA CO DOC GIA MUON, 2 = SACH DA THANH LY"),
 		wxPoint(100, 110), wxSize(550, 15));
 	wxStaticText* noteText3 = new wxStaticText(guidePanel, -1,
-		wxT(":  TOI DA 17 KI TU, CHI LAY KI TU CHU, SO VA DAU PHAY"), 
+		wxT(":  TOI DA 17 KI TU, CHI LAY KI TU CHU, SO VA DAU PHAY"),
 		wxPoint(100, 140), wxSize(300, 15));
-		//Set Color
+	//Set Color
 	titleGuide->SetBackgroundColour(orangeColor);
 }
 void DisplayListBook::OnShow(wxShowEvent& event)
@@ -151,10 +156,11 @@ void DisplayListBook::OnShow(wxShowEvent& event)
 		}
 		if (maxItem > 30)
 		{
-			grid->DeleteRows(30,maxItem-30);
+			grid->DeleteRows(30, maxItem - 30);
 		}
 		maxItem = 0;
 		LoadFile();
+		SetModeDelete(false);
 	}
 	else
 	{
@@ -174,6 +180,13 @@ void DisplayListBook::OnKeyDown(wxKeyEvent& event)
 	{
 		ShowMessageClear();
 	}
+	else if (event.GetKeyCode() == WXK_F9)
+	{
+		isModeDelete = !isModeDelete;
+		grid->ClearSelection();
+		SetModeDelete(isModeDelete);
+	}
+
 	event.Skip();
 }
 void DisplayListBook::OnChoice(wxCommandEvent& event)
@@ -188,7 +201,7 @@ void DisplayListBook::OnEnter(wxCommandEvent& event)
 		enterText->SetFocus();
 		return;
 	}
-	
+
 	if (stateChoice->GetSelection() == 0)
 	{
 		checkInput->ErrorMessageBox("CHUA CHON TRANG THAI SACH");
@@ -254,7 +267,7 @@ void DisplayListBook::EditCurrentCell(wxGridEvent& event)
 			currentTitle->GetListBook()->FindSinglyNode(bookCode)->data.SetPos(tempStr);
 		}
 	}
-	
+
 }
 void DisplayListBook::ShowMessageClear()
 {
@@ -271,38 +284,35 @@ void DisplayListBook::DeleteSelectedRows()
 {
 	if (grid->IsSelection())
 	{
-		wxGridUpdateLocker locker(grid);
-		for (int i = 0; i < grid->GetNumberRows();)
+		int row = grid->GetSelectedRows()[0];
+		string bookCode = string(grid->GetCellValue(row, 0).mbc_str());
+		if (bookCode != "")
 		{
-			if (grid->IsInSelection(i, 0))
+			string stateBook = string(grid->GetCellValue(row, 1).mb_str());
+			if (stateBook == "DA CO DOC GIA MUON")
 			{
-				//wxMessageBox(wxString::Format("%i",cardCode));
-
-				string bookCode = string(grid->GetCellValue(i, 0).mbc_str());
-				if (bookCode != "")
-				{
-					currentTitle->GetListBook()->Remove(bookCode);
-					maxItem--;
-
-				}
-				grid->DeleteRows(i, 1);
-				if (grid->GetNumberRows() < 30)
-				{
-					int numberRowsNeed = 30 - grid->GetNumberRows();
-
-					grid->AppendRows(numberRowsNeed);
-				}
+				checkInput->ErrorMessageBox("SACH DA DUOC MUON, KHONG THE XOA");
+				return;
 			}
-			else
-				i++;
+			currentTitle->GetListBook()->Remove(bookCode);
+			maxItem--;
+
 		}
+		grid->DeleteRows(row, 1);
+		if (grid->GetNumberRows() < 30)
+		{
+			int numberRowsNeed = 30 - grid->GetNumberRows();
+
+			grid->AppendRows(numberRowsNeed);
+		}
+
 	}
 }
 void DisplayListBook::SaveToList()
 {
 	if (maxItem + 1 > grid->GetNumberRows())
 	{
-		grid->AppendRows(maxItem-grid->GetNumberRows()+1);
+		grid->AppendRows(maxItem - grid->GetNumberRows() + 1);
 	}
 	string bookCode = currentTitle->GetISBN() + checkInput->CastIntToString(count);
 	count++;
@@ -321,14 +331,14 @@ void DisplayListBook::SaveToList()
 		grid->SetCellAlignment(maxItem, i, wxALIGN_CENTER, wxALIGN_CENTER);
 	}
 	grid->SetReadOnly(maxItem, 0);
-	
+
 	Book tempBook(bookCode, index - 1, string(enterText->GetValue().mb_str()));
 	enterText->Clear();
 	stateChoice->SetSelection(0);
 	currentTitle->GetListBook()->Add(tempBook);
 	maxItem++;
-	
-	
+
+
 }
 void DisplayListBook::SaveFile()
 {
@@ -356,13 +366,15 @@ void DisplayListBook::LoadFile()
 		}
 		grid->SetReadOnly(maxItem, 0);
 		maxItem++;
+		
 		if (maxItem + 1 > grid->GetNumberRows())
 		{
 			grid->AppendRows(1);
 		}
+
 		tempBook = tempBook->next;
 	}
-	if (maxItem == 0) 
+	if (maxItem == 0)
 	{
 		count = 1;
 		return;
@@ -374,7 +386,7 @@ void DisplayListBook::LoadFile()
 		numberText += bookCode[i];
 	}
 
-	count =checkInput->CastStringToNumber(numberText) + 1;
+	count = checkInput->CastStringToNumber(numberText) + 1;
 }
 bool DisplayListBook::CheckStateBook(wxString text)
 {
@@ -386,6 +398,39 @@ bool DisplayListBook::CheckStateBook(wxString text)
 bool DisplayListBook::CheckPos(wxString text)
 {
 	return checkInput->HasNumberAlphabetAndComma(text);
+}
+
+void DisplayListBook::OnSelectingGrid(wxGridRangeSelectEvent& WXUNUSED(event))
+{
+	if (grid->IsSelection())
+	{
+		grid->ClearSelection();
+	}
+}
+void DisplayListBook::OnSelectedGrid(wxCommandEvent& WXUNUSED(event))
+{
+	if (isModeDelete)
+	{
+		return;
+	}
+	grid->ClearSelection();
+}
+void DisplayListBook::OnSelectedLabelGrid(wxCommandEvent& WXUNUSED(event))
+{
+	if (grid->IsSelection())
+	{
+		grid->ClearSelection();
+	}
+}
+void DisplayListBook::SetModeDelete(bool state)
+{
+	for (int i = 0; i < maxItem; i++)
+	{
+		for (int j = 1; j < 3; j++)
+		{
+			grid->SetReadOnly(i, j, state);
+		}
+	}
 }
 BEGIN_EVENT_TABLE(DisplayListBook, wxFrame)
 EVT_CHAR_HOOK(DisplayListBook::OnKeyDown)

@@ -43,6 +43,12 @@ private:
 	void SaveToList();
 	void SaveFile();
 	void LoadFile();
+
+	void OnSelectingGrid(wxGridRangeSelectEvent& event);
+	void OnSelectedGrid(wxCommandEvent& event);
+	void OnSelectedLabelGrid(wxCommandEvent& event);
+	void SetModeDelete(bool state);
+	bool isModeDelete = false;
 public:
 	DisplayListBook(const wxString& title);
 	void SetTitle(Title* title)
@@ -51,11 +57,6 @@ public:
 	}
 	void SetListTitle(TitleList* list)
 	{
-		if (titleList != nullptr)
-		{
-			delete titleList;
-			titleList = nullptr;
-		}
 		titleList = list;
 	}
 	DECLARE_EVENT_TABLE();
