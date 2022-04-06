@@ -46,6 +46,8 @@ FindInforBook::FindInforBook(const wxString& title) :
 	grid->SetColLabelValue(0, wxT("MA SACH"));
 	grid->SetColLabelValue(1, wxT("TRANG THAI SACH"));
 	grid->SetRowLabelSize(50);
+	grid->DisableDragColSize();
+	grid->DisableDragRowSize();
 	//Create button
 	wxButton* exitMenuButton = new wxButton(mainPanel, -1, 
 		wxT("EXIT MENU"), wxPoint(10, 600), wxSize(100, 20));
@@ -200,6 +202,8 @@ void FindInforBook::OnEnter(wxCommandEvent& WXUNUSED(event))
 		if (!CheckBookName(myWxStr))
 		{
 			checkInput->ErrorMessageBox("LOI TEN SACH");
+			
+			SetReadOnLyDisplayTable();
 			searchEnterText->SetFocus();
 			return;
 		}
@@ -375,6 +379,7 @@ void FindInforBook::OnEnter(wxCommandEvent& WXUNUSED(event))
 }
 void FindInforBook::UndoTitleData(int index)
 {
+	if (foundTitle == nullptr) { return; }
 	if (index == 0)
 	{
 		displayText[index]->SetValue(foundTitle->GetISBN());
@@ -490,7 +495,7 @@ void FindInforBook::OnShow(wxShowEvent& event)
 }
 void FindInforBook::SetReadOnLyDisplayTable()
 {
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 6; i++)
 	{
 		displayText[i]->SetEditable(false);
 	}
@@ -514,6 +519,8 @@ void FindInforBook::DisplayInfor(wxString wxstr)
 	if (foundTitle == nullptr)
 	{
 		checkInput->ErrorMessageBox("KHONG TIM THAY DAU SACH YEU CAU");
+		ClearAllOldData();
+		SetReadOnLyDisplayTable();
 		return;
 	}
 	ClearAllOldData();
@@ -564,6 +571,10 @@ void FindInforBook::ClearAllOldData()
 	{
 		for (int j = 0; j < 2; j++)
 		{
+			if (j == 0)
+			{
+				grid->SetReadOnly(i, j, false);
+			}
 			grid->SetCellValue(i,j,"");
 		}
 	}

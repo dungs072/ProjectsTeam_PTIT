@@ -10,6 +10,7 @@
 #include"AdminMenu.h"
 #include"FindInforBook.h"
 #include"LendBook.h"
+#include"GiveBook.h"
 #include"DateTime.h"
 using std::cout;
 using std::endl;
@@ -39,6 +40,8 @@ bool ReaderCardApp::OnInit()
 	search->Show();*/
 	/*LendBook* lendBook = new LendBook("CHO MUON SACH");
 	lendBook->Show();*/
+	/*GiveBook* giveBook = new GiveBook("TRA SACH");
+	giveBook->Show();*/
 	return true;
 }
 //class ReaderCardApp :public wxApp

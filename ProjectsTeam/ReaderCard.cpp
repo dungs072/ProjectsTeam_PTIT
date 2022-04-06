@@ -212,7 +212,7 @@ void ReaderCard::GuideToUser()
 	wxStaticText* sexText = new wxStaticText(guidePanel, -1, wxT("PHAI"),
 		wxPoint(10, 110), wxSize(100, 20));
 	wxStaticText* sexGuide = new wxStaticText(guidePanel, -1,
-		wxT(": 0 = NAME, 1 = NU"),
+		wxT(": 0 = NAM, 1 = NU"),
 		wxPoint(130, 110), wxSize(300, 20));
 	wxStaticText* stateText = new wxStaticText(guidePanel, -1, wxT("TRANG THAI THE "),
 		wxPoint(10, 140), wxSize(100, 20));
@@ -452,8 +452,8 @@ void ReaderCard::OnShow(wxShowEvent& event)
 			grid->DeleteRows(30, numberRowIsFilled - 30);
 		}
 		numberRowIsFilled = saveFile->GetSizeArray();
-		SetModeDelete(false);
 		LoadFile();
+		SetModeDelete(false);
 	}
 	event.Skip();
 }
@@ -504,6 +504,10 @@ void ReaderCard::LoadFile()
 		grid->SetCellValue(i, 4, arr[i]->GetState());
 		for (int j = 0; j < 5; j++)
 		{
+			if (j == 0)
+			{
+				grid->SetReadOnly(i, j);
+			}
 			grid->SetCellAlignment(i, j, wxALIGN_CENTER, wxALIGN_CENTER);
 		}
 

@@ -167,6 +167,7 @@
     <ClCompile Include="DoublyLinkedList.cpp" />
     <ClCompile Include="FindInforBook.cpp" />
     <ClCompile Include="FormatText.cpp" />
+    <ClCompile Include="GiveBook.cpp" />
     <ClCompile Include="LendBook.cpp" />
     <ClCompile Include="LinearList.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -199,6 +200,7 @@
     <ClInclude Include="DoublyNode.h" />
     <ClInclude Include="FindInforBook.h" />
     <ClInclude Include="FormatText.h" />
+    <ClInclude Include="GiveBook.h" />
     <ClInclude Include="LendBook.h" />
     <ClInclude Include="LinearList.h" />
     <ClInclude Include="Queue.h" />

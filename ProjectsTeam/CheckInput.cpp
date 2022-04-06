@@ -47,6 +47,7 @@ bool CheckInput::IsAlphabet(wxString text)
 bool CheckInput::IsWhiteSpaceAllText(wxString text)
 {
 	std::string strText = std::string(text.mb_str());
+	if (strText == "") { return true; }
 	for (char str : strText)
 	{
 		if (str != ' ')
@@ -131,6 +132,7 @@ bool CheckInput::IsRightCodeState(int maxNumber, int currentNumber)
 }
 void CheckInput::ModifyTextInput(wxString& text)
 {
+	if (text == "") { return; }
 	std::string strText = std::string(text.mb_str());
 	ModifyString(strText);
 	wxString myWxString(strText.c_str(), wxConvUTF8);
