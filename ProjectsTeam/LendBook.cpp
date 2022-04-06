@@ -665,9 +665,19 @@ void LendBook::ProccessLeapYear()
 	}
 	else
 	{
-		for (int i = dayArray.GetCount(); i > 28; i--)
+		if (dayArray.GetCount() < 28)
 		{
-			dayArray.pop_back();
+			for (int i = dayArray.GetCount(); i < 28; i++)
+			{
+				dayArray.push_back(controlDateTime->GetDay()[i]);
+			}
+		}
+		else
+		{
+			for (int i = dayArray.GetCount(); i > 28; i--)
+			{
+				dayArray.pop_back();
+			}
 		}
 		int daySelect = min((int)(dayArray.GetCount() - 1), dayChoice->GetSelection());
 		dayChoice->Clear();
