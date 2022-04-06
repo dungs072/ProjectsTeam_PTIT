@@ -41,7 +41,7 @@ namespace DataStructure
 			return false;
 		}
 
-		
+
 	public:
 		~DoublyLinkedList()
 		{
@@ -416,6 +416,10 @@ namespace DataStructure
 				std::cout << p->data << std::endl;
 				p = p->next;
 			}
+		}
+		void AddOrder(T data)
+		{
+			
 		}
 	};
 }

@@ -31,6 +31,10 @@ private:
 	void EditCurrentCell(wxGridEvent& event);
 	void OnExitMenu(wxCommandEvent& event);
 	void OnShow(wxShowEvent& event);
+
+	void OnSelectingGrid(wxGridRangeSelectEvent& event);
+	void OnSelectedGrid(wxCommandEvent& event);
+	void OnSelectedLabelGrid(wxCommandEvent& event);
 	
 	void EditTable(Title* title,int row);
 	void SwitchPanel(bool state);
@@ -49,7 +53,12 @@ private:
 	bool CheckYearPublic(wxString text);
 	bool CheckType(wxString text);
 	bool CheckDuplicateISBN(wxString text,int row);
+
+	void SetModeDelete(bool state);
 	int CompareTitle(Title* t1, Title* t2);
+
+
+	bool isModeDelete = false;
 	//quick sort
 	void Swap(Title*t1, Title* t2);
 	int partition( int l, int h);

@@ -24,6 +24,7 @@ private:
 	wxMenuBar* menuBar;
 	wxMenu* file;
 	string* stateText;
+	string* sexText;
 	wxNotebook* noteBook;
 	wxCheckBox** sexCheckBox;
 	wxCheckBox** stateCheckBox;
@@ -36,6 +37,8 @@ private:
 	wxPanel* searchTextBackGround;
 	wxPanel* hotKeyPanel;
 	wxPanel* guidePanel;
+
+	
 
 	void MoveDownToAnotherTextCtrl(wxTextCtrl** textCtrl, int length);
 	void MoveUpToAnotherTextCtrl(wxTextCtrl** textCtrl, int length);
@@ -62,8 +65,7 @@ private:
 	void ModifyTextInput(wxString& wxStr);
 	void ModifyString(string& str);
 	void ErrorMessageBox(int pos, string message);
-	void MakeStateCodeText();
-	void UpperWxString(wxTextCtrl* textCtrl);
+	void MakeEnCodeText();
 	void UpperWxString(wxString& wxStr);
 	void WriteHashCode(wxTextCtrl** textCtrlList, ulong& hashCode, wxString& wxStrCode);
 	void SetDefaultColorForRow();
@@ -80,7 +82,6 @@ private:
 	bool IsWhiteSpaceAllText(wxString wxStr);
 	bool IsWord(wxTextCtrl* textCtrl);
 	bool IsWord(wxString wxStr);
-	bool IsRightSex(wxTextCtrl* textCtrl);
 	bool IsRightSex(wxString& wxStr);
 	bool IsRightCodeState(int maxNum, int number);
 	int CastWxStringToInt(wxTextCtrl* textCtrl);

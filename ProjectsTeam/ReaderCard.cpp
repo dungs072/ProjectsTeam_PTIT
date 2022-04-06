@@ -41,6 +41,8 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 	wxBoxSizer* vGuideBox = new wxBoxSizer(wxVERTICAL);
 
 	listBox->Add(labelTitleBackGround, 0, wxALIGN_CENTER);
+	//Create choice
+
 	//create grid;
 	grid = new wxGrid(mainPanel, -1, wxDefaultPosition, wxSize(708, 500), wxEVT_GRID_CELL_CHANGED);
 	grid->CreateGrid(DefaultRows, 5);
@@ -73,7 +75,7 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 	CreateEnterArea();
 	CreateSearchArea();
 	CreateHotKeyArea();
-	MakeStateCodeText();
+	MakeEnCodeText();
 	//LoadFile();
 
 	guidePanel->SetBackgroundColour(lightYellow);
@@ -151,6 +153,9 @@ void ReaderCard::CreateEnterArea()
 	}
 	enterText[0]->SetMaxLength(16);
 	enterText[1]->SetMaxLength(7);
+	enterText[2]->SetMaxLength(1);
+	enterText[3]->SetMaxLength(1);
+
 	GuideToUser();
 }
 void ReaderCard::CreateSearchArea()
@@ -254,22 +259,13 @@ void ReaderCard::SaveToList(wxTextCtrl** textCtrlList, int length, int& pos)
 	}
 	ModifyTextInput(textCtrlList[3]);
 	int stateCard = CastWxStringToInt(textCtrlList[3]);
+	int sexCard = CastWxStringToInt(textCtrlList[2]);
 	if (stateCard == -1)
 	{
 		ErrorMessageBox(pos, "Loi Nhap Lieu ");
 		return;
 	}
-	if (!IsRightCodeState(1, stateCard))
-	{
-		ErrorMessageBox(pos, "Loi Nhap Lieu ");
-		return;
-	}
-	if (!IsRightSex(textCtrlList[2]))
-	{
-		ErrorMessageBox(pos, "Loi Nhap Lieu ");
-		return;
-	}
-	for (int j = 0; j < 3; j++)
+	for (int j = 0; j < 2; j++)
 	{
 		if (!IsWord(textCtrlList[j]))
 		{
@@ -288,7 +284,7 @@ void ReaderCard::SaveToList(wxTextCtrl** textCtrlList, int length, int& pos)
 		}
 	}
 	textCtrlList[3]->SetLabelText(stateText[stateCard]);
-
+	textCtrlList[2]->SetLabelText(sexText[sexCard]);
 	ulong cardCode = 0;
 	wxString wxStrCode;
 	WriteHashCode(textCtrlList, cardCode, wxStrCode);
@@ -310,7 +306,7 @@ void ReaderCard::SaveToList(wxTextCtrl** textCtrlList, int length, int& pos)
 	for (i = 1; i < 5; i++)
 	{
 		ModifyTextInput(textCtrlList[i - 1]);
-		UpperWxString(textCtrlList[i - 1]);
+		//UpperWxString(textCtrlList[i - 1]);
 		grid->SetCellValue(pos, i, textCtrlList[i - 1]->GetValue());
 		grid->SetCellAlignment(pos, i, wxALIGN_CENTER, wxALIGN_CENTER);
 
@@ -370,6 +366,20 @@ void ReaderCard::OnChangedPageNoteBook(wxCommandEvent& WXUNUSED(event))
 }
 void ReaderCard::OnKeyDown(wxKeyEvent& event)
 {
+	if (enterText[2]->HasFocus()||enterText[3]->HasFocus())
+	{
+		int state = event.GetKeyCode();
+		if (state == 49 || state == 48||
+			state ==WXK_BACK||state ==WXK_UP||
+			state == WXK_DOWN||state ==13)
+		{
+			event.Skip();
+		}
+		else
+		{
+			return;
+		}
+	}
 	if (event.GetKeyCode() == WXK_F2)
 	{
 		SaveFile();
@@ -435,12 +445,14 @@ void ReaderCard::OnShow(wxShowEvent& event)
 	if (event.IsShown())
 	{
 		isModeDelete = false;
+		
 		grid->ClearSelection();
 		if (numberRowIsFilled > 30)
 		{
 			grid->DeleteRows(30, numberRowIsFilled - 30);
 		}
 		numberRowIsFilled = saveFile->GetSizeArray();
+		SetModeDelete(false);
 		LoadFile();
 	}
 	event.Skip();
@@ -636,15 +648,10 @@ void ReaderCard::ErrorMessageBox(int pos, std::string message)
 	if (pos < 0) { return; }
 	if (noteBook->GetSelection() == 1) { grid->DeleteRows(pos, 1); }
 }
-void ReaderCard::MakeStateCodeText()
+void ReaderCard::MakeEnCodeText()
 {
 	stateText = new std::string[2]{ "KHOA","HOAT DONG" };
-}
-void ReaderCard::UpperWxString(wxTextCtrl* textCtrl)
-{
-	wxString wxStr = textCtrl->GetLineText(0);
-	UpperWxString(wxStr);
-	textCtrl->SetValue(wxStr);
+	sexText = new std::string[2]{ "NAM","NU" };
 }
 void ReaderCard::UpperWxString(wxString& wxStr)
 {
@@ -787,17 +794,6 @@ bool ReaderCard::IsWord(wxString wxStr)
 		}
 	}
 	return true;
-}
-bool ReaderCard::IsRightSex(wxTextCtrl* textCtrl)
-{
-	std::string strText = std::string(textCtrl->GetLineText(0).mb_str());
-	wxString wxStr = textCtrl->GetLineText(0);
-	if (IsRightSex(wxStr))
-	{
-		textCtrl->SetLabelText(wxStr);
-		return true;
-	}
-	return false;
 }
 bool ReaderCard::IsRightSex(wxString& wxStr)
 {
