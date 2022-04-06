@@ -1,15 +1,15 @@
 #pragma once
 #include<iostream>
 #include<string>
-//#include"BSTree.h"
-#include"DoublyLinkedList.h"
+#include"BSTree.h"
 #include"BorrowBook.h"
 typedef unsigned long long ulong;
-using namespace DataStructure;
 using  std::string;
 using std::cout;
 using std::endl;
-class CardReader
+//more efficiency you have to create abstract class to have key code
+//for every class must have to use BST Tree
+class CardReader 
 {
 private:
 	ulong cardCode;
@@ -17,7 +17,7 @@ private:
 	string firstName;
 	string sex;
 	string state;
-	DoublyLinkedList<BorrowBook>* listBorrowBook = nullptr;
+	BorrowBookList* listBorrowBook = nullptr;
 public:
 	CardReader(ulong cardCode ,string firstName,string lastName, string sex,string state)
 	{
@@ -26,7 +26,7 @@ public:
 		this->firstName = firstName;
 		this->sex = sex;
 		this->state = state;
-		listBorrowBook = new DoublyLinkedList<BorrowBook>();
+		listBorrowBook = new BorrowBookList();
 	}
 	CardReader() 
 	{
@@ -35,7 +35,7 @@ public:
 		firstName = "";
 		sex = "";
 		state = "";
-		listBorrowBook = new DoublyLinkedList<BorrowBook>();
+		listBorrowBook = new BorrowBookList();
 	}
 	~CardReader()
 	{
@@ -49,7 +49,7 @@ public:
 	string GetFirstName() { return firstName; }
 	string GetSex() { return sex; }
 	string GetState() { return state; }
-	DoublyLinkedList<BorrowBook>* GetListBorrowBook() { return listBorrowBook; }
+	BorrowBookList* GetListBorrowBook() { return listBorrowBook; }
 	
 	void SetCardCode(ulong cardCode)
 	{
@@ -71,7 +71,7 @@ public:
 	{
 		this->state = state;
 	}
-	void SetListBorrowBook(DoublyLinkedList<BorrowBook>* list)
+	void SetListBorrowBook(BorrowBookList* list)
 	{
 		if (listBorrowBook != nullptr)
 		{

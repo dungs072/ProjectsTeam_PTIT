@@ -3,7 +3,6 @@
 #include<wx/grid.h>
 #include"CheckInput.h"
 #include"SaveTextFile.h"
-#include"LinearList.h"
 #include"SortAlgorithm.h"
 using std::string;
 class FindInforBook:public wxFrame

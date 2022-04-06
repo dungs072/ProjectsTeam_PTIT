@@ -520,7 +520,7 @@ void ReaderCard::DeleteSelectedRows()
 
 		//wxMessageBox(wxString::Format("%i",cardCode));
 
-		DoublyLinkedList<BorrowBook>* tempList = cardReaderTree->Search(cardCode)
+		BorrowBookList* tempList = cardReaderTree->Search(cardCode)
 			->data->GetListBorrowBook();
 		if (tempList->Length() > 0)
 		{
@@ -724,7 +724,7 @@ void ReaderCard::EditCurrentCell(wxGridEvent& event)
 	string stateStr = string(grid->GetCellValue(row, 4).mb_str());
 
 	//fix bug when edit and have to move list of old card to modified card
-	DoublyLinkedList<BorrowBook>* tempList = cardReaderTree->Search(key)->data->GetListBorrowBook();
+	BorrowBookList* tempList = cardReaderTree->Search(key)->data->GetListBorrowBook();
 	cardReaderTree->Delete(key);
 
 	CardReader* temp = new CardReader(key, lastName, firstName, sex, stateStr);

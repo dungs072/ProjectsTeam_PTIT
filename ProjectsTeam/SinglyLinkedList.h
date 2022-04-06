@@ -91,38 +91,6 @@ namespace DataStructure
 			firstSinglyNode = temp;
 
 		}
-		void Remove(string code)
-		{
-
-			if (firstSinglyNode == nullptr) { return; }
-			SinglyNode<T>* p = firstSinglyNode;
-
-			if (code == firstSinglyNode->data.GetBookCode()) {
-				if (firstSinglyNode->next != nullptr) {
-					firstSinglyNode = firstSinglyNode->next;
-				}
-				else {
-					SetListnullptr();
-				}
-				delete p;
-				p = nullptr;
-				lengthList--;
-				return;
-			}
-
-			p = FindSinglyNode(code);
-			if (p == nullptr) { return; }// not have data in linked List
-			SinglyNode<T>* prevSinglyNode = FindPreviousSinglyNode(code);
-			prevSinglyNode->next = p->next;
-			if (p == lastSinglyNode)
-			{
-				lastSinglyNode = prevSinglyNode;
-			}
-			p->next = nullptr;
-			delete p;
-			p = nullptr;
-			lengthList--;
-		}
 		void Remove(T dataDelete)
 		{
 			if (firstSinglyNode == nullptr) { return; }
@@ -153,7 +121,30 @@ namespace DataStructure
 			delete p;
 			p = nullptr;
 			lengthList--;
-			return;
+		}
+		void Remove(SinglyNode<T>* prevNode, SinglyNode<T>* curNode)
+		{
+			//just use in methods in case curNode and prevNode have in SinglyLinkedList;
+			if (curNode == nullptr)
+			{
+				return;
+			}
+			if (prevNode == nullptr)
+			{
+				RemoveFirst();
+				
+			}
+			else if (curNode == lastSinglyNode)
+			{
+				RemoveLast();
+			}
+			else
+			{
+				prevNode->next = curNode->next;
+				curNode->next = nullptr;
+				delete curNode;
+				lengthList--;
+			}
 		}
 		void RemoveFirst()
 		{
@@ -195,24 +186,6 @@ namespace DataStructure
 			while (p->next != nullptr)
 			{
 				if (p->next->data == data)
-				{
-					return p;
-				}
-				p = p->next;
-			}
-			return nullptr;
-		}
-		SinglyNode<T>* FindPreviousSinglyNode(string code)
-		{
-			if (firstSinglyNode == nullptr) { return nullptr; }
-			if (code == firstSinglyNode->data.GetBookCode())
-			{
-				return nullptr;
-			}
-			SinglyNode<T>* p = firstSinglyNode;
-			while (p->next != nullptr)
-			{
-				if (p->next->data.GetBookCode() == code)
 				{
 					return p;
 				}
@@ -280,20 +253,6 @@ namespace DataStructure
 			while (p != nullptr)
 			{
 				if (p->data == data)
-				{
-					return p;
-				}
-				p = p->next;
-			}
-			return nullptr;
-		}
-		SinglyNode<T>* FindSinglyNode(string code)
-		{
-			if (firstSinglyNode == nullptr) { return nullptr; }
-			SinglyNode<T>* p = firstSinglyNode;
-			while (p != nullptr)
-			{
-				if (p->data.GetBookCode() == code)
 				{
 					return p;
 				}

@@ -1,7 +1,7 @@
 #pragma once
 #include<iostream>
 #include<string>
-#include"SinglyLinkedList.h"
+#include"LinearList.h"
 #include"Book.h"
 using namespace DataStructure;
 using std::string;
@@ -15,7 +15,7 @@ private:
 	string author;
 	uint publicYear;
 	string type;
-	SinglyLinkedList<Book>* bookList = nullptr;
+	BookList* bookList = nullptr;
 	//con tro nua;
 public:
 	Title(string ISBN, string bookName, uint pageNumber,
@@ -27,7 +27,7 @@ public:
 		this->author = author;
 		this->publicYear = publicYear;
 		this->type = type;
-		bookList = new SinglyLinkedList<Book>();
+		bookList = new BookList();
 	}
 	Title()
 	{
@@ -37,7 +37,7 @@ public:
 		this->author = "";
 		this->publicYear = 0;
 		this->type = "";
-		bookList = new SinglyLinkedList<Book>();
+		bookList = new BookList();
 	}
 	~Title()
 	{
@@ -50,7 +50,7 @@ public:
 	void SetAuthor(string author);
 	void SetPublicYear(uint publicYear);
 	void SetType(string type);
-	void SetListBook(SinglyLinkedList<Book>* list)
+	void SetListBook(BookList* list)
 	{
 		if (bookList != nullptr)
 		{
@@ -75,6 +75,51 @@ public:
 	string GetAuthor();
 	uint GetPublicYear();
 	string GetType();
-	SinglyLinkedList<Book>* GetListBook();
+	BookList* GetListBook();
+};
+class TitleList
+{
+private:
+	LinearList<Title>* listTitle = nullptr;
+public:
+	TitleList(int maxLength)
+	{
+		listTitle = new LinearList<Title>(maxLength);
+	}
+	~TitleList()
+	{
+		listTitle->Clear();
+	}
+	LinearList<Title>* GetList()
+	{
+		return listTitle;
+	}
+	bool HasInList(string ISBN, int& pos)
+	{
+		for (int i = 0; i < listTitle->Length(); i++)
+		{
+			if (listTitle->GetData(i)->GetISBN() == ISBN)
+			{
+				pos = i;
+				return true;
+			}
+		}
+		pos = -1;
+		return false;
+	}
+	void Delete(string ISBN)
+	{
+		int pos = 0;
+		if (!HasInList(ISBN, pos)) { return; }
+		if (pos == -1) { return; }
+		listTitle->Delete(pos);
+	}
+	Title* GetData(string ISBN)
+	{
+		int pos = -1;
+		if (!HasInList(ISBN, pos)) { return nullptr; }
+		if (pos == -1) { return nullptr; }
+		return listTitle->GetData(pos);
+	}
 };
 

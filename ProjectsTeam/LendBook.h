@@ -6,7 +6,6 @@
 #include"SaveTextFile.h"
 #include"CheckInput.h"
 #include"BSTree.h"
-#include"LinearList.h"
 #include"ControlDateTime.h"
 typedef unsigned long long ulong;
 class LendBook:public wxFrame
@@ -15,7 +14,7 @@ private:
 
 	//Back end
 	BSTree<CardReader>* treeCardReader;
-	LinearList<Title>* linearList;
+	TitleList* titleList;
 	CardReader* foundCardReader = nullptr;
 	Title* selectedTitle = nullptr;
 	Book* selectedBook = nullptr;

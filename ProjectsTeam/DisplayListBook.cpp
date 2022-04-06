@@ -281,7 +281,6 @@ void DisplayListBook::DeleteSelectedRows()
 				string bookCode = string(grid->GetCellValue(i, 0).mbc_str());
 				if (bookCode != "")
 				{
-
 					currentTitle->GetListBook()->Remove(bookCode);
 					maxItem--;
 
@@ -333,13 +332,13 @@ void DisplayListBook::SaveToList()
 }
 void DisplayListBook::SaveFile()
 {
-	if (linearList == nullptr)
+	if (titleList == nullptr)
 	{
 		wxMessageBox("Danh sach dau sach rong");
 		return;
 	}
-	Title** arr = linearList->ToArray();
-	saveFile->WriteToFile(arr, linearList->Length());
+	Title** arr = titleList->GetList()->ToArray();
+	saveFile->WriteToFile(arr, titleList->GetList()->Length());
 	wxMessageBox(wxT("LIST IS SAVED SUCCESSFULLY"));
 }
 void DisplayListBook::LoadFile()

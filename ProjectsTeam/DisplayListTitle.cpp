@@ -16,7 +16,7 @@ DisplayListTitle::DisplayListTitle(const wxString& title) : wxFrame(NULL, -1, ti
 	};
 	saveFile = new SaveTextFile<Title>("BookTitle.txt");
 	maxItem = saveFile->GetSizeArray();
-	linearList = new LinearList<Title>(100);
+	titleList = new TitleList(100);
 	//child window
 	listBook = new DisplayListBook(wxT("DANH MUC SACH"));
 	this->AddChild(listBook);
@@ -215,7 +215,7 @@ void DisplayListTitle::OnSelectedGrid(wxCommandEvent& event)
 		return;
 	}
 
-	selectedTitle = linearList->GetData(ISBN);
+	selectedTitle = titleList->GetData(ISBN);
 	bookNameText->SetLabelText(selectedTitle->GetBookName());
 	bookButton->Show(true);
 
@@ -317,10 +317,10 @@ void DisplayListTitle::EditCurrentCell(wxGridEvent& event)
 		
 	}
 	//set all book again acording to changing ISBN
-	SinglyLinkedList<Book>* tempBookList = linearList->GetData(ISBN)->GetListBook();
+	BookList* tempBookList = titleList->GetData(ISBN)->GetListBook();
 	SinglyNode<Book>* tempBook = tempBookList->First();
 
-	linearList->Delete(ISBN);
+	titleList->Delete(ISBN);
 	grid->SetCellValue(row, col, wxNewText);
 
 	ISBN = string(grid->GetCellValue(row, 0).mb_str());
@@ -351,12 +351,12 @@ void DisplayListTitle::EditCurrentCell(wxGridEvent& event)
 	{
 		EditTable(title, row);
 	}
-	linearList->AddLast(title);
+	titleList->GetList()->AddLast(title);
 	event.Skip();
 }
 void DisplayListTitle::OnButtonDown(wxCommandEvent& WXUNUSED(event))
 {
-	listBook->SetListTitle(linearList);
+	listBook->SetListTitle(titleList);
 	listBook->SetTitle(selectedTitle);
 	listBook->Show(true);
 	this->Show(false);
@@ -464,8 +464,8 @@ void DisplayListTitle::EditTable(Title* title, int row)
 }
 void DisplayListTitle::SaveFile()
 {
-	Title** arr = linearList->ToArray();
-	sort->QuickSort(arr, 0, linearList->Length());
+	Title** arr = titleList->GetList()->ToArray();
+	sort->QuickSort(arr, 0, titleList->GetList()->Length());
 	saveFile->WriteToFile(arr, maxItem);
 	wxMessageBox(wxT("LIST IS SAVED SUCCESSFULLY"));
 
@@ -473,8 +473,8 @@ void DisplayListTitle::SaveFile()
 void DisplayListTitle::LoadFile()
 {
 	functionPanel->Hide();
-	linearList->Clear();
-	if (maxItem > linearList->MaxLength())
+	titleList->GetList()->Clear();
+	if (maxItem > titleList->GetList()->MaxLength())
 	{
 		wxMessageBox("Danh sach trong file qua lon, khong the load duoc");
 		return;
@@ -483,7 +483,7 @@ void DisplayListTitle::LoadFile()
 	saveFile->ReadFile(arr);
 	for (int i = 0; i < maxItem; i++)
 	{
-		linearList->AddLast(arr[i]);
+		titleList->GetList()->AddLast(arr[i]);
 	}
 	delete[]arr;
 	LoadListToTable();
@@ -494,14 +494,14 @@ void DisplayListTitle::LoadListToTable()
 	{
 		grid->AppendRows(maxItem - grid->GetNumberRows()+1);
 	}
-	for (int i = 0; i < linearList->Length(); i++)
+	for (int i = 0; i < titleList->GetList()->Length(); i++)
 	{
-		grid->SetCellValue(i, 0, linearList->GetData(i)->GetISBN());
-		grid->SetCellValue(i, 1, linearList->GetData(i)->GetBookName());
-		grid->SetCellValue(i, 2, wxString::Format("%i", linearList->GetData(i)->GetPageNumber()));
-		grid->SetCellValue(i, 3, linearList->GetData(i)->GetAuthor());
-		grid->SetCellValue(i, 4, wxString::Format("%i", linearList->GetData(i)->GetPublicYear()));
-		grid->SetCellValue(i, 5, linearList->GetData(i)->GetType());
+		grid->SetCellValue(i, 0, titleList->GetList()->GetData(i)->GetISBN());
+		grid->SetCellValue(i, 1, titleList->GetList()->GetData(i)->GetBookName());
+		grid->SetCellValue(i, 2, wxString::Format("%i", titleList->GetList()->GetData(i)->GetPageNumber()));
+		grid->SetCellValue(i, 3, titleList->GetList()->GetData(i)->GetAuthor());
+		grid->SetCellValue(i, 4, wxString::Format("%i", titleList->GetList()->GetData(i)->GetPublicYear()));
+		grid->SetCellValue(i, 5, titleList->GetList()->GetData(i)->GetType());
 		for (int j = 0; j < 6; j++)
 		{
 			grid->SetCellAlignment(i, j, wxALIGN_CENTER, wxALIGN_CENTER);

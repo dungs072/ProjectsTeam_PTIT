@@ -1,7 +1,6 @@
 #pragma once
 #include<wx/wx.h>
 #include<wx/grid.h>
-#include"LinearList.h"
 #include"Title.h"
 #include"CheckInput.h"
 #include"SaveTextFile.h"
@@ -13,7 +12,7 @@ private:
 	int maxItem = 0;
 	string* stateBook;
 	SaveTextFile<Title>* saveFile;
-	LinearList<Title>* linearList = nullptr;
+	TitleList *titleList = nullptr;
 	//Frontend
 	CheckInput* checkInput = new CheckInput();
 	wxGrid* grid;
@@ -50,9 +49,14 @@ public:
 	{
 		currentTitle = title;
 	}
-	void SetListTitle(LinearList<Title>* list)
+	void SetListTitle(TitleList* list)
 	{
-		linearList = list;
+		if (titleList != nullptr)
+		{
+			delete titleList;
+			titleList = nullptr;
+		}
+		titleList = list;
 	}
 	DECLARE_EVENT_TABLE();
 };

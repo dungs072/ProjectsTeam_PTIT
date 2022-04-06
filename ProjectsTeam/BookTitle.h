@@ -4,7 +4,6 @@
 #include<ctime>
 #include"CheckInput.h"
 #include"Title.h"
-#include"LinearList.h"
 #include"SaveTextFile.h"
 using namespace DataStructure;
 class BookTitle:public wxFrame
@@ -12,7 +11,7 @@ class BookTitle:public wxFrame
 private:
 	//backend
 	SaveTextFile<Title>* saveFile;
-	LinearList<Title>* linearList;
+	TitleList* titleList;
 	//frontend
 	int maxItem = 0;
 	bool isTurnOnEnterPanel = true;
@@ -68,7 +67,7 @@ public:
 	~BookTitle()
 	{
 		delete saveFile;
-		delete linearList;
+		delete titleList;
 		delete[]enterText;
 	}
 	DECLARE_EVENT_TABLE();

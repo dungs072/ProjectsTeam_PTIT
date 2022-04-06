@@ -4,7 +4,6 @@
 #include<wx/grid.h>
 #include"CheckInput.h"
 #include"SaveTextFile.h"
-#include"LinearList.h"
 #include"DisplayListBook.h"
 #include"SortAlgorithm.h"
 typedef unsigned int uint;
@@ -16,7 +15,7 @@ private:
 	SortAlgorithm<Title>* sort;
 	CheckInput* checkInput = new CheckInput();
 	SaveTextFile<Title>* saveFile;
-	LinearList<Title>* linearList;
+	TitleList* titleList;
 	Title* selectedTitle = nullptr;
 	//Frontend
 	DisplayListBook* listBook;

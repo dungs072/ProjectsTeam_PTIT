@@ -4,7 +4,7 @@ BookTitle::BookTitle(const wxString& title) : wxFrame(NULL, -1,
 {
 	//back end
 	saveFile = new SaveTextFile<Title>("BookTitle.txt");
-	linearList = new LinearList<Title>(100);
+	titleList = new TitleList(100);
 	//catch error
 	checkInput = new CheckInput();
 	//create color;
@@ -417,8 +417,8 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 	{
 		ISBN = string(wxOldText.mb_str());
 	}
-	SinglyLinkedList<Book>* tempList = linearList->GetData(ISBN)->GetListBook();
-	linearList->Delete(ISBN);
+	BookList* tempList = titleList->GetData(ISBN)->GetListBook();
+	titleList->Delete(ISBN);
 	grid->SetCellValue(row, col, wxNewText);
 	ISBN = string(grid->GetCellValue(row, 0).mb_str());
 	string bookName = string(grid->GetCellValue(row, 1).mb_str());
@@ -434,7 +434,7 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 		//grid->Refresh();
 	}
 	title->SetListBook(tempList);
-	linearList->AddLast(title);
+	titleList->GetList()->AddLast(title);
 
 	event.Skip();
 }
@@ -636,7 +636,7 @@ void BookTitle::SaveToList()
 		grid->SetCellAlignment(pos, i, wxALIGN_CENTER, wxALIGN_CENTER);
 	}
 	ClearInforInEnterText();
-	linearList->AddLast(curTitle);
+	titleList->GetList()->AddLast(curTitle);
 	maxItem++;
 	if (maxItem + 1 > grid->GetNumberRows())
 	{
@@ -645,7 +645,7 @@ void BookTitle::SaveToList()
 }
 void BookTitle::SaveFile()
 {
-	int length = linearList->Length();
+	int length = titleList->GetList()->Length();
 	if (length == 0)
 	{
 		saveFile->ClearData();
@@ -653,16 +653,16 @@ void BookTitle::SaveFile()
 		return;
 	}
 	QuickSort(0, length);
-	Title** arr = linearList->ToArray();
+	Title** arr = titleList->GetList()->ToArray();
 	saveFile->WriteToFile(arr, length);
 	wxMessageBox(wxT("LIST IS SAVED SUCCESSFULLY"));
 }
 void BookTitle::LoadFile()
 {
-	linearList->Clear();
+	titleList->GetList()->Clear();
 	//wxMessageBox(wxString::Format("%i", saveFile->GetSizeArray()));
 	int length = saveFile->GetSizeArray();
-	if (length > linearList->MaxLength())
+	if (length > titleList->GetList()->MaxLength())
 	{
 		wxMessageBox("Danh sach trong file qua lon, khong the load duoc");
 		return;
@@ -672,7 +672,7 @@ void BookTitle::LoadFile()
 
 	for (int i = 0; i < length; i++)
 	{
-		linearList->AddLast(arr[i]);
+		titleList->GetList()->AddLast(arr[i]);
 	}
 	delete[]arr;
 	LoadListToTable();
@@ -680,13 +680,13 @@ void BookTitle::LoadFile()
 }
 void BookTitle::LoadListToTable()
 {
-	if (linearList->Length() > grid->GetNumberRows())
+	if (titleList->GetList()->Length() > grid->GetNumberRows())
 	{
-		grid->AppendRows(linearList->Length() - grid->GetNumberRows() + 1);
+		grid->AppendRows(titleList->GetList()->Length() - grid->GetNumberRows() + 1);
 	}
-	for (int i = 0; i < linearList->Length(); i++)
+	for (int i = 0; i < titleList->GetList()->Length(); i++)
 	{
-		Title* temp = linearList->GetData(i);
+		Title* temp = titleList->GetList()->GetData(i);
 		grid->SetCellValue(i, 0, temp->GetISBN());
 		grid->SetCellValue(i, 1, temp->GetBookName());
 		grid->SetCellValue(i, 2, wxString::Format("%i", temp->GetPageNumber()));
@@ -698,7 +698,7 @@ void BookTitle::LoadListToTable()
 			grid->SetCellAlignment(i, j, wxALIGN_CENTER, wxALIGN_CENTER);
 		}
 	}
-	maxItem = linearList->Length();
+	maxItem = titleList->GetList()->Length();
 }
 void BookTitle::ShowMessageClear()
 {
@@ -721,7 +721,7 @@ void BookTitle::DeleteSelectedRows()
 		string ISBN = string(grid->GetCellValue(row, 0).mbc_str());
 		if (ISBN != "")
 		{
-			SinglyLinkedList<Book>* tempList = linearList->GetData(ISBN)->GetListBook();
+			BookList* tempList = titleList->GetData(ISBN)->GetListBook();
 			if (tempList->Length() > 0)
 			{
 				SinglyNode<Book>* tempBook = tempList->First();
@@ -735,7 +735,7 @@ void BookTitle::DeleteSelectedRows()
 					tempBook = tempBook->next;
 				}
 			}
-			linearList->Delete(ISBN);
+			titleList->Delete(ISBN);
 			delete tempList;
 			maxItem--;
 
@@ -847,16 +847,16 @@ void BookTitle::Swap(Title* t1, Title* t2)
 }
 int BookTitle::partition(int l, int h)
 {
-	Title* pivot = linearList->GetData(l);
+	Title* pivot = titleList->GetList()->GetData(l);
 	int i = l;
 	int j = h;
 	do
 	{
-		do { i++; if (i == j) { break; } } while (CompareTitle(linearList->GetData(i), pivot) < 1);
-		do { j--; } while (CompareTitle(linearList->GetData(j), pivot) == 1);
-		if (i < j) { Swap((linearList->GetData(i)), (linearList->GetData(j))); }
+		do { i++; if (i == j) { break; } } while (CompareTitle(titleList->GetList()->GetData(i), pivot) < 1);
+		do { j--; } while (CompareTitle(titleList->GetList()->GetData(j), pivot) == 1);
+		if (i < j) { Swap((titleList->GetList()->GetData(i)), (titleList->GetList()->GetData(j))); }
 	} while (i < j);
-	Swap(linearList->GetData(l), linearList->GetData(j));
+	Swap(titleList->GetList()->GetData(l), titleList->GetList()->GetData(j));
 	return j;
 }
 void BookTitle::QuickSort(int l, int h)

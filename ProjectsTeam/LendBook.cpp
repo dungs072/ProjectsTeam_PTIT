@@ -9,7 +9,7 @@ LendBook::LendBook(const wxString& title) :
 	checkInput = new CheckInput();
 	
 	treeCardReader = new BSTree<CardReader>();
-	linearList = new LinearList<Title>();
+	titleList = new TitleList(100);
 	//color
 	wxColor lightOrange;
 	lightOrange.Set("#F5DBB8");
@@ -247,7 +247,7 @@ void LendBook::LoadFile()
 	maxCard = cardFile->GetSizeArray();
 	maxTitle = titleFile->GetSizeArray();
 	treeCardReader->Clear();
-	linearList->Clear();
+	titleList->GetList()->Clear();
 	CardReader** arrCard = new CardReader * [maxCard];
 	Title** arrTitle = new Title * [maxTitle];
 	cardFile->ReadFile(arrCard);
@@ -258,7 +258,7 @@ void LendBook::LoadFile()
 	}
 	for (int i = 0; i < maxTitle; i++)
 	{
-		linearList->AddLast(arrTitle[i]);
+		titleList->GetList()->AddLast(arrTitle[i]);
 	}
 	
 	//cannot delete scaler 
@@ -410,7 +410,7 @@ void LendBook::OnSelectedTitleGrid(wxCommandEvent& WXUNUSED(event))
 		return;
 	}
 
-	selectedTitle = linearList->GetData(ISBN);
+	selectedTitle = titleList->GetData(ISBN);
 	selectedTitleButton->Show();
 
 
@@ -547,7 +547,7 @@ void LendBook::DisplayBookJustBorrow()
 	{
 		ISBN += tempCard->data.GetBookCode()[j];
 	}
-	Title* tempTitle = linearList->GetData(ISBN);
+	Title* tempTitle = titleList->GetData(ISBN);
 	borrowingBookGrid->SetCellValue(borrowingBookCount - 1, 0,
 		tempCard->data.GetBookCode());
 	borrowingBookGrid->SetCellValue(borrowingBookCount - 1, 1, 
@@ -766,7 +766,7 @@ void LendBook::DisplayBookBorrow()
 		{
 			ISBN += tempCard->data.GetBookCode()[j];
 		}
-		Title* tempTitle = linearList->GetData(ISBN);
+		Title* tempTitle = titleList->GetData(ISBN);
 		borrowingBookGrid->SetCellValue(borrowingBookCount, 0,
 			tempCard->data.GetBookCode());
 		borrowingBookGrid->SetCellValue(borrowingBookCount, 1,
@@ -801,14 +801,15 @@ void LendBook::LoadListTitleToTable()
 	for (int i = 0; i < maxTitle; i++)
 	{
 
-		titleGrid->SetCellValue(i, 0, linearList->GetData(i)->GetISBN());
-		titleGrid->SetCellValue(i, 1, linearList->GetData(i)->GetBookName());
-		string pageNumber = checkInput->CastIntToString(linearList->GetData(i)->GetPageNumber());
+		titleGrid->SetCellValue(i, 0, titleList->GetList()->GetData(i)->GetISBN());
+		titleGrid->SetCellValue(i, 1, titleList->GetList()->GetData(i)->GetBookName());
+		string pageNumber = checkInput->CastIntToString(titleList->GetList()
+											->GetData(i)->GetPageNumber());
 		titleGrid->SetCellValue(i, 2, pageNumber);
-		titleGrid->SetCellValue(i, 3, linearList->GetData(i)->GetAuthor());
-		string nxb = checkInput->CastIntToString(linearList->GetData(i)->GetPublicYear());
+		titleGrid->SetCellValue(i, 3, titleList->GetList()->GetData(i)->GetAuthor());
+		string nxb = checkInput->CastIntToString(titleList->GetList()->GetData(i)->GetPublicYear());
 		titleGrid->SetCellValue(i, 4, nxb);
-		titleGrid->SetCellValue(i, 5, linearList->GetData(i)->GetType());
+		titleGrid->SetCellValue(i, 5, titleList->GetList()->GetData(i)->GetType());
 		for (int j = 0; j < 6; j++)
 		{
 			titleGrid->SetCellAlignment(i, j, wxALIGN_CENTER, wxALIGN_CENTER);
@@ -916,9 +917,9 @@ void LendBook::OnKeyDown(wxKeyEvent& event)
 void LendBook::SaveFile()
 {
 	CardReader** arrCard = treeCardReader->ToArray();
-	Title** arrTitle = linearList->ToArray();
+	Title** arrTitle = titleList->GetList()->ToArray();
 	cardFile->WriteToFile(arrCard, treeCardReader->GetNumberNodes());
-	titleFile->WriteToFile(arrTitle, linearList->Length());
+	titleFile->WriteToFile(arrTitle, titleList->GetList()->Length());
 	wxMessageBox("Thong tin the doc da duoc luu");
 }
 void LendBook::DeleteBorrowingBook()
@@ -928,10 +929,8 @@ void LendBook::DeleteBorrowingBook()
 	{
 		int row = borrowingBookGrid->GetSelectedRows()[0];
 		string bookCode = string(borrowingBookGrid->GetCellValue(row, 0).mb_str());
-		wxMessageBox(bookCode);
 		if (bookCode == "") { return; }
 		SetValueAfterDelete(bookCode);
-		wxMessageBox(bookCode);
 		foundCardReader->GetListBorrowBook()->Remove(bookCode);
 
 		borrowingBookGrid->DeleteRows(row, 1);
@@ -950,8 +949,7 @@ void LendBook::DeleteBorrowingBook()
 void LendBook::SetValueAfterDelete(string bookCode)
 {
 	string ISBN = bookCode.substr(0, 4);
-	wxMessageBox(ISBN);
-	Title* tempTitle = linearList->GetData(ISBN);
+	Title* tempTitle = titleList->GetData(ISBN);
 	if (tempTitle == nullptr) { return; }
 	SinglyNode<Book>* tempBook = tempTitle->GetListBook()->FindSinglyNode(bookCode);
 	tempBook->data.SetState(0);

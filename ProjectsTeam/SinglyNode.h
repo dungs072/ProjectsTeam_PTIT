@@ -10,6 +10,9 @@ public:
 	{
 		next = nullptr;
 	}
-	~SinglyNode() {};
+	~SinglyNode() 
+	{
+		next = nullptr;
+	}
 };
 
