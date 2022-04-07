@@ -454,6 +454,7 @@ void ReaderCard::OnShow(wxShowEvent& event)
 		numberRowIsFilled = saveFile->GetSizeArray();
 		LoadFile();
 		SetModeDelete(false);
+		noteBook->SetSelection(0);
 	}
 	event.Skip();
 }

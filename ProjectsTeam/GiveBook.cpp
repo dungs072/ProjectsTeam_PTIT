@@ -3,6 +3,7 @@ GiveBook::GiveBook(const wxString& title) :wxFrame(NULL, -1, title,
 	wxPoint(-1, -1), wxSize(1280, 680))
 {
 	//backend
+	checkInput = new CheckInput();
 	saveFile = new SaveTextFile<CardReader>("ListReaders.txt");
 	treeCardReader = new BSTree<CardReader>();
 
@@ -38,7 +39,7 @@ GiveBook::GiveBook(const wxString& title) :wxFrame(NULL, -1, title,
 	mainVBox->Add(mainHBox,0,wxTOP,10);
 	//Register event
 	Bind(wxEVT_SHOW, &GiveBook::OnShow, this);
-
+	Bind(wxEVT_TEXT_ENTER, &GiveBook::OnEnter, this);
 	//Set Color
 	searchPanel->SetBackgroundColour(lightYellow);
 
@@ -68,5 +69,73 @@ void GiveBook::CreateDisplayInforCard()
 }
 void GiveBook::OnShow(wxShowEvent& event)
 {
+	if (event.IsShown())
+	{
+		LoadFile();
+		ClearOldDataOnPanel();
+		enterText->Clear();
+		foundCard = nullptr;
+	}
+	event.Skip();
+}
+void GiveBook::OnEnter(wxCommandEvent& WXUNUSED(event))
+{
+	string keyCodeStr = string(enterText->GetValue().mb_str());
+	ulong keyCode = checkInput->CastStringToNumber(keyCodeStr);
+	BSTNode<CardReader>* tempNode = treeCardReader->Search(keyCode);
+	if (tempNode == nullptr)
+	{
+		checkInput->ErrorMessageBox("KHONG TIM THAY THE DOC");
+		ClearOldDataOnPanel();
+		return;
+	}
+	enterText->Clear();
+	foundCard = tempNode->data;
+	DisplayCardOnPanel();
+}
+void GiveBook::OnKeyDown(wxKeyEvent& event)
+{
+
+	if (enterText->HasFocus())
+	{
+		int keyCode = event.GetKeyCode();
+		if ((keyCode >= '0' && keyCode <= '9') || keyCode == WXK_BACK || keyCode == WXK_RETURN)
+		{
+			event.Skip();
+		}
+	}
+	else
+	{
+		event.Skip();
+	}
 
 }
+void GiveBook::DisplayCardOnPanel()
+{
+	if (foundCard == nullptr) { return; }
+	displayText[0]->SetLabel(foundCard->GetFirstName() + " " + foundCard->GetLastName());
+	displayText[1]->SetLabel(foundCard->GetSex());
+	displayText[2]->SetLabel(foundCard->GetState());
+}
+void GiveBook::ClearOldDataOnPanel()
+{
+	for (int i = 0; i < 3; i++)
+	{
+		displayText[i]->SetLabel("");
+	}
+}
+void GiveBook::LoadFile()
+{
+	treeCardReader->Clear();
+	length = saveFile->GetSizeArray();
+	CardReader** arr = new CardReader * [length];
+	saveFile->ReadFile(arr);
+	for (int i = 0; i < length; i++)
+	{
+		treeCardReader->Add(arr[i]);
+	}
+	delete arr;
+}
+BEGIN_EVENT_TABLE(GiveBook, wxFrame)
+EVT_CHAR_HOOK(GiveBook::OnKeyDown)
+END_EVENT_TABLE()

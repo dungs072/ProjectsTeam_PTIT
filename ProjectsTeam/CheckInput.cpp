@@ -1,8 +1,8 @@
 #include "CheckInput.h"
-int CheckInput::CastStringToNumber(string strText)
+size_t CheckInput::CastStringToNumber(string strText)
 {
 	int i, j;
-	int number = 0;
+	size_t number = 0;
 	for (i = strText.length() - 1, j = 0; i >= 0; i--, j++)
 	{
 		if (strText[i] < '0' || strText[i]>'9')
