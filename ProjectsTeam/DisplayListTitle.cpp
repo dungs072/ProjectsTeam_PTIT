@@ -468,7 +468,6 @@ void DisplayListTitle::SaveFile()
 	sort->QuickSort(arr, 0, titleList->GetList()->Length());
 	saveFile->WriteToFile(arr, maxItem);
 	wxMessageBox(wxT("LIST IS SAVED SUCCESSFULLY"));
-
 }
 void DisplayListTitle::LoadFile()
 {

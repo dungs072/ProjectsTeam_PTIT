@@ -478,7 +478,7 @@ void ReaderCard::SaveFile()
 		return;
 	}
 	int length = cardReaderTree->GetNumberNodes();
-	CardReader** arr = cardReaderTree->ToArray();
+	CardReader** arr = cardReaderTree->ToSameTreeArray();
 	saveFile->WriteToFile(arr, length);
 	wxMessageBox(wxString::Format("LIST IS SAVED SUCCESSFULLY"));
 }

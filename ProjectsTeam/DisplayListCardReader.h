@@ -17,7 +17,6 @@ private:
 	//ReaderCard* readerCard = nullptr;
 	BSTree<CardReader>* cardReaderTree;
 	string* stateText;
-	CardReader** arr = nullptr;
 	SaveTextFile<CardReader>* saveFile;
 	wxGrid* grid;
 	wxStaticText* gridLabel;
@@ -30,6 +29,7 @@ private:
 	void OnKeyDown(wxKeyEvent& event);
 	void OnExitMenu(wxCommandEvent& event);
 
+	void LoadFile();
 	void SaveFile();
 	void DisplayCell(CardReader** arr,int length);
 	void ErrorMessageBox(string message);
@@ -48,7 +48,7 @@ private:
 	int CastWxStringToInt(wxString text);
 
 	//quickSort
-	void Swap(CardReader** card1, CardReader** card2);
+	void Swap(CardReader* card1, CardReader* card2);
 	int Partition(CardReader** A, int l, int h);
 	void QuickSort(CardReader** A, int l, int h);
 
@@ -56,10 +56,6 @@ private:
 	int length = 0;
 public:
 	DisplayListCardReader(const wxString& title);
-	/*void SetReaderCard(ReaderCard* readerCard)
-	{
-		this->readerCard = readerCard;
-	}*/
 	DECLARE_EVENT_TABLE();
 };
 const int DefaultRow = 30;

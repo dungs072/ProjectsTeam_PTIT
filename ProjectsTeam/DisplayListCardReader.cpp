@@ -2,6 +2,7 @@
 DisplayListCardReader::DisplayListCardReader(const wxString& title)
 	:wxFrame(NULL, -1, title, wxDefaultPosition, wxSize(1280, 680))
 {
+	cardReaderTree = new BSTree<CardReader>();
 	
 	// stateText
 	stateText = new string[2]{ "KHOA","HOAT DONG" };
@@ -87,52 +88,26 @@ DisplayListCardReader::DisplayListCardReader(const wxString& title)
 }
 void DisplayListCardReader::OnSortCode(wxCommandEvent& WXUNUSED(event))
 {
-	
-	if (arr != nullptr)
-	{
-		for (int i = 0; i < length; i++)
-		{
-			delete arr[i];
-		}
-		delete []arr;
-		arr = nullptr;
-	}
-	length = saveFile->GetSizeArray();
-	if (length > 30)
-	{
-		grid->DeleteRows(29, length - 30);
-	}
-	arr = new CardReader* [length];
-
-	saveFile->ReadFile(arr);
+	LoadFile();
+	CardReader** arr = cardReaderTree->ToSortArray();
 	DisplayCell(arr, length);
+	delete[]arr;
 }
 void DisplayListCardReader::OnSortName(wxCommandEvent& WXUNUSED(event))
 {
-	if (arr != nullptr)
-	{
-		for (int i = 0; i < length; i++)
-		{
-			delete arr[i];
-		}
-		delete []arr;
-		arr = nullptr;
-	}
-	length = saveFile->GetSizeArray();
-	if (length > 30)
-	{
-		grid->DeleteRows(29, length - 30);
-	}
-	arr = new CardReader* [length];
-	saveFile->ReadFile(arr);
+	LoadFile();
+	CardReader** arr = cardReaderTree->ToSortArray();
+	//phai load lai file vi no thay doi cac gia tri trong dia chi neen phai load lai 
 	QuickSort(arr, 0, length);
 	DisplayCell(arr, length);
-	grid->Refresh();
+	delete[]arr;
 }
 void DisplayListCardReader::EditCurrentCell(wxGridEvent& event)
 {
+	LoadFile();
 	int row = grid->GetGridCursorRow();
 	int col = grid->GetGridCursorCol();
+	
 	wxString wxOldText = event.GetString();
 	if (wxOldText == wxT(""))
 	{
@@ -140,6 +115,12 @@ void DisplayListCardReader::EditCurrentCell(wxGridEvent& event)
 		grid->SetCellValue(row, col, wxOldText);
 		return;
 	}
+	//find data
+	string keyCodeStr = string(grid->GetCellValue(row, 0).mb_str());
+	ulong keyCode = CastWxStringToInt(keyCodeStr);
+	int key = CastWxStringToInt(keyCodeStr);
+	CardReader* curEditCard = cardReaderTree->Search(keyCode)->data;
+
 	wxString wxNewText = grid->GetCellValue(row, col);
 	//main error
 	if (IsWhiteSpaceAllText(wxNewText))
@@ -165,12 +146,12 @@ void DisplayListCardReader::EditCurrentCell(wxGridEvent& event)
 		if (col == 1)
 		{
 			string str = string(wxNewText.mb_str());
-			arr[row]->SetFirstName(str);
+			curEditCard->SetFirstName(str);
 		}
 		else if (col == 2)
 		{
 			string str = string(wxNewText.mb_str());
-			arr[row]->SetLastName(str);
+			curEditCard->SetLastName(str);
 		}
 	}
 	if (col == 3)
@@ -185,7 +166,7 @@ void DisplayListCardReader::EditCurrentCell(wxGridEvent& event)
 		UpperWxString(wxNewText);
 		grid->SetCellValue(row, col, wxNewText);
 		string str = string(wxNewText.mb_str());
-		arr[row]->SetSex(str);
+		curEditCard->SetSex(str);
 	}
 	if (col == 4)
 	{
@@ -200,7 +181,7 @@ void DisplayListCardReader::EditCurrentCell(wxGridEvent& event)
 		}
 		grid->SetCellValue(row, col, stateText[num]);
 		string str = stateText[num];
-		arr[row]->SetState(str);
+		curEditCard->SetState(str);
 	}
 	
 	event.Skip();
@@ -218,25 +199,24 @@ void DisplayListCardReader::OnExitMenu(wxCommandEvent& WXUNUSED(event))
 	this->GetParent()->Show(true);
 	this->Show(false);
 }
-void DisplayListCardReader::SaveFile()
+void DisplayListCardReader::LoadFile()
 {
-	if (arr == nullptr) { return; }
-
-	BSTree<CardReader>* tempTree = new BSTree<CardReader>();
+	cardReaderTree->Clear();
+	length = saveFile->GetSizeArray();
+	CardReader** arr = new CardReader * [length];
+	saveFile->ReadFile(arr);
 	for (int i = 0; i < length; i++)
 	{
-		tempTree->Add(arr[i]);
-
+		cardReaderTree->Add(arr[i]);
 	}
+	delete[]arr;
+}
+void DisplayListCardReader::SaveFile()
+{
 	//to sort with code reader//dont missunderstand:))
-	arr = tempTree->ToArray();
+	CardReader**arr = cardReaderTree->ToSameTreeArray();
 	saveFile->WriteToFile(arr, length);
-	tempTree->Clear();
-	delete tempTree;
-	tempTree = nullptr;
 	wxMessageBox(wxString::Format("LIST IS SAVED SUCCESSFULLY"));
-	//if (readerCard == nullptr) { return; }
-	//readerCard->LoadFile();
 }
 bool DisplayListCardReader::IsWhiteSpaceAllText(wxString text)
 {
@@ -454,11 +434,11 @@ void DisplayListCardReader::ClearGridValue()
 	}
 }
 //QuickSort
-void DisplayListCardReader:: Swap(CardReader** card1, CardReader** card2)
+void DisplayListCardReader:: Swap(CardReader* card1, CardReader* card2)
 {
-	CardReader temp = **card1;
-	**card1 = **card2;
-	**card2 = temp;	
+	CardReader temp = *card1;
+	*card1 = *card2;
+	*card2 = temp;	
 }
 int DisplayListCardReader::Partition(CardReader** A, int l, int h)
 {
@@ -469,9 +449,9 @@ int DisplayListCardReader::Partition(CardReader** A, int l, int h)
 	{
 		do { i++; if (i == j) { break; } } while (A[i]->GetLastName() + A[i]->GetFirstName() <= pivot);
 		do { j--; } while (A[j]->GetLastName() + A[j]->GetFirstName() > pivot);
-		if (i < j)Swap(&A[i], &A[j]);
+		if (i < j)Swap(A[i], A[j]);
 	} while (i < j);
-	Swap(&A[l], &A[j]);
+	Swap(A[l], A[j]);
 	return j;
 }
 void DisplayListCardReader::QuickSort(CardReader** A, int l, int h)

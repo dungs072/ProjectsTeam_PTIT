@@ -237,7 +237,7 @@ namespace DataStructure
 		{
 			InOrderTravelsal(rootNode);
 		}
-		T** ToArray()
+		T** ToSortArray()
 		{
 			T** arr = new T * [numberNodes];
 			int index = 0;
@@ -263,6 +263,33 @@ namespace DataStructure
 				}
 			}
 			delete stack;
+			return arr;
+		}
+		T** ToSameTreeArray()
+		{
+			T** arr = new T * [numberNodes];
+			int index = 0;
+			BSTNode<T>* t = rootNode;
+			if (t == nullptr) { return nullptr; }
+			BSTNode<T> node;
+			Queue<BSTNode<T>>* queue = new Queue<BSTNode<T>>();
+			queue->Enqueue(*t);
+			while (!queue->IsEmpty())
+			{
+				node = queue->Dequeue();
+				t = &node;
+				arr[index] = (t->data);
+				index++;
+				if (t->leftNode != nullptr)
+				{
+					queue->Enqueue(*(t->leftNode));
+				}
+				if (t->rightNode != nullptr)
+				{
+					queue->Enqueue(*(t->rightNode));
+				}
+			}
+			delete queue;
 			return arr;
 		}
 		bool IsDifferentNode(ulong key)

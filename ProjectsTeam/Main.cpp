@@ -58,7 +58,7 @@ bool ReaderCardApp::OnInit()
 //	title->Show(true);*/
 //	return true;
 //}
-
+//
 int main()
 {
 
@@ -69,10 +69,32 @@ int main()
 		cout << "nhap dung het roi kkk" << endl;
 	}*/
 
-	DateTime* x = new DateTime();
-	//cout << x.IsGreaterThanNow() << endl;
-	DateTime* y = new DateTime(20, 3, 2022);
-	cout << *x - *y << endl;
+	//DateTime* x = new DateTime();
+	////cout << x.IsGreaterThanNow() << endl;
+	//DateTime* y = new DateTime(20, 3, 2022);
+	//cout << *x - *y << endl;
+	BSTree<CardReader>* tree = new BSTree<CardReader>();
+	CardReader* cardReader1 = new CardReader(1, "D", "Hoang", "Nam", "KHOA");
+	CardReader* cardReader2 = new CardReader(2, "D", "Tien", "Nam", "KHOA");
+	CardReader* cardReader3 = new CardReader(3, "D", "Nguyen", "Nam", "KHOA");
+	CardReader* cardReader4 = new CardReader(4, "D", "Nhan", "Nam", "KHOA");
+	CardReader* cardReader5 = new CardReader(5, "D", "Duc", "Nam", "KHOA");
+	CardReader* cardReader6 = new CardReader(6, "D", "Chung", "Nam", "KHOA");
+	CardReader* cardReader0 = new CardReader(0, "D", "Khoi", "Nam", "KHOA");
+	CardReader* cardReader10 = new CardReader(10, "D", "Dung", "Nam", "KHOA");
+	tree->Add(cardReader3);
+	tree->Add(cardReader2);
+	tree->Add(cardReader1);
+	tree->Add(cardReader4);
+	tree->Add(cardReader5);
+	tree->Add(cardReader6);
+	tree->Add(cardReader0);
+	tree->Add(cardReader10);
+	/*CardReader** arr = tree->ToArraySameTree();
+	for (int i = 0; i < tree->GetNumberNodes(); i++)
+	{
+		cout << arr[i]->GetCardCode() << endl;
+	}*/
 	return 0;
 }
 

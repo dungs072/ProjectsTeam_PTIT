@@ -926,7 +926,7 @@ void LendBook::OnKeyDown(wxKeyEvent& event)
 }
 void LendBook::SaveFile()
 {
-	CardReader** arrCard = treeCardReader->ToArray();
+	CardReader** arrCard = treeCardReader->ToSameTreeArray();
 	Title** arrTitle = titleList->GetList()->ToArray();
 	cardFile->WriteToFile(arrCard, treeCardReader->GetNumberNodes());
 	titleFile->WriteToFile(arrTitle, titleList->GetList()->Length());
