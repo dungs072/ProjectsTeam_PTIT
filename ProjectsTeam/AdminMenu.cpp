@@ -9,12 +9,14 @@ AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
 	displayTitle = new DisplayListTitle("DANH SACH DAU SACH");
 	findInforBook = new FindInforBook("TIM KIEM THONG TIN DAU SACH");
 	lendBook = new LendBook("MUON SACH");
+	giveBook = new GiveBook("TRA SACH");
 	this->AddChild(readerCard);
 	this->AddChild(displayCardReader);
 	this->AddChild(bookTitle);
 	this->AddChild(displayTitle);
 	this->AddChild(findInforBook);
 	this->AddChild(lendBook);
+	this->AddChild(giveBook);
 
 	checkInput = new CheckInput();
 	//create color;
@@ -106,10 +108,12 @@ void AdminMenu::CreateBookFunctionChoice()
 {
 	wxButton* borrowBook = new wxButton(choicePanel[2], -1, wxT("MUON SACH"),
 		wxPoint(50, 50), wxSize(300, 25));
-
+	wxButton* giveBook = new wxButton(choicePanel[2], -1, wxT("TRA SACH"),
+		wxPoint(50, 100), wxSize(300, 25));
 
 	//Register event
 	borrowBook->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnBorrowBook, this);
+	giveBook->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnGiveBook, this);
 }
 
 void AdminMenu::OnReaderCard(wxCommandEvent& WXUNUSED(event))
@@ -140,6 +144,11 @@ void AdminMenu::OnFindInforBook(wxCommandEvent& WXUNUSED(event))
 void AdminMenu::OnBorrowBook(wxCommandEvent& WXUNUSED(event))
 {
 	lendBook->Show();
+	this->Hide();
+}
+void AdminMenu::OnGiveBook(wxCommandEvent& WXUNUSED(event))
+{
+	giveBook->Show();
 	this->Hide();
 }
 void AdminMenu::OnReaderCardPanel(wxCommandEvent& WXUNUSED(event))

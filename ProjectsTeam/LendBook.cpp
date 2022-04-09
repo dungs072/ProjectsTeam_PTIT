@@ -280,6 +280,9 @@ void LendBook::OnShow(wxShowEvent& event)
 		backTitleButton->Hide();
 		enterSearchText->Clear();
 
+		bookGrid->Hide();
+		titleGrid->Show();
+
 	}
 	else
 	{
@@ -902,7 +905,9 @@ void LendBook::OnKeyDown(wxKeyEvent& event)
 	if (enterSearchText->HasFocus())
 	{
 		int keyCode = event.GetKeyCode();
-		if ((keyCode >= '0' && keyCode <= '9') || keyCode == WXK_BACK || keyCode == WXK_RETURN)
+		if ((keyCode >= '0' && keyCode <= '9') ||
+			keyCode == WXK_BACK || keyCode == WXK_RETURN||
+			keyCode==WXK_LEFT||keyCode==WXK_RIGHT)
 		{
 			event.Skip();
 		}
@@ -1058,14 +1063,14 @@ void LendBook::OnExitMenuButton(wxCommandEvent& WXUNUSED(event))
 }
 void LendBook::ShowMessageClear()
 {
-	wxMessageDialog* dialog = new wxMessageDialog(NULL,
+	wxMessageDialog* dialogMessage = new wxMessageDialog(NULL,
 		wxT("Are you sure to clear?"), wxT("Warning"),
 		wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
-	if (borrowingBookGrid->IsSelection() && dialog->ShowModal() == wxID_YES)
+	if (borrowingBookGrid->IsSelection() && dialogMessage->ShowModal() == wxID_YES)
 	{
 		DeleteBorrowingBook();
 	}
-	delete dialog;
+	delete dialogMessage;
 }
 BEGIN_EVENT_TABLE(LendBook, wxFrame)
 EVT_CHAR_HOOK(LendBook::OnKeyDown)

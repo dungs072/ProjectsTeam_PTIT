@@ -285,13 +285,12 @@ namespace DataStructure
 			while (p != nullptr)
 			{
 				firstSinglyNode = firstSinglyNode->next;
-				p->next = nullptr;
-				delete p;
+				
 				if (p == lastSinglyNode)
 				{
 					SetListnullptr();
 				}
-				p = nullptr;
+				delete p;
 				p = firstSinglyNode;
 				lengthList--;
 			}

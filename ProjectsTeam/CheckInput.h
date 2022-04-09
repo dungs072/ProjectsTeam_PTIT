@@ -8,8 +8,14 @@ class CheckInput
 {
 	string* cardState = new string[2]{ "KHOA","HOAT DONG" };
 	string* stateBook = new string[3]{ "CHO MUON DUOC","DA CO DOC GIA MUON","DA THANH LY" };
+	string* stateBorrowBook = new string[3]{ "DANG MUON","DA TRA","MAT SACH" };
 public:
-	~CheckInput(){}
+	~CheckInput()
+	{
+		delete[]cardState;
+		delete[]stateBook;
+		delete[]stateBorrowBook;
+	}
 	bool IsInRangeNumber(int startNumber, int endNumber, int number);
 	bool IsNumber(wxString text);
 	bool IsAlphabet(wxString text);
@@ -65,6 +71,11 @@ public:
 	{
 		if (index < 0 || index>2) { return""; }
 		return stateBook[index];
+	}
+	string GetBorrowBookState(int index)
+	{
+		if (index < 0 || index>2) { return""; }
+		return stateBorrowBook[index];
 	}
 };
 
