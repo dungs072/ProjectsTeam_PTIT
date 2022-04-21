@@ -75,6 +75,7 @@ private:
 	bool ProccessCurrentDate();
 	void OnShowDialog(wxShowEvent& event);
 	void OnOkButton(wxCommandEvent& event);
+	void OnCancelButton(wxCommandEvent& event);
 	void OnExitMenuButton(wxCommandEvent& event);
 
 	bool hasRightSelection = false;

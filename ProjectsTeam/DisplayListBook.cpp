@@ -198,6 +198,7 @@ void DisplayListBook::OnEnter(wxCommandEvent& event)
 	if (checkInput->IsWhiteSpaceAllText(enterText->GetValue()))
 	{
 		checkInput->ErrorMessageBox("KHONG DUOC BO TRONG O NHAP");
+		enterText->Clear();
 		enterText->SetFocus();
 		return;
 	}

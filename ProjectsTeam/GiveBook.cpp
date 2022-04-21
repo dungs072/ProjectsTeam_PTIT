@@ -117,6 +117,9 @@ GiveBook::GiveBook(const wxString& title) :wxFrame(NULL, -1, title,
 	lostBookButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &GiveBook::OnLostBook, this);
 	okButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED,
 		&GiveBook::OnOkButton, this);
+	cancelButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED,
+		&GiveBook::OnCancelButton, this);
+
 	exitMenuButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED,
 		&GiveBook::OnExitMenuButton, this);
 
@@ -167,6 +170,10 @@ void GiveBook::OnShow(wxShowEvent& event)
 }
 void GiveBook::OnEnter(wxCommandEvent& WXUNUSED(event))
 {
+	if (grid->IsSelection())
+	{
+		grid->ClearSelection();
+	}
 	string keyCodeStr = string(enterText->GetValue().mb_str());
 	ulong keyCode = checkInput->CastStringToNumber(keyCodeStr);
 	BSTNode<CardReader>* tempNode = treeCardReader->Search(keyCode);
@@ -273,6 +280,10 @@ void GiveBook::ClearOldDataOnPanel()
 }
 void GiveBook::ClearOldDataOnGrid()
 {
+	if (grid->IsSelection())
+	{
+		grid->ClearSelection();
+	}
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 7; j++)
@@ -319,7 +330,6 @@ void GiveBook::SaveFile()
 	wxMessageBox("LUU FILE THANH CONG");
 	// i have to notice to delete memory
 }
-
 void GiveBook::OnSelectingGrid(wxGridRangeSelectEvent& WXUNUSED(event))
 {
 	if (grid->IsSelection())
@@ -357,19 +367,11 @@ void GiveBook::OnGiveBook(wxCommandEvent& WXUNUSED(event))
 			index = i;
 			dialog->Centre();
 			dialog->ShowModal();
-			//wxMessageBox("");
-			listBorrowBook[i]->SetStateBorrow(1);
-			listBook[i]->SetState(0);
-			listBorrowBook[i] = nullptr;
-			listBook[i] = nullptr;
+			
 			break;
 		}
 	}
-	int row = grid->GetSelectedRows()[0];
-	grid->DeleteRows(row, 1);
-	grid->AppendRows(1);
-	grid->SetRowSize(2, 30);
-	grid->ClearSelection();
+	
 	hasRightSelection = false;
 }
 void GiveBook::OnLostBook(wxCommandEvent& WXUNUSED(event))
@@ -588,14 +590,29 @@ void GiveBook::OnShowDialog(wxShowEvent& event)
 }
 void GiveBook::OnOkButton(wxCommandEvent& WXUNUSED(event))
 {
+	listBorrowBook[index]->SetStateBorrow(1);
+	listBook[index]->SetState(0);
+	listBorrowBook[index] = nullptr;
+	listBook[index] = nullptr;
 	string date = controlDateTime->GetDay()[dayChoice->GetSelection()] +
 		"/" + controlDateTime->GetMonth()[monthChoice->GetSelection()] +
 		"/" + controlDateTime->GetYear()[yearChoice->GetSelection()];
 	DateTime* dateChosen = new DateTime();
 	dateChosen->CastDate(date);
 	listBorrowBook[index]->SetReturnDate(dateChosen);
+
+	int row = grid->GetSelectedRows()[0];
+	grid->DeleteRows(row, 1);
+	grid->AppendRows(1);
+	grid->SetRowSize(2, 30);
+	grid->ClearSelection();
 	dialog->Close();
 
+}
+void GiveBook::OnCancelButton(wxCommandEvent& WXUNUSED(event))
+{
+	grid->ClearSelection();
+	dialog->Close();
 }
 void GiveBook::OnExitMenuButton(wxCommandEvent& WXUNUSED(event))
 {

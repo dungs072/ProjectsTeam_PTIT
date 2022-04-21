@@ -4,16 +4,14 @@
 template<class T>
 class SortAlgorithm
 {
-public:
-	SortAlgorithm(){}
-	~SortAlgorithm(){}
+private:
 	void Swap(T* t1, T* t2)
 	{
 		T temp = *t1;
 		*t1 = *t2;
 		*t2 = temp;
 	}
-	int partition(T** arr,int l, int h)
+	int partition(T** arr, int l, int h)
 	{
 		T* pivot = arr[l];
 		int i = l;
@@ -27,6 +25,10 @@ public:
 		Swap(arr[l], arr[j]);
 		return j;
 	}
+public:
+	SortAlgorithm(){}
+	~SortAlgorithm(){}
+	
 	void QuickSort(T**arr,int l, int h)
 	{
 		int j = 0;

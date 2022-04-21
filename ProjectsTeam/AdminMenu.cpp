@@ -10,6 +10,7 @@ AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
 	findInforBook = new FindInforBook("TIM KIEM THONG TIN DAU SACH");
 	lendBook = new LendBook("MUON SACH");
 	giveBook = new GiveBook("TRA SACH");
+	overDueList = new OverDueList("THE DOC GIA QUA HAN");
 	this->AddChild(readerCard);
 	this->AddChild(displayCardReader);
 	this->AddChild(bookTitle);
@@ -17,6 +18,7 @@ AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
 	this->AddChild(findInforBook);
 	this->AddChild(lendBook);
 	this->AddChild(giveBook);
+	this->AddChild(overDueList);
 
 	checkInput = new CheckInput();
 	//create color;
@@ -86,10 +88,13 @@ void AdminMenu::CreateReaderCardChoice()
 		wxPoint(50, 50), wxSize(300, 25));
 	wxButton* displayCard = new wxButton(choicePanel[0], -1, wxT("HIEN THI DANH SACH TAT CA DOC GIA"),
 		wxPoint(50, 100), wxSize(300, 25));
+	wxButton* displayOverDueList = new wxButton(choicePanel[0], -1, wxT("HIEN THI DANH SACH THE QUA HAN"),
+		wxPoint(50, 150), wxSize(300, 25));
 
 	//Register event
 	readerCardButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnReaderCard, this);
 	displayCard->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnDisplayCardReader, this);
+	displayOverDueList->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnOverDueList, this);
 }
 void AdminMenu::CreateTitleChoice()
 {
@@ -149,6 +154,11 @@ void AdminMenu::OnBorrowBook(wxCommandEvent& WXUNUSED(event))
 void AdminMenu::OnGiveBook(wxCommandEvent& WXUNUSED(event))
 {
 	giveBook->Show();
+	this->Hide();
+}
+void AdminMenu::OnOverDueList(wxCommandEvent& WXUNUSED(event))
+{
+	overDueList->Show();
 	this->Hide();
 }
 void AdminMenu::OnReaderCardPanel(wxCommandEvent& WXUNUSED(event))

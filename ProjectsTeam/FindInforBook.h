@@ -36,6 +36,7 @@ private:
 
 	bool CheckChangeData();
 	bool CheckBookName(wxString text);
+	bool CheckPos(wxString text);
 	bool CheckStateBook(wxString text);
 	bool CheckISBN(wxString text);
 	bool CheckPageNumber(wxString text);

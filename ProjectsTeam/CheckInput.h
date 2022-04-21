@@ -37,6 +37,7 @@ public:
 	void MoveDownToAnotherTextCtrl(wxTextCtrl** textCtrl, int length);
 	void MoveUpToAnotherTextCtrl(wxTextCtrl** textCtrl, int length);
 	void ClearInforInEnterText(wxTextCtrl** enterText, int length);
+	string EditCardCode(ulong number, int maxLengthCode);
 
 	template<typename T>
 	void DeleteObject(T** arr, int length)

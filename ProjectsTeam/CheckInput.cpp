@@ -268,3 +268,33 @@ void CheckInput::ClearInforInEnterText(wxTextCtrl** enterText,int length)
 		enterText[i]->Clear();
 	}
 }
+string CheckInput::EditCardCode(ulong number, int maxLengthCode)
+{
+	std::string codeReader = "";
+	std::string rawCodeReader = "";
+	int lengthNumber = 0;
+	while (number != 0)
+	{
+		int tempNumber = number;
+		for (int i = 0; i < 10; i++)
+		{
+			tempNumber -= i;
+			if (tempNumber % 10 == 0)
+			{
+				lengthNumber++;
+				number -= i;
+				number /= 10;
+				rawCodeReader += (i + '0');
+			}
+			tempNumber = number;
+		}
+	}
+	//reverse string
+	std::reverse(rawCodeReader.begin(), rawCodeReader.end());
+	for (int i = 0; i < maxLengthCode - lengthNumber; i++)
+	{
+		codeReader += "0";
+	}
+	codeReader += rawCodeReader;
+	return codeReader;
+}

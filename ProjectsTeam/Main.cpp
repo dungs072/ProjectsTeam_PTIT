@@ -11,6 +11,7 @@
 #include"FindInforBook.h"
 #include"LendBook.h"
 #include"GiveBook.h"
+#include"OverDueList.h"
 #include"DateTime.h"
 using std::cout;
 using std::endl;
@@ -41,6 +42,9 @@ bool ReaderCardApp::OnInit()
 	lendBook->Show();*/
 	/*GiveBook* giveBook = new GiveBook("TRA SACH");
 	giveBook->Show();*/
+	
+	/*OverDueList* overDueList = new OverDueList("DANH SACH QUA HAN");
+	overDueList->Show();*/
 	AdminMenu* menu = new AdminMenu("ADMINISTRATOR MENU");
 	menu->Show(true);
 	return true;

@@ -2,6 +2,7 @@
 #include<iostream>
 #include"DoublyNode.h"
 #include<string>
+#include<wx/wx.h>
 using std::string;
 namespace DataStructure
 {
@@ -380,6 +381,24 @@ namespace DataStructure
 				std::cout << p->data << std::endl;
 				p = p->next;
 			}
+		}
+		T** ToArray()
+		{
+			int k = 0;
+			T** tempArr = new T* [length];
+			DoublyNode<T>* p = first;
+			if (p == nullptr)
+			{
+				std::cout << "Linked list is empty" << std::endl;
+				return nullptr;
+			}
+			while (p != nullptr)
+			{
+				tempArr[k] = &(p->data);
+				k++;
+				p = p->next;
+			}
+			return tempArr;
 		}
 	};
 }

@@ -126,6 +126,12 @@
     <ClCompile Include="GiveBook.cpp">
       <Filter>Source Files\FrontEnd</Filter>
     </ClCompile>
+    <ClCompile Include="OverDueList.cpp">
+      <Filter>Source Files\FrontEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="OverDueCard.cpp">
+      <Filter>Source Files\BackEnd</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ReaderCard.h">
@@ -214,6 +220,12 @@
     </ClInclude>
     <ClInclude Include="GiveBook.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OverDueList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OverDueCard.h">
+      <Filter>Header Files\Data Structure</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
