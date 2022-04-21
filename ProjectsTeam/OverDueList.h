@@ -41,6 +41,7 @@ public:
 	{
 		delete checkInput;
 		delete saveFile;
+		
 	}
 	
 };

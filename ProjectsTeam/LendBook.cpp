@@ -772,6 +772,7 @@ void LendBook::DisplayBookBorrow()
 	{
 		if (tempCard->data.GetStateBorrow() != 0)
 		{
+			tempCard = tempCard->next;
 			continue;
 		}
 		string ISBN = "";

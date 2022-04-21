@@ -111,14 +111,16 @@ void OverDueList::LoadFile()
 		}
 		delete[]arr;
 	}
+	wxMessageBox(wxT(""));
 	if (arrOverDue != nullptr)
 	{
 		for (int i = 0; i < lengthOverDue; i++)
 		{
 			delete arrOverDue[i];
 		}
-		delete[]arrOverDue;
+		delete[] arrOverDue;
 	}
+	wxMessageBox(wxT(""));
 	length = saveFile->GetSizeArray();
 	arr = new CardReader * [length];
 	saveFile->ReadFile(arr);
@@ -212,6 +214,7 @@ void OverDueList::FindOverDueListCard()
 	}
 	
 	lengthOverDue = overDueCardList->Length();
+	
 	arrOverDue = overDueCardList->ToArray();
 }
 void OverDueList::OnSelectingGrid(wxGridRangeSelectEvent& WXUNUSED(event))
