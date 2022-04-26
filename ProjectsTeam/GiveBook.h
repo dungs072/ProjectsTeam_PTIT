@@ -51,7 +51,7 @@ private:
 	void ClearOldDataOnPanel();
 	void ClearOldDataOnGrid();
 	void ClearOldDataInBackEnd();
-	void LoadFile();
+	void LoadData();
 	void SaveFile();
 
 	void OnShow(wxShowEvent& event);
@@ -94,12 +94,15 @@ public:
 		delete saveFileCard;
 		delete saveFileTitle;
 		delete checkInput;
-		delete titleList;
 		delete foundCard;
 		delete searchPanel;
 		delete grid;
 		delete controlDateTime;
-		delete treeCardReader;
+	}
+	void SetData(BSTree<CardReader>* treeCard, TitleList* titleList)
+	{
+		this->treeCardReader = treeCard;
+		this->titleList = titleList;
 	}
 	DECLARE_EVENT_TABLE();
 };

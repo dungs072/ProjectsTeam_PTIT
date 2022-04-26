@@ -78,5 +78,38 @@ public:
 		if (index < 0 || index>2) { return""; }
 		return stateBorrowBook[index];
 	}
+
+	//conditional method for entering data
+	bool HasRightEntering(int keyCode,bool hasSpace)
+	{
+		if (hasSpace)
+		{
+			if (keyCode == WXK_SPACE)
+			{
+				return true;
+			}
+			
+		}
+		return (keyCode == WXK_LEFT || keyCode == WXK_RIGHT) ||
+			(keyCode == WXK_UP || keyCode == WXK_DOWN) ||
+			(keyCode == WXK_RETURN || keyCode == WXK_BACK);
+	}
+	bool HasNumber(int keyCode)
+	{
+		return (keyCode >= '0' && keyCode <= '9');
+	}
+	bool HasAlpha(int keyCode)
+	{
+		return (keyCode >= 'a' && keyCode <= 'z') ||
+			(keyCode >= 'A' && keyCode <= 'Z');
+	}
+	bool HasAlphaAndNumber(int keyCode)
+	{
+		return HasNumber(keyCode) || HasAlpha(keyCode);
+	}
+	bool HasInRangeNumber(int keyCode, int min, int max)
+	{
+		return (keyCode - '0' >= min && keyCode - '0' <= max);
+	}
 };
 

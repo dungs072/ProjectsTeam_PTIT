@@ -63,7 +63,7 @@ private:
 	void DeleteBorrowingBook();
 	void SetValueAfterDelete(string bookCode);
 	void SaveFile();
-	void LoadFile();
+	void LoadData();
 
 	void OnShow(wxShowEvent& event);
 	void OnShowDialog(wxShowEvent& event);
@@ -116,6 +116,11 @@ private:
 public:
 
 	LendBook(const wxString& title);
+	void SetData(BSTree<CardReader>* cardReaders, TitleList* titlelist)
+	{
+		this->treeCardReader = cardReaders;
+		this->titleList = titlelist;
+	}
 	DECLARE_EVENT_TABLE();
 };
 

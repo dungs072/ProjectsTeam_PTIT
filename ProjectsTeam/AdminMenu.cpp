@@ -2,15 +2,25 @@
 AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
 	wxDefaultPosition, wxSize(1280, 680))
 {
+	LoadDataIntoTempMemory();
+
 	// window control
 	readerCard = new ReaderCard("THE DOC GIA");
+	readerCard->SetCardReaders(treeCardReader);
 	displayCardReader = new DisplayListCardReader("DANH SACH THE DOC GIA");
+	displayCardReader->SetCardReaders(treeCardReader);
 	bookTitle = new BookTitle("DAU SACH");
+	bookTitle->SetTitleList(titleList);
 	displayTitle = new DisplayListTitle("DANH SACH DAU SACH");
+	displayTitle->SetListTitle(titleList);
 	findInforBook = new FindInforBook("TIM KIEM THONG TIN DAU SACH");
+	findInforBook->SetTitleList(titleList);
 	lendBook = new LendBook("MUON SACH");
+	lendBook->SetData(treeCardReader, titleList);
 	giveBook = new GiveBook("TRA SACH");
+	giveBook->SetData(treeCardReader, titleList);
 	overDueList = new OverDueList("THE DOC GIA QUA HAN");
+	overDueList->SetCardReader(treeCardReader);
 	this->AddChild(readerCard);
 	this->AddChild(displayCardReader);
 	this->AddChild(bookTitle);
@@ -187,4 +197,34 @@ void AdminMenu::TurnOnPanel(int index)
 			choicePanel[i]->Hide();
 		}
 	}
+}
+
+void AdminMenu::LoadDataIntoTempMemory()
+{
+	//heap memory
+	cardReaderFile = new SaveTextFile<CardReader>("ListReaders.txt");
+	titleFile = new SaveTextFile<Title>("BookTitle.txt");
+
+	//card
+	treeCardReader = new BSTree<CardReader>();
+	int lengthCardReader = cardReaderFile->GetSizeArray();
+	CardReader** arr = new CardReader*[lengthCardReader];
+	cardReaderFile->ReadFile(arr);
+	for (int i = 0; i < lengthCardReader; i++)
+	{
+		treeCardReader->Add(arr[i]);
+	}
+	//title
+	titleList = new TitleList(100);
+	int lengthTitleList = titleFile->GetSizeArray();
+	Title** titles = new Title * [lengthTitleList];
+	titleFile->ReadFile(titles);
+	for (int i = 0; i < lengthTitleList; i++)
+	{
+		titleList->GetList()->AddLast(titles[i]);
+	}
+
+	delete[]titles;
+	delete[]arr;
+
 }

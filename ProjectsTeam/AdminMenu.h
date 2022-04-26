@@ -1,4 +1,6 @@
 #pragma once
+#include"SaveTextFile.h"
+#include"BSTree.h"
 #include"CheckInput.h"
 #include"ReaderCard.h"
 #include"DisplayListCardReader.h"
@@ -11,6 +13,13 @@
 class AdminMenu:public wxFrame
 {
 private:
+	//data is stored in heap memory
+	SaveTextFile<CardReader>* cardReaderFile;
+	SaveTextFile<Title>* titleFile;
+	BSTree<CardReader>* treeCardReader;
+	TitleList* titleList;
+	//---------------------------------//
+
 	ReaderCard* readerCard;
 	DisplayListCardReader* displayCardReader;
 	BookTitle* bookTitle;
@@ -40,12 +49,17 @@ private:
 	void OnFunctionBookPanel(wxCommandEvent& event);
 	
 	void TurnOnPanel(int index);
+
+	void LoadDataIntoTempMemory();
+
 public:
 	AdminMenu(const wxString& title);
 	~AdminMenu()
 	{
 		delete checkInput;
 		delete choicePanel;
+		delete treeCardReader;
+		delete titleList;
 	}
 };
 

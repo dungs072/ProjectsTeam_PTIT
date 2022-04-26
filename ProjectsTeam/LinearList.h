@@ -25,7 +25,10 @@ namespace DataStructure
 		}
 		~LinearList()
 		{
+			if (list == nullptr) { return; }
 			Clear();
+			delete[]list;
+			list = nullptr;
 		}
 		int Length()
 		{
@@ -100,11 +103,13 @@ namespace DataStructure
 		{
 			for (int i = 0; i < currentLength; i++)
 			{
+				if (list[i] == nullptr)
+				{
+					continue;
+				}
 				delete list[i];
 				list[i] = nullptr;
 			}
-			delete []list;
-			list = nullptr;
 			currentLength = 0;
 		}
 		T** ToArray()

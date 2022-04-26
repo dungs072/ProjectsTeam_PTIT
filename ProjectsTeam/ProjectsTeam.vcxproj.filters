@@ -72,9 +72,6 @@
     <ClCompile Include="DisplayListCardReader.cpp">
       <Filter>Source Files\FrontEnd</Filter>
     </ClCompile>
-    <ClCompile Include="CardReaderMenu.cpp">
-      <Filter>Source Files\FrontEnd</Filter>
-    </ClCompile>
     <ClCompile Include="CheckInput.cpp">
       <Filter>Source Files\BackEnd</Filter>
     </ClCompile>
@@ -132,15 +129,15 @@
     <ClCompile Include="OverDueCard.cpp">
       <Filter>Source Files\BackEnd</Filter>
     </ClCompile>
+    <ClCompile Include="MostBorrowings.cpp">
+      <Filter>Source Files\FrontEnd</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ReaderCard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DisplayListCardReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CardReaderMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BookTitle.h">
@@ -226,6 +223,9 @@
     </ClInclude>
     <ClInclude Include="OverDueCard.h">
       <Filter>Header Files\Data Structure</Filter>
+    </ClInclude>
+    <ClInclude Include="MostBorrowings.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

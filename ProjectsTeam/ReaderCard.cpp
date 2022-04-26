@@ -5,8 +5,8 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 
 	//backend
 	numberRowIsFilled = 0;
-	cardReaderTree = new BSTree<CardReader>();
 	saveFile = new SaveTextFile<CardReader>("ListReaders.txt");
+	checkInput = new CheckInput();
 	//frontend
 	//colors
 	wxColour lightYellow, greenColor, organColor, lightBlue, eggYellow, lightRed, red;
@@ -62,6 +62,7 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 		if (i == 3) { grid->SetColSize(i, 75); continue; }
 		grid->SetColSize(i, 107);
 	}
+	
 	grid->DisableDragColSize();
 	grid->DisableDragRowSize();
 	grid->SetSelectionMode(wxGrid::wxGridSelectionModes::wxGridSelectRows);
@@ -85,7 +86,7 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 	vGuideBox->Add(guidePanel, 0, wxBOTTOM, 5);
 
 	vRightBox->Add(vGuideBox, 0, wxTOP, 10);
-	mainHBox->Add(vRightBox, 0, wxLEFT|wxBOTTOM, 40);
+	mainHBox->Add(vRightBox, 0, wxLEFT | wxBOTTOM, 40);
 
 	noteBook->AddPage(enterTextBackGround, wxT("NHAP"));
 	noteBook->AddPage(searchTextBackGround, wxT("TIM KIEM"));
@@ -102,7 +103,9 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 	grid->Bind(wxEVT_GRID_RANGE_SELECTING, &ReaderCard::OnSelectingGrid, this);
 	grid->Bind(wxEVT_GRID_SELECT_CELL, &ReaderCard::OnSelectedGrid, this);
 	grid->Bind(wxEVT_GRID_LABEL_LEFT_CLICK, &ReaderCard::OnSelectedLabelGrid, this);
-
+	grid->Bind(wxEVT_CHAR_HOOK, &ReaderCard::OnGridKeyDown, this);
+	grid->Bind(wxEVT_GRID_SELECT_CELL, &ReaderCard::OnSelectedCell, this);
+	grid->Bind(wxEVT_TEXT, &ReaderCard::OnGridTexting, this);
 	//SetSizer for mainPanel runs on it
 	mainPanel->SetSizer(mainHBox);
 	//Create Menu bar
@@ -149,7 +152,7 @@ void ReaderCard::CreateEnterArea()
 		enterText[i]->SetBackgroundColour(lightBlue2);
 		enterText[i]->Connect(wxID_ANY, wxEVT_COMMAND_TEXT_UPDATED,
 			(wxObjectEventFunction)&ReaderCard::OnKeyDownTextCltrToUpper);
-		
+
 	}
 	enterText[0]->SetMaxLength(16);
 	enterText[1]->SetMaxLength(7);
@@ -186,7 +189,7 @@ void ReaderCard::CreateHotKeyArea()
 {
 	wxStaticText* hotKeyText = new wxStaticText(hotKeyPanel, -1,
 		wxT("F2-SAVE, F9-MO HOAC TAT CHE DO XOA (DELETE-XOA THE DOC GIA,ENTER-NHAP THE DOC GIA)"),
-		wxPoint(10, 10), wxSize(-1, -1),wxALIGN_CENTRE);
+		wxPoint(10, 10), wxSize(-1, -1), wxALIGN_CENTRE);
 }
 void ReaderCard::GuideToUser()
 {
@@ -197,12 +200,12 @@ void ReaderCard::GuideToUser()
 	wxStaticText* cardCodeText = new wxStaticText(guidePanel, -1, wxT("MA DOC GIA "),
 		wxPoint(10, 20), wxSize(100, 20));
 	wxStaticText* cardCodeGuide = new wxStaticText(guidePanel, -1,
-		wxT(": DUOC CHUONG TRINH LAY TU DONG"), 
+		wxT(": DUOC CHUONG TRINH LAY TU DONG"),
 		wxPoint(130, 20), wxSize(300, 20));
 	wxStaticText* firstNameText = new wxStaticText(guidePanel, -1, wxT("HO DOC GIA "),
 		wxPoint(10, 50), wxSize(100, 20));
 	wxStaticText* firstNameGuide = new wxStaticText(guidePanel, -1,
-		wxT(": TOI DA 16 KI TU, CHI LAY KI TU CHU"), 
+		wxT(": TOI DA 16 KI TU, CHI LAY KI TU CHU"),
 		wxPoint(130, 50), wxSize(300, 20));
 	wxStaticText* lastNameText = new wxStaticText(guidePanel, -1, wxT("TEN DOC GIA "),
 		wxPoint(10, 80), wxSize(100, 20));
@@ -219,7 +222,7 @@ void ReaderCard::GuideToUser()
 	wxStaticText* stateGuide = new wxStaticText(guidePanel, -1,
 		wxT(": 0 = THE BI KHOA, 1 = THE HOAT DONG"),
 		wxPoint(130, 140), wxSize(300, 20));
-	
+
 }
 void ReaderCard::OnKeyDownTextCltrToUpper(wxCommandEvent& _rCommandEvent)
 {
@@ -364,14 +367,41 @@ void ReaderCard::OnChangedPageNoteBook(wxCommandEvent& WXUNUSED(event))
 		SetDefaultColorForRow();
 	}
 }
+void ReaderCard::MainKeyDown(int keyCode)
+{
+	if (keyCode == WXK_F2)
+	{
+		SaveFile();
+	}
+	if (keyCode == WXK_F9)
+	{
+		isModeDelete = !isModeDelete;
+		grid->ClearSelection();
+		SetModeDelete(isModeDelete);
+	}
+
+	if (keyCode == WXK_DELETE)
+	{
+		ShowMessageClear();
+
+	}
+
+	if (keyCode == WXK_DOWN)
+	{
+		checkInput->MoveDownToAnotherTextCtrl(enterText, 4);
+	}
+	if (keyCode == WXK_UP)
+	{
+		checkInput->MoveUpToAnotherTextCtrl(enterText, 4);
+	}
+
+}
 void ReaderCard::OnKeyDown(wxKeyEvent& event)
 {
-	if (enterText[2]->HasFocus()||enterText[3]->HasFocus())
+	int keyCode = event.GetKeyCode();
+	if (enterText[2]->HasFocus() || enterText[3]->HasFocus())
 	{
-		int state = event.GetKeyCode();
-		if (state == 49 || state == 48||
-			state ==WXK_BACK||state ==WXK_UP||
-			state == WXK_DOWN||state ==13)
+		if(checkInput->HasInRangeNumber(keyCode,0,1)||checkInput->HasRightEntering(keyCode,false))
 		{
 			event.Skip();
 		}
@@ -380,46 +410,60 @@ void ReaderCard::OnKeyDown(wxKeyEvent& event)
 			return;
 		}
 	}
-	if (event.GetKeyCode() == WXK_F2)
+	if (enterText[0]->HasFocus()||enterText[1]->HasFocus())
 	{
-		SaveFile();
-	}
-	if (event.GetKeyCode() == WXK_F9)
-	{
-		isModeDelete = !isModeDelete;
-		grid->ClearSelection();
-		SetModeDelete(isModeDelete);
-	}
-	if (event.GetKeyCode() == WXK_DELETE)
-	{
-		//write some code here
-		//wxMessageBox(wxString::Format("Key pressed: %c", event.GetUnicodeKey()));
-		ShowMessageClear();
-
-	}
-	if (event.GetKeyCode() == WXK_DOWN)
-	{
-		if (noteBook->GetSelection() == 0)
+		if (checkInput->HasAlpha(keyCode)||checkInput->HasRightEntering(keyCode,true))
 		{
-			MoveDownToAnotherTextCtrl(enterText, 4);
+			event.Skip();
 		}
-		else if (noteBook->GetSelection() == 1)
-		{
-			MoveDownToAnotherTextCtrl(displayText, 5);
-		}
+		else return;
 	}
-	if (event.GetKeyCode() == WXK_UP)
-	{
-		if (noteBook->GetSelection() == 0)
-		{
-			MoveUpToAnotherTextCtrl(enterText, 4);
-		}
-		else if (noteBook->GetSelection() == 1)
-		{
-			MoveUpToAnotherTextCtrl(displayText, 5);
-		}
-	}
+	MainKeyDown(keyCode);
 	event.Skip();
+}
+void ReaderCard::OnGridKeyDown(wxKeyEvent& event)
+{
+	int keyCode = event.GetKeyCode();
+	MainKeyDown(keyCode);
+	int col = grid->GetGridCursorCol();
+	int row = grid->GetGridCursorRow();
+	if (!canEdit)
+	{
+		if (checkInput->HasRightEntering(keyCode, false))
+		{
+			event.Skip();
+		}
+		return;
+	}
+	if (col == 1)
+	{
+		
+		if (checkInput->HasAlpha(keyCode)||checkInput->HasRightEntering(keyCode,true))
+		{
+			event.Skip();
+		}
+	}
+	else if (col == 2)
+	{
+		if (checkInput->HasAlpha(keyCode)||checkInput->HasRightEntering(keyCode,true))
+		{
+			event.Skip();
+		}
+	}
+	else if (col == 3)
+	{
+		if (checkInput->HasInRangeNumber(keyCode, 0, 1)||checkInput->HasRightEntering(keyCode,false))
+		{
+			event.Skip();
+		}
+	}
+	else if (col == 4)
+	{
+		if (checkInput->HasInRangeNumber(keyCode, 0, 1)||checkInput->HasRightEntering(keyCode,false))
+		{
+			event.Skip();
+		}
+	}
 }
 void ReaderCard::SetModeDelete(bool state)
 {
@@ -427,7 +471,7 @@ void ReaderCard::SetModeDelete(bool state)
 	{
 		for (int j = 1; j < 5; j++)
 		{
-			grid->SetReadOnly(i, j,state);
+			grid->SetReadOnly(i, j, state);
 		}
 	}
 }
@@ -445,14 +489,14 @@ void ReaderCard::OnShow(wxShowEvent& event)
 	if (event.IsShown())
 	{
 		isModeDelete = false;
-		
+
 		grid->ClearSelection();
 		if (numberRowIsFilled > 30)
 		{
 			grid->DeleteRows(30, numberRowIsFilled - 30);
 		}
-		numberRowIsFilled = saveFile->GetSizeArray();
-		LoadFile();
+		numberRowIsFilled = cardReaderTree->GetNumberNodes();
+		LoadData();
 		SetModeDelete(false);
 		noteBook->SetSelection(0);
 	}
@@ -481,13 +525,13 @@ void ReaderCard::SaveFile()
 	int length = cardReaderTree->GetNumberNodes();
 	CardReader** arr = cardReaderTree->ToSameTreeArray();
 	saveFile->WriteToFile(arr, length);
-	wxMessageBox(wxString::Format("LIST IS SAVED SUCCESSFULLY"));
+	wxMessageBox(wxString::Format("LUU THANH CONG"));
 }
-void ReaderCard::LoadFile()
+void ReaderCard::LoadData()
 {
-	cardReaderTree->Clear();
-	CardReader** arr = new CardReader * [numberRowIsFilled];
-	saveFile->ReadFile(arr);
+	//cardReaderTree->Clear();
+	CardReader** arr = cardReaderTree->ToSortArray();//new CardReader * [numberRowIsFilled];
+	//saveFile->ReadFile(arr);
 	if (numberRowIsFilled > grid->GetNumberRows())
 	{
 		grid->AppendRows(numberRowIsFilled - grid->GetNumberRows() + 1);
@@ -495,7 +539,6 @@ void ReaderCard::LoadFile()
 
 	for (int i = 0; i < numberRowIsFilled; i++)
 	{
-		cardReaderTree->Add(arr[i]);
 		ulong cardCode = arr[i]->GetCardCode();
 		wxString cardCodeStr = EditCardCode(cardCode, 10);
 		grid->SetCellValue(i, 0, cardCodeStr);
@@ -513,6 +556,7 @@ void ReaderCard::LoadFile()
 		}
 
 	}
+	delete[]arr;
 }
 void ReaderCard::DeleteSelectedRows()
 {
@@ -701,14 +745,15 @@ void ReaderCard::EditCurrentCell(wxGridEvent& event)
 	}
 	if (col == 3)
 	{
-		if (!IsRightSex(wxNewText))
+		ModifyTextInput(wxNewText);
+		int num = CastWxStringToInt(wxNewText);
+		if (!IsRightCodeState(1, num))
 		{
 			ErrorMessageBox(-1, "Loi Nhap Lieu ");
 			grid->SetCellValue(row, col, wxOldText);
 			return;
 		}
-		UpperWxString(wxNewText);
-		grid->SetCellValue(row, col, wxNewText);
+		grid->SetCellValue(row, col, sexText[num]);
 	}
 	if (col == 4)
 	{
@@ -905,13 +950,14 @@ ulong ReaderCard::CreateHashCode()
 	ulong r;
 	for (int i = 0; i < 500; i++)
 	{
-		r = RandomNumber(1, 9999999999);
+		r = RandomNumber(1, 999999999);
 		if (cardReaderTree->IsDifferentNode(r)) { break; }
 	}
 	return r;
 }
 ulong ReaderCard::RandomNumber(ulong minNumber, ulong maxNumber)
 {
+
 	return minNumber + rand() % (maxNumber + 1 - minNumber);
 }
 
@@ -927,6 +973,54 @@ void ReaderCard::OnSelectedGrid(wxCommandEvent& WXUNUSED(event))
 void ReaderCard::OnSelectedLabelGrid(wxCommandEvent& WXUNUSED(event))
 {
 	grid->ClearSelection();
+}
+void ReaderCard::OnSelectedCell(wxGridEvent& event)
+{
+	int row = event.GetRow();
+	int col = event.GetCol();
+	if (!isModeDelete)
+	{
+		grid->ClearSelection();
+	}
+	canEdit = true;
+	event.Skip();
+}
+void ReaderCard::OnGridTexting(wxCommandEvent& event)
+{
+	int row = grid->GetGridCursorRow();
+	int col = grid->GetGridCursorCol();
+	event.SetString(grid->GetCellValue(row, col));
+	wxString tempStr = event.GetString();
+	int maxLength = GetMaxLength(col);
+	if (tempStr.Length() >= maxLength)
+	{
+		canEdit = false;
+	}
+	else
+	{
+		canEdit = true;
+	}
+	event.Skip();
+}
+int ReaderCard::GetMaxLength(int col)
+{
+	if (col < 1 || col>4) { return -1; }
+	if (col == 1)
+	{
+		return 16;
+	}
+	else if (col == 2)
+	{
+		return 7;
+	}
+	else
+	{
+		return 1;
+	}
+}
+void ReaderCard::SetCardReaders(BSTree<CardReader>* cardReaders)
+{
+	cardReaderTree = cardReaders;
 }
 BEGIN_EVENT_TABLE(ReaderCard, wxFrame)
 EVT_CHAR_HOOK(ReaderCard::OnKeyDown)

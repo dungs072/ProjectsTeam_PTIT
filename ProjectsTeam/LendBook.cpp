@@ -7,9 +7,6 @@ LendBook::LendBook(const wxString& title) :
 	cardFile = new SaveTextFile<CardReader>("ListReaders.txt");
 	titleFile = new SaveTextFile<Title>("BookTitle.txt");
 	checkInput = new CheckInput();
-	
-	treeCardReader = new BSTree<CardReader>();
-	titleList = new TitleList(100);
 	//color
 	wxColor lightOrange;
 	lightOrange.Set("#F5DBB8");
@@ -242,25 +239,10 @@ void LendBook::CreateSearchPanel()
 	wxStaticText* bookBorrowedTitle = new wxStaticText(displayInforPanel, -1,
 		wxT("CAC SACH DANG MUON"), wxPoint(140, 200), wxSize(300, 30));
 }
-void LendBook::LoadFile()
+void LendBook::LoadData()
 {
-	maxCard = cardFile->GetSizeArray();
-	maxTitle = titleFile->GetSizeArray();
-	treeCardReader->Clear();
-	titleList->GetList()->Clear();
-	CardReader** arrCard = new CardReader * [maxCard];
-	Title** arrTitle = new Title * [maxTitle];
-	cardFile->ReadFile(arrCard);
-	titleFile->ReadFile(arrTitle);
-	for (int i = 0; i < maxCard; i++)
-	{
-		treeCardReader->Add(arrCard[i]);
-	}
-	for (int i = 0; i < maxTitle; i++)
-	{
-		titleList->GetList()->AddLast(arrTitle[i]);
-	}
-	
+	maxCard = treeCardReader->GetNumberNodes();
+	maxTitle = titleList->GetList()->Length();
 	//cannot delete scaler 
 	//delete arrCard;
 	//delete[]arrTitle;
@@ -269,7 +251,7 @@ void LendBook::OnShow(wxShowEvent& event)
 {
 	if (event.IsShown())
 	{
-		LoadFile();
+		LoadData();
 		
 		ClearOldDataInInforPanel();
 		ClearOldDataInTitleGrid();
@@ -770,7 +752,7 @@ void LendBook::DisplayBookBorrow()
 	DoublyNode<BorrowBook>* tempCard = foundCardReader->GetListBorrowBook()->First();
 	while (tempCard != nullptr)
 	{
-		if (tempCard->data.GetStateBorrow() != 0)
+		if (tempCard->data.GetStateBorrow() == 1)//sach bi mat cung la dang muon
 		{
 			tempCard = tempCard->next;
 			continue;

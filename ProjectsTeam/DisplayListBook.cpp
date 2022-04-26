@@ -74,6 +74,9 @@ DisplayListBook::DisplayListBook(const wxString& title) :wxFrame(NULL, -1,
 	grid->Bind(wxEVT_GRID_RANGE_SELECTING, &DisplayListBook::OnSelectingGrid, this);
 	grid->Bind(wxEVT_GRID_SELECT_CELL, &DisplayListBook::OnSelectedGrid, this);
 	grid->Bind(wxEVT_GRID_LABEL_LEFT_CLICK, &DisplayListBook::OnSelectedLabelGrid, this);
+	grid->Bind(wxEVT_CHAR_HOOK, &DisplayListBook::OnGridKeyDown, this);
+	grid->Bind(wxEVT_GRID_SELECT_CELL, &DisplayListBook::OnSelectedCell, this);
+	grid->Bind(wxEVT_TEXT, &DisplayListBook::OnGridTexting, this);
 
 	//Set color
 	titleGrid->SetBackgroundColour(lightBlue);
@@ -159,7 +162,7 @@ void DisplayListBook::OnShow(wxShowEvent& event)
 			grid->DeleteRows(30, maxItem - 30);
 		}
 		maxItem = 0;
-		LoadFile();
+		LoadData();
 		SetModeDelete(false);
 	}
 	else
@@ -169,25 +172,60 @@ void DisplayListBook::OnShow(wxShowEvent& event)
 		enterText->Clear();
 	}
 }
-void DisplayListBook::OnKeyDown(wxKeyEvent& event)
+void DisplayListBook::MainKeyDown(int keyDown)
 {
-	event.StopPropagation();
-	if (event.GetKeyCode() == WXK_F2)
+	if (keyDown == WXK_F2)
 	{
 		SaveFile();
 	}
-	else if (event.GetKeyCode() == WXK_DELETE)
+	else if (keyDown == WXK_DELETE)
 	{
 		ShowMessageClear();
 	}
-	else if (event.GetKeyCode() == WXK_F9)
+	else if (keyDown == WXK_F9)
 	{
 		isModeDelete = !isModeDelete;
 		grid->ClearSelection();
 		SetModeDelete(isModeDelete);
 	}
 
+}
+void DisplayListBook::OnKeyDown(wxKeyEvent& event)
+{
+	event.StopPropagation();
+	MainKeyDown(event.GetKeyCode());
 	event.Skip();
+}
+void DisplayListBook::OnGridKeyDown(wxKeyEvent& event)
+{
+	int keyCode = event.GetKeyCode();
+	MainKeyDown(keyCode);
+	int col = grid->GetGridCursorCol();
+	if (!canEdit)
+	{
+		if (checkInput->HasRightEntering(keyCode, false))
+		{
+			event.Skip();
+		}
+		return;
+	}
+	if (col == 0)
+	{
+		if (checkInput->HasInRangeNumber(keyCode,0,2) || checkInput->HasRightEntering(keyCode, true))
+		{
+			event.Skip();
+		}
+	}
+	else if (col == 1)
+	{
+		if (checkInput->HasAlphaAndNumber(keyCode) || 
+			checkInput->HasRightEntering(keyCode, true)||
+			keyCode==',')
+		{
+			event.Skip();
+		}
+	}
+	
 }
 void DisplayListBook::OnChoice(wxCommandEvent& event)
 {
@@ -240,6 +278,12 @@ void DisplayListBook::EditCurrentCell(wxGridEvent& event)
 	string bookCode = string(grid->GetCellValue(row, 0).mb_str());
 	if (col == 1)
 	{
+		if (wxOldText == "DA CO DOC GIA MUON")
+		{
+			checkInput->ErrorMessageBox("SACH DANG MUON KHONG THE CHINH SUA");
+			grid->SetCellValue(row, col, wxOldText);
+			return;
+		}
 		if (!CheckStateBook(wxNewText))
 		{
 			checkInput->ErrorMessageBox("LOI TRANG THAI MA SACH");
@@ -352,7 +396,7 @@ void DisplayListBook::SaveFile()
 	saveFile->WriteToFile(arr, titleList->GetList()->Length());
 	wxMessageBox(wxT("LIST IS SAVED SUCCESSFULLY"));
 }
-void DisplayListBook::LoadFile()
+void DisplayListBook::LoadData()
 {
 	SinglyNode<Book>* tempBook = currentTitle->GetListBook()->First();
 	while (tempBook != nullptr)
@@ -423,6 +467,48 @@ void DisplayListBook::OnSelectedLabelGrid(wxCommandEvent& WXUNUSED(event))
 		grid->ClearSelection();
 	}
 }
+void DisplayListBook::OnSelectedCell(wxGridEvent& event)
+{
+	int row = event.GetRow();
+	int col = event.GetCol();
+	if (!isModeDelete)
+	{
+		grid->ClearSelection();
+	}
+	
+	canEdit = true;
+	event.Skip();
+}
+void DisplayListBook::OnGridTexting(wxCommandEvent& event)
+{
+	int row = grid->GetGridCursorRow();
+	int col = grid->GetGridCursorCol();
+	event.SetString(grid->GetCellValue(row, col));
+	wxString tempStr = event.GetString();
+	int maxLength = GetMaxLength(col);
+	if (tempStr.Length() >= maxLength)
+	{
+		canEdit = false;
+	}
+	else
+	{
+		canEdit = true;
+	}
+	event.Skip();
+}
+int DisplayListBook::GetMaxLength(int col)
+{
+	if (col == 1)
+	{
+		return 1;
+	}
+	else if (col == 2)
+	{
+		return 17;
+	}
+
+}
+
 void DisplayListBook::SetModeDelete(bool state)
 {
 	for (int i = 0; i < maxItem; i++)
@@ -433,6 +519,8 @@ void DisplayListBook::SetModeDelete(bool state)
 		}
 	}
 }
+
+
 BEGIN_EVENT_TABLE(DisplayListBook, wxFrame)
 EVT_CHAR_HOOK(DisplayListBook::OnKeyDown)
 EVT_SHOW(DisplayListBook::OnShow)

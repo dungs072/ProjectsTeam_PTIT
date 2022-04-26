@@ -68,6 +68,14 @@ FindInforBook::FindInforBook(const wxString& title) :
 	Bind(wxEVT_TEXT_ENTER, &FindInforBook::OnEnter, this);
 	Bind(wxEVT_SHOW, &FindInforBook::OnShow, this);
 	exitMenuButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &FindInforBook::OnExitMenu, this);
+
+	grid->Bind(wxEVT_GRID_RANGE_SELECTING, &FindInforBook::OnSelectingGrid, this);
+	grid->Bind(wxEVT_GRID_SELECT_CELL, &FindInforBook::OnSelectedGrid, this);
+	grid->Bind(wxEVT_GRID_LABEL_LEFT_CLICK, &FindInforBook::OnSelectedLabelGrid, this);
+	grid->Bind(wxEVT_CHAR_HOOK, &FindInforBook::OnGridKeyDown, this);
+	grid->Bind(wxEVT_GRID_SELECT_CELL, &FindInforBook::OnSelectedCell, this);
+	grid->Bind(wxEVT_TEXT, &FindInforBook::OnGridTexting, this);
+	//grid->Bind(wxEVT_GRID_CELL_CHANGING, &FindInforBook::OnCellChanging, this);
 	//Set Color
 	searchPanel->SetBackgroundColour(lightYellow);
 	titleGridText->SetBackgroundColour(lightBlue);
@@ -146,6 +154,12 @@ void FindInforBook::EditCurrentCell(wxGridEvent& event)
 	int row = grid->GetGridCursorRow();
 	int col = grid->GetGridCursorCol();
 	wxString wxOldText = event.GetString();
+	if (wxOldText == "DA CO DOC GIA MUON")
+	{
+		checkInput->ErrorMessageBox("SACH DA DUOC MUON KHONG THE SUA");
+		grid->SetCellValue(row, col, wxOldText);
+		return;
+	}
 	if (wxOldText == wxT(""))
 	{
 		checkInput->ErrorMessageBox("Khong the chinh chua o nay ");
@@ -217,6 +231,22 @@ void FindInforBook::OnEnter(wxCommandEvent& WXUNUSED(event))
 	}
 	else
 	{
+		bool isBlanket = false;
+		for (int i = 0; i < 6; i++)
+		{
+			wxString tempwxstr = displayText[i]->GetValue();
+			checkInput->ModifyTextInput(tempwxstr);
+			if (checkInput->IsWhiteSpaceAllText(tempwxstr))
+			{
+				isBlanket = true;
+				UndoTitleData(i);
+			}
+		}
+		if (isBlanket)
+		{
+			checkInput->ErrorMessageBox("KHONG DUOC BO TRONG");
+			return;
+		}
 		if (displayText[0]->HasFocus())
 		{
 			wxString tempwxstr = displayText[0]->GetValue();
@@ -427,36 +457,58 @@ void FindInforBook::ChangeTitleData(int index,wxString wxData)
 			i++;
 			tempBook = tempBook->next;
 		}
-		SaveFile();
+		//SaveFile();
 	}
 	else if (index == 1)
 	{
 		foundTitle->SetBookName(data);
 		sort->QuickSort(arr, 0, length);
-		SaveFile();
+		//SaveFile();
 	}
 	else if (index == 2)
 	{
 		int numberPage = checkInput->CastStringToNumber(data);
 		foundTitle->SetPageNumber(numberPage);
-		SaveFile();
+		//SaveFile();
 	}
 	else if (index == 3)
 	{
 		foundTitle->SetAuthor(data);
-		SaveFile();
+		//SaveFile();
 	}
 	else if (index == 4)
 	{
 		int yearPublic = checkInput->CastStringToNumber(data);
 		foundTitle->SetPublicYear(yearPublic);
-		SaveFile();
+		//SaveFile();
 	}
 	else if (index == 5)
 	{
 		foundTitle->SetType(data);
 		sort->QuickSort(arr, 0, length);
-		SaveFile();
+		//SaveFile();
+	}
+}
+void FindInforBook::OnGridKeyDown(wxKeyEvent& event)
+{
+	int keyCode = event.GetKeyCode();
+	int col = grid->GetGridCursorCol();
+	int row = grid->GetGridCursorRow();
+	if (!canEdit)
+	{
+		if (checkInput->HasRightEntering(keyCode, false))
+		{
+			event.Skip();
+		}
+		return;
+	}
+	if (col == 1)
+	{
+
+		if (checkInput->HasInRangeNumber(keyCode,0,2) || checkInput->HasRightEntering(keyCode, true))
+		{
+			event.Skip();
+		}
 	}
 }
 void FindInforBook::OnKeyDown(wxKeyEvent& event)
@@ -464,18 +516,62 @@ void FindInforBook::OnKeyDown(wxKeyEvent& event)
 	if (event.GetKeyCode() == WXK_F2)
 	{
 		SaveFile();
+		event.Skip();
 	}
-	event.Skip();
+	int keyCode = event.GetKeyCode();
+	if (displayText[0]->HasFocus())
+	{
+		if ((keyCode >= 'a' && keyCode <= 'z') ||
+			(keyCode >= 'A' && keyCode <= 'Z') ||
+			keyCode == WXK_BACK || keyCode == WXK_RETURN ||
+			keyCode == WXK_LEFT || keyCode == WXK_RIGHT )
+		{
+			event.Skip();
+		}
+	}
+	else if (displayText[3]->HasFocus()||displayText[5]->HasFocus())
+	{
+		if ((keyCode >= 'a' && keyCode <= 'z') ||
+			(keyCode>='A'&&keyCode<='Z')||
+			keyCode == WXK_BACK || keyCode == WXK_RETURN ||
+			keyCode == WXK_LEFT || keyCode == WXK_RIGHT || keyCode == ' ')
+		{
+			event.Skip();
+		}
+	}
+	else if (displayText[1]->HasFocus())
+	{
+		if ((keyCode >= 'a' && keyCode <= 'z') ||
+			(keyCode >= 'A' && keyCode <= 'Z') ||
+			(keyCode>='0'&&keyCode<='9')||
+			keyCode == WXK_BACK || keyCode == WXK_RETURN ||
+			keyCode == WXK_LEFT || keyCode == WXK_RIGHT || keyCode == ' ')
+		{
+			event.Skip();
+		}
+	}
+	else if (displayText[2]->HasFocus()||displayText[4]->HasFocus())
+	{
+		if ((keyCode >= '0' && keyCode <= '9') ||
+			keyCode == WXK_BACK || keyCode == WXK_RETURN ||
+			keyCode == WXK_LEFT || keyCode == WXK_RIGHT)
+		{
+			event.Skip();
+		}
+	}
+	else
+	{
+		event.Skip();
+	}
 }
 void FindInforBook::SaveFile()
 {
 	saveFile->WriteToFile(arr, length);
 }
-void FindInforBook::LoadFile()
+void FindInforBook::LoadData()
 {
-	length = saveFile->GetSizeArray();
-	arr = new Title * [length];
-	saveFile->ReadFile(arr);
+	length = titleList->GetList()->Length();
+	arr = titleList->GetList()->ToArray();
 }
 void FindInforBook::OnExitMenu(wxCommandEvent& WXUNUSED(event))
 {
@@ -486,7 +582,7 @@ void FindInforBook::OnShow(wxShowEvent& event)
 {
 	if (event.IsShown())
 	{
-		LoadFile();
+		LoadData();
 		ClearAllOldData();
 		SetReadOnLyDisplayTable();
 		maxItem = 0;
@@ -557,8 +653,6 @@ void FindInforBook::DisplayOnTable()
 		i++;
 		tempBook = tempBook->next;
 	}
-	
-
 }
 void FindInforBook::ClearAllOldData()
 {
@@ -659,12 +753,66 @@ bool FindInforBook::CheckDuplicateBookName(wxString text)
 bool FindInforBook::CheckChangeData()
 {
 	wxMessageDialog* dialog = new wxMessageDialog(NULL,
-		wxT("Ban co chac muon thay doi du lieu khong?\n(Du lieu moi se duoc luu vao file)"),
+		wxT("BAN CO CHAC MUON THAY DOI DU LIEU KHONG?"),
 		wxT("Warning"),
 		wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
-	bool state =  dialog->ShowModal() == wxID_YES;
+	bool state = dialog->ShowModal() == wxID_YES;
 	delete dialog;
 	return state;
+}
+void FindInforBook::OnSelectingGrid(wxGridRangeSelectEvent& WXUNUSED(event))
+{
+	if (grid->IsSelection())
+	{
+		grid->ClearSelection();
+	}
+}
+void FindInforBook::OnSelectedGrid(wxCommandEvent& WXUNUSED(event))
+{
+	if (grid->IsSelection())
+	{
+		grid->ClearSelection();
+	}
+}
+void FindInforBook::OnSelectedLabelGrid(wxCommandEvent& WXUNUSED(event))
+{
+	if (grid->IsSelection())
+	{
+		grid->ClearSelection();
+	}
+}
+void FindInforBook::OnSelectedCell(wxGridEvent& event)
+{
+	int row = event.GetRow();
+	int col = event.GetCol();
+	grid->ClearSelection();
+	canEdit = true;
+	event.Skip();
+}
+void FindInforBook::OnGridTexting(wxCommandEvent& event)
+{
+	int row = grid->GetGridCursorRow();
+	int col = grid->GetGridCursorCol();
+	event.SetString(grid->GetCellValue(row, col));
+	wxString tempStr = event.GetString();
+	int maxLength = GetMaxLength(col);
+	if (tempStr.Length() >= maxLength)
+	{
+		canEdit = false;
+	}
+	else
+	{
+		canEdit = true;
+	}
+	event.Skip();
+}
+int FindInforBook::GetMaxLength(int col)
+{
+	if (col == 1)
+	{
+		return 1;
+	}
+	return -1;
 }
 BEGIN_EVENT_TABLE(FindInforBook, wxFrame)
 EVT_CHAR_HOOK(FindInforBook::OnKeyDown)

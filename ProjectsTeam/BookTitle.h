@@ -25,6 +25,8 @@ private:
 	void CreateTakeNoteArea(wxPanel* takeNotePanel);
 	void CreateKeyNoteArea(wxPanel* keyNotePanel);
 	void OnKeyDown(wxKeyEvent& event);
+	void OnGridKeyDown(wxKeyEvent& event);
+	void MainKeyDown(int keyDown);
 	void OnKeyDownTextCltrToUpper(wxCommandEvent& event);
 	void OnEnter(wxCommandEvent& event);
 	void EditCurrentCell(wxGridEvent& event);
@@ -34,17 +36,22 @@ private:
 	void OnSelectingGrid(wxGridRangeSelectEvent& event);
 	void OnSelectedGrid(wxCommandEvent& event);
 	void OnSelectedLabelGrid(wxCommandEvent& event);
+
+	void OnSelectedCell(wxGridEvent& event);
+	void OnGridTexting(wxCommandEvent& event);
+	int GetMaxLength(int col);
 	
 	void EditTable(Title* title,int row);
 	void SwitchPanel(bool state);
 	void SwitchEnterText(bool state);
 	void SaveToList();
 	void SaveFile();
-	void LoadFile();
+	void LoadData();
 	void LoadListToTable();
 	void ShowMessageClear();
 	void DeleteSelectedRows();
 	void ClearInforInEnterText();
+	void ClearOldDataInGrid();
 	bool CheckISBN(wxString text);
 	bool CheckBookName(wxString text);
 	bool CheckPageNumber(wxString text);
@@ -58,6 +65,7 @@ private:
 
 
 	bool isModeDelete = false;
+	bool canEdit = true;
 	//quick sort
 	void Swap(Title*t1, Title* t2);
 	int partition( int l, int h);
@@ -67,10 +75,12 @@ public:
 	~BookTitle()
 	{
 		delete saveFile;
-		delete titleList;
 		delete[]enterText;
+	}
+	void SetTitleList(TitleList* titleList)
+	{
+		this->titleList = titleList;
 	}
 	DECLARE_EVENT_TABLE();
 
 };
-

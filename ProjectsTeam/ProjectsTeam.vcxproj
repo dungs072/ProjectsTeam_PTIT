@@ -157,7 +157,6 @@
     <ClCompile Include="BSTNode.cpp" />
     <ClCompile Include="BSTree.cpp" />
     <ClCompile Include="CardReader.cpp" />
-    <ClCompile Include="CardReaderMenu.cpp" />
     <ClCompile Include="CheckInput.cpp" />
     <ClCompile Include="ControlDateTime.cpp" />
     <ClCompile Include="DateTime.cpp" />
@@ -172,6 +171,7 @@
     <ClCompile Include="LinearList.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="DoublyNode.cpp" />
+    <ClCompile Include="MostBorrowings.cpp" />
     <ClCompile Include="OverDueCard.cpp" />
     <ClCompile Include="OverDueList.cpp" />
     <ClCompile Include="Queue.cpp" />
@@ -191,7 +191,6 @@
     <ClInclude Include="BSTNode.h" />
     <ClInclude Include="BSTree.h" />
     <ClInclude Include="CardReader.h" />
-    <ClInclude Include="CardReaderMenu.h" />
     <ClInclude Include="CheckInput.h" />
     <ClInclude Include="ControlDateTime.h" />
     <ClInclude Include="DateTime.h" />
@@ -205,6 +204,7 @@
     <ClInclude Include="GiveBook.h" />
     <ClInclude Include="LendBook.h" />
     <ClInclude Include="LinearList.h" />
+    <ClInclude Include="MostBorrowings.h" />
     <ClInclude Include="OverDueCard.h" />
     <ClInclude Include="OverDueList.h" />
     <ClInclude Include="Queue.h" />

@@ -4,7 +4,6 @@ BookTitle::BookTitle(const wxString& title) : wxFrame(NULL, -1,
 {
 	//back end
 	saveFile = new SaveTextFile<Title>("BookTitle.txt");
-	titleList = new TitleList(100);
 	//catch error
 	checkInput = new CheckInput();
 	//create color;
@@ -77,8 +76,10 @@ BookTitle::BookTitle(const wxString& title) : wxFrame(NULL, -1,
 	grid->Bind(wxEVT_GRID_RANGE_SELECTING, &BookTitle::OnSelectingGrid, this);
 	grid->Bind(wxEVT_GRID_SELECT_CELL, &BookTitle::OnSelectedGrid, this);
 	grid->Bind(wxEVT_GRID_LABEL_LEFT_CLICK, &BookTitle::OnSelectedLabelGrid, this);
-
 	grid->Bind(wxEVT_GRID_CELL_CHANGED, &BookTitle::EditCurrentCell, this);
+	grid->Bind(wxEVT_CHAR_HOOK, &BookTitle::OnGridKeyDown, this);
+	grid->Bind(wxEVT_GRID_SELECT_CELL, &BookTitle::OnSelectedCell, this);
+	grid->Bind(wxEVT_TEXT, &BookTitle::OnGridTexting, this);
 
 	exitMenu->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &BookTitle::OnExitMenu, this);
 	Bind(wxEVT_TEXT_ENTER, &BookTitle::OnEnter, this);
@@ -181,38 +182,31 @@ void BookTitle::CreateKeyNoteArea(wxPanel* keyNotePanel)
 		wxT("F2-SAVE, F9-MO HOAC TAT CHE DO XOA (DELETE-XOA DAU SACH,ENTER-NHAP DAU SACH)"),
 		wxPoint(10, 10), wxSize(550, 20), wxALIGN_CENTER_HORIZONTAL);
 }
-void BookTitle::OnKeyDown(wxKeyEvent& event)
+void BookTitle::MainKeyDown(int keyCode)
 {
-	if (event.GetKeyCode() == WXK_F4)
+	if (keyCode == WXK_F4)
 	{
 		isTurnOnEnterPanel = !isTurnOnEnterPanel;
 		SwitchPanel(isTurnOnEnterPanel);
 		SwitchEnterText(isTurnOnEnterPanel);
 	}
-	if (!isTurnOnEnterPanel)
-	{
-		event.Skip();
-
-		return;
-	}
-	if (event.GetKeyCode() == WXK_UP)
+	if (keyCode == WXK_UP)
 	{
 		checkInput->MoveUpToAnotherTextCtrl(enterText, 6);
 	}
-	else if (event.GetKeyCode() == WXK_DOWN)
+	else if (keyCode == WXK_DOWN)
 	{
 		checkInput->MoveDownToAnotherTextCtrl(enterText, 6);
 	}
-	else if (event.GetKeyCode() == WXK_F2)
+	else if (keyCode == WXK_F2)
 	{
 		SaveFile();
 	}
-	else if (event.GetKeyCode() == WXK_DELETE)
+	else if (keyCode == WXK_DELETE)
 	{
-
 		ShowMessageClear();
 	}
-	else if (event.GetKeyCode() == WXK_F9)
+	else if (keyCode == WXK_F9)
 	{
 		isModeDelete = !isModeDelete;
 		if (grid->IsSelection())
@@ -222,8 +216,108 @@ void BookTitle::OnKeyDown(wxKeyEvent& event)
 		SetModeDelete(isModeDelete);
 
 	}
+}
+void BookTitle::OnKeyDown(wxKeyEvent& event)
+{
+	int keyCode = event.GetKeyCode();
+	MainKeyDown(keyCode);
+	if (!isTurnOnEnterPanel)
+	{
+		event.Skip();
 
-	event.Skip();
+		return;
+	}
+	
+	if (enterText[0]->HasFocus())
+	{
+		if (checkInput->HasAlpha(keyCode)||checkInput->HasRightEntering(keyCode,false))
+		{
+			event.Skip();
+		}
+	}
+	else if (enterText[3]->HasFocus() || enterText[5]->HasFocus())
+	{
+		if (checkInput->HasAlpha(keyCode)||checkInput->HasRightEntering(keyCode,true))
+		{
+			event.Skip();
+		}
+	}
+	else if (enterText[1]->HasFocus())
+	{
+		if (checkInput->HasAlphaAndNumber(keyCode)||checkInput->HasRightEntering(keyCode,true))
+		{
+			event.Skip();
+		}
+	}
+	else if (enterText[2]->HasFocus() || enterText[4]->HasFocus())
+	{
+		if ((keyCode >= '0' && keyCode <= '9') ||
+			keyCode == WXK_BACK || keyCode == WXK_RETURN ||
+			keyCode == WXK_LEFT || keyCode == WXK_RIGHT)
+		{
+			event.Skip();
+		}
+	}
+	else
+	{
+		event.Skip();
+	}
+}
+void BookTitle::OnGridKeyDown(wxKeyEvent& event)
+{
+	int keyCode = event.GetKeyCode();
+	MainKeyDown(keyCode);
+	int col = grid->GetGridCursorCol();
+	if (!canEdit)
+	{
+		if (checkInput->HasRightEntering(keyCode, false))
+		{
+			event.Skip();
+		}
+		return;
+	}
+	if (col == 0)
+	{
+		if (checkInput->HasAlpha(keyCode) || checkInput->HasRightEntering(keyCode, true))
+		{
+			event.Skip();
+		}
+	}
+	else if (col == 1)
+	{
+		if (checkInput->HasAlphaAndNumber(keyCode) || checkInput->HasRightEntering(keyCode, true))
+		{
+			event.Skip();
+		}
+	}
+	else if (col == 2)
+	{
+		if (checkInput->HasNumber(keyCode)||checkInput->HasRightEntering(keyCode,false))
+		{
+			event.Skip();
+		}
+	}
+	else if (col == 3)
+	{
+		if (checkInput->HasAlpha(keyCode) || checkInput->HasRightEntering(keyCode, true))
+		{
+			event.Skip();
+		}
+	}
+	else if (col == 4)
+	{
+		if (checkInput->HasNumber(keyCode) || checkInput->HasRightEntering(keyCode, false))
+		{
+			event.Skip();
+		}
+	}
+	else if (col == 5)
+	{
+		if (checkInput->HasAlpha(keyCode) || checkInput->HasRightEntering(keyCode, true))
+		{
+			event.Skip();
+		}
+	}
 }
 void BookTitle::SetModeDelete(bool state)
 {
@@ -238,6 +332,11 @@ void BookTitle::SetModeDelete(bool state)
 void BookTitle::OnEnter(wxCommandEvent& WXUNUSED(event))
 {
 	if (!isTurnOnEnterPanel) { return; }
+	if(maxItem+1>titleList->GetList()->MaxLength())
+	{
+		wxMessageBox("GIOI HAN SACH LA 100 KHONG THE VUOT HON");
+		return;
+	}
 	for (int i = 0; i < 6; i++)
 	{
 		if (checkInput->IsWhiteSpaceAllText(enterText[i]->GetValue()))
@@ -317,9 +416,8 @@ void BookTitle::OnShow(wxShowEvent& event)
 		{
 			grid->DeleteRows(30, maxItem - 30);
 		}
-		LoadFile();
+		LoadData();
 		isModeDelete = false;
-		maxItem = saveFile->GetSizeArray();
 		SetModeDelete(false);
 	}
 	event.Skip();
@@ -436,6 +534,9 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 	title->SetListBook(tempList);
 	titleList->GetList()->AddLast(title);
 
+	//load grid again();
+	QuickSort(0, maxItem);
+	LoadListToTable();
 	event.Skip();
 }
 void BookTitle::EditTable(Title* title, int row)
@@ -509,6 +610,7 @@ void BookTitle::EditTable(Title* title, int row)
 		grid->SetCellValue(pos, i, grid->GetCellValue(row, i));
 		grid->SetCellAlignment(pos, i, wxALIGN_CENTER, wxALIGN_CENTER);
 	}
+	
 }
 void BookTitle::OnKeyDownTextCltrToUpper(wxCommandEvent& _rCommandEvent)
 {
@@ -655,36 +757,24 @@ void BookTitle::SaveFile()
 	QuickSort(0, length);
 	Title** arr = titleList->GetList()->ToArray();
 	saveFile->WriteToFile(arr, length);
-	wxMessageBox(wxT("LIST IS SAVED SUCCESSFULLY"));
+	wxMessageBox(wxT("LUU THANH CONG"));
 }
-void BookTitle::LoadFile()
+void BookTitle::LoadData()
 {
-	titleList->GetList()->Clear();
-	//wxMessageBox(wxString::Format("%i", saveFile->GetSizeArray()));
-	int length = saveFile->GetSizeArray();
-	if (length > titleList->GetList()->MaxLength())
-	{
-		wxMessageBox("Danh sach trong file qua lon, khong the load duoc");
-		return;
-	}
-	Title** arr = new Title * [length];
-	saveFile->ReadFile(arr);
-
-	for (int i = 0; i < length; i++)
-	{
-		titleList->GetList()->AddLast(arr[i]);
-	}
-	delete[]arr;
+	grid->Refresh();
+	ClearOldDataInGrid();
+	maxItem = titleList->GetList()->Length();
+	//QuickSort(0, maxItem);
 	LoadListToTable();
 
 }
 void BookTitle::LoadListToTable()
 {
-	if (titleList->GetList()->Length() > grid->GetNumberRows())
+	if (maxItem > grid->GetNumberRows())
 	{
-		grid->AppendRows(titleList->GetList()->Length() - grid->GetNumberRows() + 1);
+		grid->AppendRows(maxItem - grid->GetNumberRows() + 1);
 	}
-	for (int i = 0; i < titleList->GetList()->Length(); i++)
+	for (int i = 0; i < maxItem; i++)
 	{
 		Title* temp = titleList->GetList()->GetData(i);
 		grid->SetCellValue(i, 0, temp->GetISBN());
@@ -698,7 +788,16 @@ void BookTitle::LoadListToTable()
 			grid->SetCellAlignment(i, j, wxALIGN_CENTER, wxALIGN_CENTER);
 		}
 	}
-	maxItem = titleList->GetList()->Length();
+}
+void BookTitle::ClearOldDataInGrid()
+{
+	for (int i = 0; i < grid->GetNumberRows(); i++)
+	{
+		for (int j = 0; j < grid->GetNumberCols(); j++)
+		{
+			grid->SetCellValue(i,j,wxT(""));
+		}
+	}
 }
 void BookTitle::ShowMessageClear()
 {
@@ -765,7 +864,6 @@ void BookTitle::SwitchEnterText(bool state)
 //
 // if khong luu gia tri thi xoa mang di va luu gia tri cu cua file vao mang
 //
-
 void BookTitle::ClearInforInEnterText()
 {
 	for (int i = 0; i < 6; i++)
@@ -837,7 +935,6 @@ int BookTitle::CompareTitle(Title* t1, Title* t2)
 	}
 }
 
-
 //quickSort
 void BookTitle::Swap(Title* t1, Title* t2)
 {
@@ -886,6 +983,62 @@ void BookTitle::OnSelectedLabelGrid(wxCommandEvent& WXUNUSED(event))
 	if (grid->IsSelection())
 	{
 		grid->ClearSelection();
+	}
+}
+void BookTitle::OnSelectedCell(wxGridEvent& event)
+{
+	int row = event.GetRow();
+	int col = event.GetCol();
+	if (!isModeDelete)
+	{
+		grid->ClearSelection();
+	}
+	canEdit = true;
+	event.Skip();
+}
+void BookTitle::OnGridTexting(wxCommandEvent& event)
+{
+	int row = grid->GetGridCursorRow();
+	int col = grid->GetGridCursorCol();
+	event.SetString(grid->GetCellValue(row, col));
+	wxString tempStr = event.GetString();
+	int maxLength = GetMaxLength(col);
+	if (tempStr.Length() >= maxLength)
+	{
+		canEdit = false;
+	}
+	else
+	{
+		canEdit = true;
+	}
+	event.Skip();
+}
+int BookTitle::GetMaxLength(int col)
+{
+	if (col > 5) { return -1; }
+	if (col == 0)
+	{
+		return 4;
+	}
+	else if (col == 1)
+	{
+		return 24;
+	}
+	else if(col==2)
+	{
+		return 6;
+	}
+	else if (col == 3)
+	{
+		return 17;
+	}
+	else if (col == 4)
+	{
+		return 4;
+	}
+	else if (col == 5)
+	{
+		return 11;
 	}
 }
 BEGIN_EVENT_TABLE(BookTitle, wxFrame)

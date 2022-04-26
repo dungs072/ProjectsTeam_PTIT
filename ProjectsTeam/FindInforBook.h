@@ -13,6 +13,7 @@ private:
 	CheckInput* checkInput;
 	SaveTextFile<Title>* saveFile;
 	Title* foundTitle = nullptr;
+	TitleList* titleList = nullptr;
 	Title** arr = nullptr;
 	string* stateBook;
 	//FontEnd
@@ -29,7 +30,7 @@ private:
 	void DisplayOnTable();
 	void ClearAllOldData();
 	void SaveFile();
-	void LoadFile();
+	void LoadData();
 	void UndoTitleData(int index);
 	void ChangeTitleData(int index,wxString data);
 	void SetReadOnLyDisplayTable();
@@ -50,12 +51,20 @@ private:
 	void OnKeyDownTextCltrToUpper(wxCommandEvent& _rCommandEvent);
 	void EditCurrentCell(wxGridEvent& event);
 	void OnKeyDown(wxKeyEvent& event);
+	void OnGridKeyDown(wxKeyEvent& event);
 	void OnEnter(wxCommandEvent& event);
 	void OnShow(wxShowEvent& event);
+	void OnSelectingGrid(wxGridRangeSelectEvent& event);
+	void OnSelectedGrid(wxCommandEvent& event);
+	void OnSelectedLabelGrid(wxCommandEvent& event);
+	void OnSelectedCell(wxGridEvent& event);
+	void OnGridTexting(wxCommandEvent& event);
+	int GetMaxLength(int col);
 
 	int maxItem = 0;
 	int length = 0;
 	int foundBookIndex = 0;
+	bool canEdit = true;
 public:
 	FindInforBook(const wxString& title);
 	~FindInforBook()
@@ -65,6 +74,10 @@ public:
 		delete saveFile;
 		delete[] stateBook;
 		delete[]displayText;
+	}
+	void SetTitleList(TitleList* titleList)
+	{
+		this->titleList = titleList;
 	}
 	DECLARE_EVENT_TABLE();
 };

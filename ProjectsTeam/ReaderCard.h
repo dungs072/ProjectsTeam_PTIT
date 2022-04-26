@@ -9,6 +9,7 @@
 #include<time.h>
 #include"BSTree.h"
 #include"SaveTextFile.h"
+#include"CheckInput.h"
 typedef unsigned long long ulong;
 using std::string;
 using namespace DataStructure;
@@ -20,6 +21,7 @@ private:
 	BSTree<CardReader>* cardReaderTree;
 	CardReader* CreateCardReader(wxTextCtrl** textCtrlList, ulong cardCode);
 	SaveTextFile<CardReader>* saveFile;
+	CheckInput* checkInput = nullptr;
 	//frontend
 	wxMenuBar* menuBar;
 	wxMenu* file;
@@ -38,8 +40,6 @@ private:
 	wxPanel* hotKeyPanel;
 	wxPanel* guidePanel;
 
-	
-
 	void MoveDownToAnotherTextCtrl(wxTextCtrl** textCtrl, int length);
 	void MoveUpToAnotherTextCtrl(wxTextCtrl** textCtrl, int length);
 	void GuideToUser();
@@ -51,7 +51,10 @@ private:
 	void OnChangedPageNoteBook(wxCommandEvent& event);
 	void OnSave(wxCommandEvent& event);
 	void OnEnter(wxCommandEvent& event);
+	void MainKeyDown(int keyCode);
 	void OnKeyDown(wxKeyEvent& event);
+	void OnGridKeyDown(wxKeyEvent& event);
+	void OnGridTexting(wxCommandEvent& event);
 	void EditCurrentCell(wxGridEvent& event);
 	void OnCardMenu(wxCommandEvent& event);
 	void OnShow(wxShowEvent& event);
@@ -74,7 +77,7 @@ private:
 	void OnSelectingGrid(wxGridRangeSelectEvent& event);
 	void OnSelectedGrid(wxCommandEvent& event);
 	void OnSelectedLabelGrid(wxCommandEvent& event);
-
+	void OnSelectedCell(wxGridEvent& event);
 	void SetModeDelete(bool state);
 
 
@@ -91,17 +94,20 @@ private:
 	ulong RandomNumber(ulong minNumber, ulong maxNumber);
 	string UpperText(string text);
 	string EditCardCode(ulong number, int maxLengthCode);
+
+	int GetMaxLength(int col);
+
 	int count = 0;
 	int rowChangedColor = -1;
 	int numberRowIsFilled = 0;
 	bool isModeDelete = false;
+	bool canEdit = true;
 	DECLARE_EVENT_TABLE();
 public:
 	ReaderCard(const wxString& title);
-	void LoadFile();
+	void LoadData();
+	void SetCardReaders(BSTree<CardReader>* cardReaders);
 };
 const int CARD_MENU = 3;
 const int SAVE_FILE = 2;
 const int DefaultRows = 30;
-
-

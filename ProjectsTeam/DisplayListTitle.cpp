@@ -16,7 +16,6 @@ DisplayListTitle::DisplayListTitle(const wxString& title) : wxFrame(NULL, -1, ti
 	};
 	saveFile = new SaveTextFile<Title>("BookTitle.txt");
 	maxItem = saveFile->GetSizeArray();
-	titleList = new TitleList(100);
 	//child window
 	listBook = new DisplayListBook(wxT("DANH MUC SACH"));
 	this->AddChild(listBook);
@@ -89,6 +88,9 @@ DisplayListTitle::DisplayListTitle(const wxString& title) : wxFrame(NULL, -1, ti
 	grid->Bind(wxEVT_GRID_RANGE_SELECTING, &DisplayListTitle::OnSelectingGrid, this);
 	grid->Bind(wxEVT_GRID_SELECT_CELL, &DisplayListTitle::OnSelectedGrid, this);
 	grid->Bind(wxEVT_GRID_LABEL_LEFT_CLICK, &DisplayListTitle::OnSelectedLabelGrid, this);
+	grid->Bind(wxEVT_CHAR_HOOK, &DisplayListTitle::OnGridKeyDown, this);
+	grid->Bind(wxEVT_GRID_SELECT_CELL, &DisplayListTitle::OnSelectedCell, this);
+	grid->Bind(wxEVT_TEXT, &DisplayListTitle::OnGridTexting, this);
 	bookButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DisplayListTitle::OnButtonDown, this);
 	exitMenu->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DisplayListTitle::OnExitMenu, this);
 	//Set Color
@@ -169,7 +171,6 @@ void DisplayListTitle::CreateKeyNoteArea(wxPanel* keyNotePanel)
 }
 void DisplayListTitle::OnKeyDown(wxKeyEvent& event)
 {
-
 	if (event.GetKeyCode() == WXK_F2)
 	{
 		SaveFile();
@@ -179,6 +180,72 @@ void DisplayListTitle::OnKeyDown(wxKeyEvent& event)
 		ShowFunctionPanel();
 	}
 	event.Skip();
+}
+void DisplayListTitle::OnGridKeyDown(wxKeyEvent& event)
+{
+	if (event.GetKeyCode() == WXK_F2)
+	{
+		SaveFile();
+	}
+	else if (event.GetKeyCode() == WXK_F9)
+	{
+		ShowFunctionPanel();
+	}
+	//event.Skip();
+
+	//function
+	int keyCode = event.GetKeyCode();
+	int col = grid->GetGridCursorCol();
+	if (!canEdit)
+	{
+		if (checkInput->HasRightEntering(keyCode, false))
+		{
+			event.Skip();
+		}
+		return;
+	}
+	if (col == 0)
+	{
+		if (checkInput->HasAlpha(keyCode) || checkInput->HasRightEntering(keyCode, true))
+		{
+			event.Skip();
+		}
+	}
+	else if (col == 1)
+	{
+		if (checkInput->HasAlphaAndNumber(keyCode) || checkInput->HasRightEntering(keyCode, true))
+		{
+			event.Skip();
+		}
+	}
+	else if (col == 2)
+	{
+		if (checkInput->HasNumber(keyCode) || checkInput->HasRightEntering(keyCode, false))
+		{
+			event.Skip();
+		}
+	}
+	else if (col == 3)
+	{
+		if (checkInput->HasAlpha(keyCode) || checkInput->HasRightEntering(keyCode, true))
+		{
+			event.Skip();
+		}
+	}
+	else if (col == 4)
+	{
+		if (checkInput->HasNumber(keyCode) || checkInput->HasRightEntering(keyCode, false))
+		{
+			event.Skip();
+		}
+	}
+	else if (col == 5)
+	{
+		if (checkInput->HasAlpha(keyCode) || checkInput->HasRightEntering(keyCode, true))
+		{
+			event.Skip();
+		}
+	}
 }
 void DisplayListTitle::OnSelectingGrid(wxGridRangeSelectEvent& event)
 {
@@ -214,7 +281,6 @@ void DisplayListTitle::OnSelectedGrid(wxCommandEvent& event)
 		bookButton->Show(false);
 		return;
 	}
-
 	selectedTitle = titleList->GetData(ISBN);
 	bookNameText->SetLabelText(selectedTitle->GetBookName());
 	bookButton->Show(true);
@@ -352,6 +418,14 @@ void DisplayListTitle::EditCurrentCell(wxGridEvent& event)
 		EditTable(title, row);
 	}
 	titleList->GetList()->AddLast(title);
+	Title** arr = titleList->GetList()->ToArray();
+	sort->QuickSort(arr, 0, maxItem);
+	LoadListToTable();
+
+	//I have to check Leak Memory here
+	//delete cell memory
+	//delete arr;
+
 	event.Skip();
 }
 void DisplayListTitle::OnButtonDown(wxCommandEvent& WXUNUSED(event))
@@ -374,8 +448,9 @@ void DisplayListTitle::OnShow(wxShowEvent& event)
 		{
 			grid->DeleteRows(30, maxItem - 30);
 		}
-		maxItem = saveFile->GetSizeArray();
-		LoadFile();
+		maxItem = titleList->GetList()->Length();
+		ClearOldDataInTable();
+		LoadData();
 		
 	}
 	else
@@ -467,25 +542,18 @@ void DisplayListTitle::SaveFile()
 	Title** arr = titleList->GetList()->ToArray();
 	sort->QuickSort(arr, 0, titleList->GetList()->Length());
 	saveFile->WriteToFile(arr, maxItem);
-	wxMessageBox(wxT("LIST IS SAVED SUCCESSFULLY"));
+	wxMessageBox(wxT("LUU THANH CONG"));
 }
-void DisplayListTitle::LoadFile()
+void DisplayListTitle::LoadData()
 {
 	functionPanel->Hide();
-	titleList->GetList()->Clear();
 	if (maxItem > titleList->GetList()->MaxLength())
 	{
 		wxMessageBox("Danh sach trong file qua lon, khong the load duoc");
 		return;
 	}
-	Title** arr = new Title * [maxItem];
-	saveFile->ReadFile(arr);
-	for (int i = 0; i < maxItem; i++)
-	{
-		titleList->GetList()->AddLast(arr[i]);
-	}
-	delete[]arr;
 	LoadListToTable();
+	
 }
 void DisplayListTitle::LoadListToTable()
 {
@@ -505,6 +573,7 @@ void DisplayListTitle::LoadListToTable()
 		{
 			grid->SetCellAlignment(i, j, wxALIGN_CENTER, wxALIGN_CENTER);
 		}
+		
 	}
 }
 void DisplayListTitle::ShowFunctionPanel()
@@ -552,7 +621,6 @@ bool DisplayListTitle::CheckYearPublic(wxString text)
 	tm* ltm = localtime(&current);
 	int currentYear = ltm->tm_year + 1900;
 	int yearInput = checkInput->CastWxStringToInt(text);
-	//wxMessageBox(wxString::Format("current year: %i and year input: %i", currentYear, yearInput));
 	return yearInput <= currentYear;
 }
 bool DisplayListTitle::CheckType(wxString text)
@@ -574,18 +642,68 @@ bool DisplayListTitle::CheckDuplicateISBN(wxString text, int row)
 	}
 	return true;
 }
-//int DisplayListTitle::CompareTitle(Title* t1, Title* t2)
-//{
-//	if (t1->GetType() > t2->GetType()) { return 1; }
-//	else if (t1->GetType() < t2->GetType()) { return -1; }
-//	else
-//	{
-//		if (t1->GetBookName() > t2->GetBookName()) { return 1; }
-//		else if (t1->GetBookName() < t2->GetBookName()) { return -1; }
-//		else return 0;
-//	}
-//}
-
+void DisplayListTitle::ClearOldDataInTable()
+{
+	for (auto i = 0; i < grid->GetNumberRows(); i++)
+	{
+		for (auto j = 0; j < grid->GetNumberCols(); j++)
+		{
+			grid->SetCellValue(i, j, wxT(""));
+		}
+	}
+}
+void DisplayListTitle::OnSelectedCell(wxGridEvent& event)
+{
+	int row = event.GetRow();
+	int col = event.GetCol();
+	canEdit = true;
+	event.Skip();
+}
+void DisplayListTitle::OnGridTexting(wxCommandEvent& event)
+{
+	int row = grid->GetGridCursorRow();
+	int col = grid->GetGridCursorCol();
+	event.SetString(grid->GetCellValue(row, col));
+	wxString tempStr = event.GetString();
+	int maxLength = GetMaxLength(col);
+	if (tempStr.Length() >= maxLength)
+	{
+		canEdit = false;
+	}
+	else
+	{
+		canEdit = true;
+	}
+	event.Skip();
+}
+int DisplayListTitle::GetMaxLength(int col)
+{
+	if (col > 5) { return -1; }
+	if (col == 0)
+	{
+		return 4;
+	}
+	else if (col == 1)
+	{
+		return 24;
+	}
+	else if (col == 2)
+	{
+		return 6;
+	}
+	else if (col == 3)
+	{
+		return 17;
+	}
+	else if (col == 4)
+	{
+		return 4;
+	}
+	else if (col == 5)
+	{
+		return 11;
+	}
+}
 
 BEGIN_EVENT_TABLE(DisplayListTitle, wxFrame)
 EVT_CHAR_HOOK(DisplayListTitle::OnKeyDown)

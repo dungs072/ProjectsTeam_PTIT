@@ -13,6 +13,7 @@ class OverDueList:public wxFrame
 private:
 	CheckInput* checkInput;
 	SaveTextFile<CardReader>* saveFile;
+	BSTree<CardReader>* treeCardReader;
 	CardReader** arr;
 	OverDueCard** arrOverDue;
 	DoublyLinkedList<OverDueCard>* overDueCardList;
@@ -42,6 +43,20 @@ public:
 		delete checkInput;
 		delete saveFile;
 		
+	}
+	void SetCardReader(BSTree<CardReader>* treeCard)
+	{
+		this->treeCardReader = treeCard;
+		if (arr != nullptr)
+		{
+			for (int i = 0; i < length; i++)
+			{
+				delete arr[i];
+			}
+			delete[]arr;
+			arr = nullptr;
+		}
+		this->arr = treeCard->ToSameTreeArray();
 	}
 	
 };

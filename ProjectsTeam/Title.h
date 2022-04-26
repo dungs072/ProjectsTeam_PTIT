@@ -88,7 +88,7 @@ public:
 	}
 	~TitleList()
 	{
-		listTitle->Clear();
+		listTitle->~LinearList();
 	}
 	LinearList<Title>* GetList()
 	{

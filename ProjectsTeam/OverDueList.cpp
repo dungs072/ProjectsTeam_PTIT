@@ -96,6 +96,7 @@ void OverDueList::OnShow(wxShowEvent& event)
 {
 	if (event.IsShown())
 	{
+		ClearOldDataInTable();
 		LoadFile();
 		LoadFileToTable();
 	}
@@ -103,27 +104,12 @@ void OverDueList::OnShow(wxShowEvent& event)
 void OverDueList::LoadFile()
 {
 	overDueCardList->Clear();
-	if (arr != nullptr)
-	{
-		for (int i = 0; i < length; i++)
-		{
-			delete arr[i];
-		}
-		delete[]arr;
-	}
-	wxMessageBox(wxT(""));
+
 	if (arrOverDue != nullptr)
 	{
-		for (int i = 0; i < lengthOverDue; i++)
-		{
-			delete arrOverDue[i];
-		}
 		delete[] arrOverDue;
 	}
-	wxMessageBox(wxT(""));
-	length = saveFile->GetSizeArray();
-	arr = new CardReader * [length];
-	saveFile->ReadFile(arr);
+	length = treeCardReader->GetNumberNodes();
 	FindOverDueListCard();
 	sort->QuickSort(arrOverDue, 0, lengthOverDue);
 	//have to modify here
@@ -166,7 +152,7 @@ void OverDueList::ClearOldDataInTable()
 			grid->DeleteRows(i, 1);
 		}
 	}
-	for (int i = 0; i < 30; i++)
+	for (int i = 0; i < grid->GetNumberRows(); i++)
 	{
 		for (int j = 0; j < 6; j++)
 		{
@@ -216,6 +202,7 @@ void OverDueList::FindOverDueListCard()
 	lengthOverDue = overDueCardList->Length();
 	
 	arrOverDue = overDueCardList->ToArray();
+	
 }
 void OverDueList::OnSelectingGrid(wxGridRangeSelectEvent& WXUNUSED(event))
 {

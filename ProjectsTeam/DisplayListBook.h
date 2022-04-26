@@ -31,6 +31,7 @@ private:
 	void CreateGuideArea();
 	void OnShow(wxShowEvent& event);
 	void OnKeyDown(wxKeyEvent& event);
+	void OnGridKeyDown(wxKeyEvent& event);
 	void OnButtonClicked(wxCommandEvent& event);
 	void OnChoice(wxCommandEvent& event);
 	void OnEnter(wxCommandEvent& event);
@@ -42,13 +43,20 @@ private:
 	void DeleteSelectedRows();
 	void SaveToList();
 	void SaveFile();
-	void LoadFile();
+	void LoadData();
 
 	void OnSelectingGrid(wxGridRangeSelectEvent& event);
 	void OnSelectedGrid(wxCommandEvent& event);
 	void OnSelectedLabelGrid(wxCommandEvent& event);
+
+	void OnSelectedCell(wxGridEvent& event);
+	void OnGridTexting(wxCommandEvent& event);
+	int GetMaxLength(int col);
+	void MainKeyDown(int keyCode);
+
 	void SetModeDelete(bool state);
 	bool isModeDelete = false;
+	bool canEdit = true;
 public:
 	DisplayListBook(const wxString& title);
 	void SetTitle(Title* title)
