@@ -30,3 +30,4 @@ string Title::GetAuthor() { return author; }
 uint Title::GetPublicYear() { return publicYear; }
 string Title::GetType() { return type; }
 BookList* Title:: GetListBook() { return bookList; }
+uint Title::GetCountBorrow() { return countBorrow; }

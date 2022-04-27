@@ -10,6 +10,7 @@
 #include"LendBook.h"
 #include"GiveBook.h"
 #include"OverDueList.h"
+#include"MostBorrowings.h"
 class AdminMenu:public wxFrame
 {
 private:
@@ -28,8 +29,14 @@ private:
 	LendBook* lendBook;
 	GiveBook* giveBook;
 	OverDueList* overDueList;
+	MostBorrowings* mostBorrowings;
 	CheckInput* checkInput;
+
+	wxStaticText* runningText;
 	wxPanel** choicePanel;
+
+	wxTimer timer;
+
 	void CreateReaderCardChoice();
 	void CreateTitleChoice();
 	void CreateBookFunctionChoice();
@@ -43,14 +50,21 @@ private:
 	void OnBorrowBook(wxCommandEvent& event);
 	void OnGiveBook(wxCommandEvent& event);
 	void OnOverDueList(wxCommandEvent& event);
+	void OnMostBorrowings(wxCommandEvent& event);
 
 	void OnReaderCardPanel(wxCommandEvent& event);
 	void OnTitlePanel(wxCommandEvent& event);
 	void OnFunctionBookPanel(wxCommandEvent& event);
+
+	void OnExit(wxCommandEvent& event);
+
+	void OnTimer(wxTimerEvent& event);
 	
 	void TurnOnPanel(int index);
 
 	void LoadDataIntoTempMemory();
+
+	int distance = -550;
 
 public:
 	AdminMenu(const wxString& title);
@@ -60,6 +74,19 @@ public:
 		delete choicePanel;
 		delete treeCardReader;
 		delete titleList;
+
+		delete readerCard;
+		delete displayCardReader;
+		delete bookTitle;
+		delete displayTitle;
+		delete findInforBook;
+		delete lendBook;
+		delete giveBook;
+		delete overDueList;
+		delete mostBorrowings;
 	}
+	wxDECLARE_EVENT_TABLE();
+
 };
+const int TIMER_ID = 7;
 

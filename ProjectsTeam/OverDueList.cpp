@@ -13,14 +13,8 @@ OverDueList::OverDueList(const wxString& title) :wxFrame(NULL, -1, title,
 	};
 	checkInput = new CheckInput();
 	saveFile = new SaveTextFile<CardReader>("ListReaders.txt");
-	wxColour lightYellow, greenColor, organColor, lightBlue, eggYellow, lightRed, red, middleYellow;
-	middleYellow.Set("#ECFF82");
+	wxColour lightYellow, red;
 	lightYellow.Set(wxT("#E0EBB7"));
-	greenColor.Set(wxT("#03FF29"));
-	organColor.Set(wxT("#FFAB03"));
-	lightBlue.Set(wxT("#7FB1E3"));
-	eggYellow.Set(wxT("#FDFF69"));
-	lightRed.Set(wxT("#FA8E8E"));
 	red.Set(wxT("#F74A4A"));
 
 	//create panel
@@ -28,7 +22,7 @@ OverDueList::OverDueList(const wxString& title) :wxFrame(NULL, -1, title,
 
 	//create staticText
 	wxStaticText* titleGrid = new wxStaticText(mainPanel, -1, wxT("DANH SACH DOC GIA QUA HAN"),
-												wxPoint(-1,-1),wxSize(300,30));
+												wxPoint(-1,-1),wxSize(300,30),wxALIGN_CENTER);
 	checkInput->SetTextSize(titleGrid, 15);
 	
 	//create button
@@ -83,6 +77,7 @@ OverDueList::OverDueList(const wxString& title) :wxFrame(NULL, -1, title,
 	exitMenuButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &OverDueList::OnButtonClicked, this);
 	//Set color
 	exitMenuButton->SetBackgroundColour(red);
+	titleGrid->SetBackgroundColour(lightYellow);
 
 	Centre();
 
@@ -116,7 +111,12 @@ void OverDueList::LoadFile()
 }
 void OverDueList::LoadFileToTable()
 {
-	if (length > grid->GetNumberRows())
+	if (lengthOverDue == 0)
+	{
+		return;
+	}
+	//I just modify length into lengthOverDua here
+	if (lengthOverDue > grid->GetNumberRows())
 	{
 		grid->AppendRows(lengthOverDue - grid->GetNumberRows() + 1);
 	}
@@ -198,9 +198,7 @@ void OverDueList::FindOverDueListCard()
 			overDueCardList->AddLast(tempOverDueCard);
 		}
 	}
-	
 	lengthOverDue = overDueCardList->Length();
-	
 	arrOverDue = overDueCardList->ToArray();
 	
 }

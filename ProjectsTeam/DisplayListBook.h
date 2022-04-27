@@ -45,6 +45,7 @@ private:
 	void SaveFile();
 	void LoadData();
 
+	void OnKeyDownTextCltrToUpper(wxCommandEvent& _rCommandEvent);
 	void OnSelectingGrid(wxGridRangeSelectEvent& event);
 	void OnSelectedGrid(wxCommandEvent& event);
 	void OnSelectedLabelGrid(wxCommandEvent& event);

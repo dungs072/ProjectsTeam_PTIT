@@ -10,12 +10,11 @@ LendBook::LendBook(const wxString& title) :
 	//color
 	wxColor lightOrange;
 	lightOrange.Set("#F5DBB8");
-	wxColour lightYellow, greenColor, organColor, lightBlue, eggYellow, lightRed, red;
+	wxColour lightYellow, greenColor, organColor, lightBlue, lightRed, red;
 	lightYellow.Set(wxT("#E0EBB7"));
 	greenColor.Set(wxT("#03FF29"));
 	organColor.Set(wxT("#FFAB03"));
 	lightBlue.Set(wxT("#7FB1E3"));
-	eggYellow.Set(wxT("#FDFF69"));
 	lightRed.Set(wxT("#FA8E8E"));
 	red.Set(wxT("#F74A4A"));
 
@@ -137,7 +136,7 @@ LendBook::LendBook(const wxString& title) :
 	mainPanel->SetSizer(mainHBox);
 
 	//create button
-	wxButton* exitMenuButton = new wxButton(displayInforPanel, -1, wxT("Exit Menu"),
+	wxButton* exitMenuButton = new wxButton(displayInforPanel, -1, wxT("EXIT MENU"),
 		wxPoint(10, 470), wxSize(70, 25));
 
 	//Register event
@@ -297,7 +296,7 @@ void LendBook::OnEnter(wxCommandEvent& WXUNUSED(event))
 	
 	if (searchNode == nullptr)
 	{
-		checkInput->ErrorMessageBox("Khong the tim thay the doc can tim");
+		checkInput->ErrorMessageBox("KHONG TIM THAY THE DOC CAN TIM");
 		SetDefaultGrid();
 		ClearOldDataInInforPanel();
 		foundCardReader = nullptr;
@@ -500,6 +499,12 @@ void LendBook::OnBackTitleButtonClicked(wxCommandEvent& WXUNUSED(event))
 }
 void LendBook::OnOkButton(wxCommandEvent& WXUNUSED(event))
 {
+	//chinh so lan muon
+	uint countBorrow = selectedTitle->GetCountBorrow();
+	countBorrow++;
+	selectedTitle->SetCountBorrow(countBorrow);
+	//--------------------------//
+
 	selectedBook->SetState(1);
 	bookGrid->SetCellValue(bookRowChange, 1, checkInput->GetBookState(1));
 	bookGrid->Refresh();
@@ -918,7 +923,8 @@ void LendBook::SaveFile()
 	Title** arrTitle = titleList->GetList()->ToArray();
 	cardFile->WriteToFile(arrCard, treeCardReader->GetNumberNodes());
 	titleFile->WriteToFile(arrTitle, titleList->GetList()->Length());
-	wxMessageBox("Thong tin the doc da duoc luu");
+	wxMessageBox("LUU THANH CONG");
+	delete[]arrCard;
 }
 void LendBook::DeleteBorrowingBook()
 {

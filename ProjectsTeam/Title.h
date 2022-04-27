@@ -16,10 +16,10 @@ private:
 	uint publicYear;
 	string type;
 	BookList* bookList = nullptr;
-	//con tro nua;
+	uint countBorrow;
 public:
 	Title(string ISBN, string bookName, uint pageNumber,
-		string author, uint publicYear, string type)
+		string author, uint publicYear, string type,int count)
 	{
 		this->ISBN = ISBN;
 		this->bookName = bookName;
@@ -28,6 +28,7 @@ public:
 		this->publicYear = publicYear;
 		this->type = type;
 		bookList = new BookList();
+		this->countBorrow = count;
 	}
 	Title()
 	{
@@ -38,6 +39,7 @@ public:
 		this->publicYear = 0;
 		this->type = "";
 		bookList = new BookList();
+		this->countBorrow = 0;
 	}
 	~Title()
 	{
@@ -59,6 +61,10 @@ public:
 		}
 		bookList = list;
 	}
+	void SetCountBorrow(uint countBorrow)
+	{
+		this->countBorrow = countBorrow;
+	}
 	void Display()
 	{
 		std::cout << "ISBN: " << ISBN << std::endl;
@@ -76,6 +82,7 @@ public:
 	uint GetPublicYear();
 	string GetType();
 	BookList* GetListBook();
+	uint GetCountBorrow();
 };
 class TitleList
 {

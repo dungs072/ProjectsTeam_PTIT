@@ -3,14 +3,9 @@ DisplayListBook::DisplayListBook(const wxString& title) :wxFrame(NULL, -1,
 	title, wxDefaultPosition, wxSize(1280, 680))
 {
 	//temp color
-	wxColour lightYellow, greenColor, organColor, lightBlue, eggYellow, lightRed, red, middleYellow;
-	middleYellow.Set("#ECFF82");
+	wxColour lightYellow, lightBlue, red;
 	lightYellow.Set(wxT("#E0EBB7"));
-	greenColor.Set(wxT("#03FF29"));
-	organColor.Set(wxT("#FFAB03"));
 	lightBlue.Set(wxT("#7FB1E3"));
-	eggYellow.Set(wxT("#FDFF69"));
-	lightRed.Set(wxT("#FA8E8E"));
 	red.Set(wxT("#F74A4A"));
 
 	//backend
@@ -109,7 +104,10 @@ void DisplayListBook::CreateEnterArea()
 		wxT("VI TRI: "), wxPoint(10, 150), wxSize(100, 20));
 	enterText = new wxTextCtrl(enterPanel, -1, wxT(""),
 		wxPoint(10, 120 + 1 * 50), wxSize(200, 25), wxTE_PROCESS_ENTER | wxTE_CENTRE);
+	enterText->SetMaxLength(17);
 	enterText->SetBackgroundColour(lightBlue);
+	enterText->Connect(wxID_ANY, wxEVT_COMMAND_TEXT_UPDATED,
+		(wxObjectEventFunction)&DisplayListBook::OnKeyDownTextCltrToUpper);
 	//Set color
 	titleText->SetBackgroundColour(orange);
 
@@ -209,14 +207,14 @@ void DisplayListBook::OnGridKeyDown(wxKeyEvent& event)
 		}
 		return;
 	}
-	if (col == 0)
+	if (col == 1)
 	{
 		if (checkInput->HasInRangeNumber(keyCode,0,2) || checkInput->HasRightEntering(keyCode, true))
 		{
 			event.Skip();
 		}
 	}
-	else if (col == 1)
+	else if (col == 2)
 	{
 		if (checkInput->HasAlphaAndNumber(keyCode) || 
 			checkInput->HasRightEntering(keyCode, true)||
@@ -307,6 +305,7 @@ void DisplayListBook::EditCurrentCell(wxGridEvent& event)
 		}
 		else
 		{
+			wxNewText = wxNewText.Upper();
 			grid->SetCellValue(row, col, wxNewText);
 			string tempStr = string(wxNewText.mb_str());
 			currentTitle->GetListBook()->FindSinglyNode(bookCode)->data.SetPos(tempStr);
@@ -394,7 +393,7 @@ void DisplayListBook::SaveFile()
 	}
 	Title** arr = titleList->GetList()->ToArray();
 	saveFile->WriteToFile(arr, titleList->GetList()->Length());
-	wxMessageBox(wxT("LIST IS SAVED SUCCESSFULLY"));
+	wxMessageBox(wxT("LUU THANH CONG"));
 }
 void DisplayListBook::LoadData()
 {
@@ -443,6 +442,20 @@ bool DisplayListBook::CheckStateBook(wxString text)
 bool DisplayListBook::CheckPos(wxString text)
 {
 	return checkInput->HasNumberAlphabetAndComma(text);
+}
+
+void DisplayListBook::OnKeyDownTextCltrToUpper(wxCommandEvent& _rCommandEvent)
+{
+	wxTextCtrl* pTextCtrl = dynamic_cast<wxTextCtrl*>(_rCommandEvent.GetEventObject());
+	if (pTextCtrl != NULL)
+	{
+		if (!pTextCtrl->IsModified())
+			return;
+		long insertionPoint = pTextCtrl->GetInsertionPoint();
+		pTextCtrl->ChangeValue(pTextCtrl->GetValue().Upper());
+		pTextCtrl->SetInsertionPoint(insertionPoint);
+	}
+	_rCommandEvent.Skip();
 }
 
 void DisplayListBook::OnSelectingGrid(wxGridRangeSelectEvent& WXUNUSED(event))
@@ -506,6 +519,7 @@ int DisplayListBook::GetMaxLength(int col)
 	{
 		return 17;
 	}
+	return -1;
 
 }
 

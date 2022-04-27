@@ -7,14 +7,10 @@ BookTitle::BookTitle(const wxString& title) : wxFrame(NULL, -1,
 	//catch error
 	checkInput = new CheckInput();
 	//create color;
-	wxColour lightYellow, greenColor, organColor, lightBlue, eggYellow, lightRed, red, middleYellow;
+	wxColour lightYellow, lightBlue, red, middleYellow;
 	middleYellow.Set("#ECFF82");
 	lightYellow.Set(wxT("#E0EBB7"));
-	greenColor.Set(wxT("#03FF29"));
-	organColor.Set(wxT("#FFAB03"));
 	lightBlue.Set(wxT("#7FB1E3"));
-	eggYellow.Set(wxT("#FDFF69"));
-	lightRed.Set(wxT("#FA8E8E"));
 	red.Set(wxT("#F74A4A"));
 	//create panel
 	wxPanel* mainPanel = new wxPanel(this, -1);
@@ -116,6 +112,8 @@ void BookTitle::CreateEnterArea(wxPanel* enterPanel)
 		wxT("NXB:"), wxPoint(37, 270), wxSize(100, 15));
 	nameEnterText[5] = new wxStaticText(enterPanel, -1,
 		wxT("THE LOAI:"), wxPoint(37, 320), wxSize(100, 15));
+	wxStaticText* limitInput = new wxStaticText(enterPanel, -1,
+		wxT("GIOI HAN NHAP: 100 DAU SACH"), wxPoint(100, 375), wxSize(200, 15));
 	for (int i = 0; i < 6; i++)
 	{
 		enterText[i] = new wxTextCtrl(enterPanel, -1,
@@ -516,6 +514,7 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 		ISBN = string(wxOldText.mb_str());
 	}
 	BookList* tempList = titleList->GetData(ISBN)->GetListBook();
+	uint countBorrow = titleList->GetData(ISBN)->GetCountBorrow();
 	titleList->Delete(ISBN);
 	grid->SetCellValue(row, col, wxNewText);
 	ISBN = string(grid->GetCellValue(row, 0).mb_str());
@@ -524,7 +523,7 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 	string author = string(grid->GetCellValue(row, 3).mb_str());
 	uint nxb = checkInput->CastWxStringToInt(grid->GetCellValue(row, 4));
 	string type = string(grid->GetCellValue(row, 5).mb_str());
-	Title* title = new Title(ISBN, bookName, numberPage, author, nxb, type);
+	Title* title = new Title(ISBN, bookName, numberPage, author, nxb, type,countBorrow);
 	if (col == 5 || col == 1)
 	{
 		EditTable(title, row);

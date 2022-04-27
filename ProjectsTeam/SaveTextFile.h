@@ -86,7 +86,8 @@ public:
 					osFile << p[i]->GetPageNumber() << "  ";
 					osFile << p[i]->GetAuthor() << "  ";
 					osFile << p[i]->GetPublicYear() << "  ";
-					osFile << p[i]->GetType() << "\n";
+					osFile << p[i]->GetType() << "  ";
+					osFile << p[i]->GetCountBorrow()<<"\n";
 					if (p[i]->GetListBook()->Length() > 0)
 					{
 						SinglyNode<Book>* temp = p[i]->GetListBook()->First();
@@ -219,7 +220,7 @@ public:
 					else
 					{
 						//std::cout << myLine << std::endl;
-						string* text = new string[6];
+						string* text = new string[7];
 						int index = 0;
 						for (int i = 0; i < myLine.length(); i++)
 						{
@@ -235,7 +236,8 @@ public:
 						}
 						uint pageNumber = CastStringToNumber<uint>(text[2]);
 						uint nxb = CastStringToNumber<uint>(text[4]);
-						p[mainIndex] = new Title(text[0], text[1], pageNumber, text[3], nxb, text[5]);
+						uint countBorrow = CastStringToNumber<uint>(text[6]);
+						p[mainIndex] = new Title(text[0], text[1], pageNumber, text[3], nxb, text[5],countBorrow);
 						mainIndex++;
 						delete[]text;
 					}

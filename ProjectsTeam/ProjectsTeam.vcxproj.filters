@@ -19,9 +19,6 @@
     <Filter Include="Source Files\BackEnd">
       <UniqueIdentifier>{186eaf40-2136-433a-92fb-d4e61ac38894}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Format">
-      <UniqueIdentifier>{664f0c3b-cab5-4682-acd5-13e017ef89f6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\AL&amp;DT">
       <UniqueIdentifier>{6fc4d6f8-f7f4-4786-b7a0-7637ed79e767}</UniqueIdentifier>
     </Filter>
@@ -33,6 +30,9 @@
     </Filter>
     <Filter Include="Header Files\Data Structure">
       <UniqueIdentifier>{331d9ee1-76fe-4111-b6ef-3506363fe254}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Function">
+      <UniqueIdentifier>{664f0c3b-cab5-4682-acd5-13e017ef89f6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -88,10 +88,10 @@
       <Filter>Source Files\FrontEnd</Filter>
     </ClCompile>
     <ClCompile Include="DateTime.cpp">
-      <Filter>Source Files\Format</Filter>
+      <Filter>Source Files\Function</Filter>
     </ClCompile>
     <ClCompile Include="FormatText.cpp">
-      <Filter>Source Files\Format</Filter>
+      <Filter>Source Files\Function</Filter>
     </ClCompile>
     <ClCompile Include="DisplayListTitle.cpp">
       <Filter>Source Files\FrontEnd</Filter>

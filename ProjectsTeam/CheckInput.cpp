@@ -194,6 +194,10 @@ string CheckInput::CastIntToString(int data)
 	{
 		str += strTemp[i];
 	}
+	if (str == "")
+	{
+		str = "0";
+	}
 	return str;
 }
 int CheckInput::CastWxStringToInt(wxString text)

@@ -21,13 +21,9 @@ FindInforBook::FindInforBook(const wxString& title) :
 	saveFile = new SaveTextFile<Title>("BookTitle.txt");
 	
 	//Create color
-	wxColour lightYellow, greenColor, organColor, lightBlue, eggYellow, lightRed, red;
+	wxColour lightYellow, lightBlue, red;
 	lightYellow.Set(wxT("#E0EBB7"));
-	greenColor.Set(wxT("#03FF29"));
-	organColor.Set(wxT("#FFAB03"));
 	lightBlue.Set(wxT("#7FB1E3"));
-	eggYellow.Set(wxT("#FDFF69"));
-	lightRed.Set(wxT("#FA8E8E"));
 	red.Set(wxT("#F74A4A"));
 	//create panel
 	wxPanel* mainPanel = new wxPanel(this, -1);

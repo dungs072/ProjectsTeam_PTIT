@@ -1,9 +1,9 @@
 #include "AdminMenu.h"
 AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
-	wxDefaultPosition, wxSize(1280, 680))
+	wxDefaultPosition, wxSize(1280, 680)),timer(this,TIMER_ID)
 {
+	timer.Start();
 	LoadDataIntoTempMemory();
-
 	// window control
 	readerCard = new ReaderCard("THE DOC GIA");
 	readerCard->SetCardReaders(treeCardReader);
@@ -21,6 +21,8 @@ AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
 	giveBook->SetData(treeCardReader, titleList);
 	overDueList = new OverDueList("THE DOC GIA QUA HAN");
 	overDueList->SetCardReader(treeCardReader);
+	mostBorrowings = new MostBorrowings("TOP 10 SACH MUON NHIEU NHAT");
+	mostBorrowings->SetTitleList(titleList);
 	this->AddChild(readerCard);
 	this->AddChild(displayCardReader);
 	this->AddChild(bookTitle);
@@ -29,6 +31,7 @@ AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
 	this->AddChild(lendBook);
 	this->AddChild(giveBook);
 	this->AddChild(overDueList);
+	this->AddChild(mostBorrowings);
 
 	checkInput = new CheckInput();
 	//create color;
@@ -47,6 +50,7 @@ AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
 	wxPanel* mainPanel = new wxPanel(this, -1);
 	wxPanel* buttonPanel = new wxPanel(mainPanel, -1, wxDefaultPosition, wxSize(1000, 100));
 	wxPanel* backgroundPanel = new wxPanel(mainPanel, -1, wxDefaultPosition, wxSize(1000, 350));
+	wxPanel* runningTextPanel = new wxPanel(mainPanel, -1, wxDefaultPosition, wxSize(500, 40));
 	choicePanel = new wxPanel * [3];
 	for (int i = 0; i < 3; i++)
 	{
@@ -59,6 +63,8 @@ AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
 	//create button
 	wxButton* mainMenuButton = new wxButton(mainPanel, -1,
 		wxT("MENU CHINH"), wxPoint(30,580), wxSize(100, 30));
+	wxButton* exitButton = new wxButton(mainPanel,-1,
+		wxT("THOAT"),wxPoint(1130,580),wxSize(100,30));
 	wxButton* adminReaderCardButton = new wxButton(buttonPanel, -1,
 		wxT("QUAN LY DOC GIA"), wxPoint(100,30), wxSize(200, 40));
 	wxButton* adminTitleButton = new wxButton(buttonPanel, -1,
@@ -68,13 +74,18 @@ AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
 	//Create static text
 	wxStaticText* titleMenu = new wxStaticText(mainPanel, -1,
 		wxT("QUAN LY THU VIEN"), wxPoint(485, 40), wxSize(300, 40),wxALIGN_CENTER);
+	runningText = new wxStaticText(runningTextPanel, -1,
+		wxT("HOC VIEN CONG NGHE BUU CHINH VIEN THONG - CO SO THANH PHO HO CHI MINH - THU VIEN PTIT"),
+		wxPoint(-1, 13), wxSize(800, 20));
 	checkInput->SetTextSize(titleMenu, 20);
 	//Set sizer
 	//mainVBox->Add(titleMenu, 0,  wxTOP|wxBOTTOM, 20);
 	mainVBox->Add(buttonPanel, 0, wxTOP | wxALIGN_CENTER, 100);
 	mainVBox->Add(backgroundPanel, 0, wxTOP | wxALIGN_CENTER, 20);
+	mainVBox->Add(runningTextPanel, 0, wxTOP | wxALIGN_CENTER, 10);
 	mainPanel->SetSizer(mainVBox);
 	//Register event
+	exitButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnExit, this);
 	adminReaderCardButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnReaderCardPanel, this);
 	adminTitleButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnTitlePanel, this);
 	adminFunctionBookButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnFunctionBookPanel, this);
@@ -82,6 +93,7 @@ AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
 	buttonPanel->SetBackgroundColour(lightYellow);
 	titleMenu->SetBackgroundColour(lightBlue);
 	backgroundPanel->SetBackgroundColour(lightYellow);
+	runningTextPanel->SetBackgroundColour(lightYellow);
 	for (int i = 0; i < 3; i++)
 	{
 		choicePanel[i]->SetBackgroundColour(midBlue);
@@ -95,11 +107,11 @@ AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
 void AdminMenu::CreateReaderCardChoice()
 {
 	wxButton* readerCardButton = new wxButton(choicePanel[0], -1, wxT("CAP NHAT DOC GIA"),
-		wxPoint(50, 50), wxSize(300, 25));
+		wxPoint(50, 75), wxSize(300, 30));
 	wxButton* displayCard = new wxButton(choicePanel[0], -1, wxT("HIEN THI DANH SACH TAT CA DOC GIA"),
-		wxPoint(50, 100), wxSize(300, 25));
+		wxPoint(50, 130), wxSize(300, 30));
 	wxButton* displayOverDueList = new wxButton(choicePanel[0], -1, wxT("HIEN THI DANH SACH THE QUA HAN"),
-		wxPoint(50, 150), wxSize(300, 25));
+		wxPoint(50, 180), wxSize(300, 30));
 
 	//Register event
 	readerCardButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnReaderCard, this);
@@ -109,11 +121,11 @@ void AdminMenu::CreateReaderCardChoice()
 void AdminMenu::CreateTitleChoice()
 {
 	wxButton* titleButton = new wxButton(choicePanel[1], -1, wxT("CAP NHAT DAU SACH"),
-		wxPoint(50, 50), wxSize(300, 25));
+		wxPoint(50, 75), wxSize(300, 30));
 	wxButton* displayTitle = new wxButton(choicePanel[1], -1, wxT("HIEN THI DANH SACH TAT CA DAU SACH"),
-		wxPoint(50, 100), wxSize(300, 25));
+		wxPoint(50, 130), wxSize(300, 30));
 	wxButton* findInforBook = new wxButton(choicePanel[1], -1, wxT("TIM THONG TIN DAU SACH"),
-		wxPoint(50, 150), wxSize(300, 25));
+		wxPoint(50, 180), wxSize(300, 30));
 	//Register event
 	titleButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnTitle, this);
 	displayTitle->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnDisplayTitle, this);
@@ -122,13 +134,15 @@ void AdminMenu::CreateTitleChoice()
 void AdminMenu::CreateBookFunctionChoice()
 {
 	wxButton* borrowBook = new wxButton(choicePanel[2], -1, wxT("MUON SACH"),
-		wxPoint(50, 50), wxSize(300, 25));
+		wxPoint(50, 75), wxSize(300, 30));
 	wxButton* giveBook = new wxButton(choicePanel[2], -1, wxT("TRA SACH"),
-		wxPoint(50, 100), wxSize(300, 25));
-
+		wxPoint(50, 130), wxSize(300, 30));
+	wxButton* mostBorrow = new wxButton(choicePanel[2], -1, wxT("TOP 10 SACH MUON NHIEU NHAT"),
+		wxPoint(50, 180), wxSize(300, 30));
 	//Register event
 	borrowBook->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnBorrowBook, this);
 	giveBook->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnGiveBook, this);
+	mostBorrow->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnMostBorrowings, this);
 }
 
 void AdminMenu::OnReaderCard(wxCommandEvent& WXUNUSED(event))
@@ -171,6 +185,11 @@ void AdminMenu::OnOverDueList(wxCommandEvent& WXUNUSED(event))
 	overDueList->Show();
 	this->Hide();
 }
+void AdminMenu::OnMostBorrowings(wxCommandEvent& WXUNUSED(event))
+{
+	mostBorrowings->Show();
+	this->Hide();
+}
 void AdminMenu::OnReaderCardPanel(wxCommandEvent& WXUNUSED(event))
 {
 	TurnOnPanel(0);
@@ -182,6 +201,27 @@ void AdminMenu::OnTitlePanel(wxCommandEvent& WXUNUSED(event))
 void AdminMenu::OnFunctionBookPanel(wxCommandEvent& WXUNUSED(event))
 {
 	TurnOnPanel(2);
+}
+
+void AdminMenu::OnExit(wxCommandEvent& WXUNUSED(event))
+{
+	this->Close();
+}
+
+
+void AdminMenu::OnTimer(wxTimerEvent& event)
+{
+	if (distance == -550)
+	{
+		distance =550;
+
+	}
+	else
+	{
+		distance -= 1;
+		
+		runningText->SetPosition(wxPoint(distance,13));
+	}
 }
 void AdminMenu::TurnOnPanel(int index)
 {
@@ -228,3 +268,7 @@ void AdminMenu::LoadDataIntoTempMemory()
 	delete[]arr;
 
 }
+wxBEGIN_EVENT_TABLE(AdminMenu, wxFrame)
+EVT_TIMER(TIMER_ID, AdminMenu::OnTimer)
+wxEND_EVENT_TABLE()
+

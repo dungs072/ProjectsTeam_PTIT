@@ -13,13 +13,8 @@ GiveBook::GiveBook(const wxString& title) :wxFrame(NULL, -1, title,
 	//create color
 	wxColor lightOrange;
 	lightOrange.Set("#F5DBB8");
-	wxColour lightYellow, greenColor, organColor, lightBlue, eggYellow, lightRed, red;
+	wxColour lightYellow, red;
 	lightYellow.Set(wxT("#E0EBB7"));
-	greenColor.Set(wxT("#03FF29"));
-	organColor.Set(wxT("#FFAB03"));
-	lightBlue.Set(wxT("#7FB1E3"));
-	eggYellow.Set(wxT("#FDFF69"));
-	lightRed.Set(wxT("#FA8E8E"));
 	red.Set(wxT("#F74A4A"));
 	//create panel
 	wxPanel* mainPanel = new wxPanel(this, -1);
@@ -310,6 +305,7 @@ void GiveBook::SaveFile()
 	saveFileCard->WriteToFile(arrCard, treeCardReader->GetNumberNodes());
 	saveFileTitle->WriteToFile(arrTitle, titleList->GetList()->Length());
 	wxMessageBox("LUU THANH CONG");
+	delete[]arrCard;
 	// i have to notice to delete memory
 }
 void GiveBook::OnSelectingGrid(wxGridRangeSelectEvent& WXUNUSED(event))

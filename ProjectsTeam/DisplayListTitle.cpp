@@ -22,15 +22,11 @@ DisplayListTitle::DisplayListTitle(const wxString& title) : wxFrame(NULL, -1, ti
 	//catch error
 	checkInput = new CheckInput();
 	//create color;
-	wxColour lightYellow, greenColor, organColor, lightBlue, 
-			eggYellow, lightRed, red, middleYellow;
-	middleYellow.Set("#ECFF82");
+	wxColour lightYellow, greenColor, organColor, lightBlue, red;
 	lightYellow.Set(wxT("#E0EBB7"));
 	greenColor.Set(wxT("#03FF29"));
 	organColor.Set(wxT("#FFAB03"));
 	lightBlue.Set(wxT("#7FB1E3"));
-	eggYellow.Set(wxT("#FDFF69"));
-	lightRed.Set(wxT("#FA8E8E"));
 	red.Set(wxT("#F74A4A"));
 	//create panel
 	wxPanel* mainPanel = new wxPanel(this, -1);
@@ -384,6 +380,7 @@ void DisplayListTitle::EditCurrentCell(wxGridEvent& event)
 	}
 	//set all book again acording to changing ISBN
 	BookList* tempBookList = titleList->GetData(ISBN)->GetListBook();
+	uint countBorrow = titleList->GetData(ISBN)->GetCountBorrow();
 	SinglyNode<Book>* tempBook = tempBookList->First();
 
 	titleList->Delete(ISBN);
@@ -411,7 +408,7 @@ void DisplayListTitle::EditCurrentCell(wxGridEvent& event)
 	string author = string(grid->GetCellValue(row, 3).mb_str());
 	uint nxb = checkInput->CastWxStringToInt(grid->GetCellValue(row, 4));
 	string type = string(grid->GetCellValue(row, 5).mb_str());
-	Title* title = new Title(ISBN, bookName, numberPage, author, nxb, type);
+	Title* title = new Title(ISBN, bookName, numberPage, author, nxb, type,countBorrow);
 	title->SetListBook(tempBookList);
 	if (col == 5 || col == 1)
 	{

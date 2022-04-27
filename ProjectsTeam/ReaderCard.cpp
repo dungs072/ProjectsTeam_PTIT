@@ -2,19 +2,16 @@
 ReaderCard::ReaderCard(const wxString& title) :wxFrame
 (NULL, -1, title, wxPoint(-1, -1), wxSize(1280, 680))
 {
-
+	srand((ulong)time(0));//for random number
 	//backend
 	numberRowIsFilled = 0;
 	saveFile = new SaveTextFile<CardReader>("ListReaders.txt");
 	checkInput = new CheckInput();
 	//frontend
 	//colors
-	wxColour lightYellow, greenColor, organColor, lightBlue, eggYellow, lightRed, red;
+	wxColour lightYellow, lightBlue, lightRed, red;
 	lightYellow.Set(wxT("#E0EBB7"));
-	greenColor.Set(wxT("#03FF29"));
-	organColor.Set(wxT("#FFAB03"));
 	lightBlue.Set(wxT("#7FB1E3"));
-	eggYellow.Set(wxT("#FDFF69"));
 	lightRed.Set(wxT("#FA8E8E"));
 	red.Set(wxT("#F74A4A"));
 
@@ -383,9 +380,7 @@ void ReaderCard::MainKeyDown(int keyCode)
 	if (keyCode == WXK_DELETE)
 	{
 		ShowMessageClear();
-
 	}
-
 	if (keyCode == WXK_DOWN)
 	{
 		checkInput->MoveDownToAnotherTextCtrl(enterText, 4);
@@ -399,6 +394,7 @@ void ReaderCard::MainKeyDown(int keyCode)
 void ReaderCard::OnKeyDown(wxKeyEvent& event)
 {
 	int keyCode = event.GetKeyCode();
+	MainKeyDown(keyCode);
 	if (enterText[2]->HasFocus() || enterText[3]->HasFocus())
 	{
 		if(checkInput->HasInRangeNumber(keyCode,0,1)||checkInput->HasRightEntering(keyCode,false))
@@ -418,7 +414,7 @@ void ReaderCard::OnKeyDown(wxKeyEvent& event)
 		}
 		else return;
 	}
-	MainKeyDown(keyCode);
+	
 	event.Skip();
 }
 void ReaderCard::OnGridKeyDown(wxKeyEvent& event)
@@ -526,6 +522,7 @@ void ReaderCard::SaveFile()
 	CardReader** arr = cardReaderTree->ToSameTreeArray();
 	saveFile->WriteToFile(arr, length);
 	wxMessageBox(wxString::Format("LUU THANH CONG"));
+	delete[]arr;
 }
 void ReaderCard::LoadData()
 {
@@ -946,11 +943,11 @@ ulong ReaderCard::CastWxStringToUlong(wxString wxStr)
 }
 ulong ReaderCard::CreateHashCode()
 {
-	srand((ulong)time(0));
+	
 	ulong r;
-	for (int i = 0; i < 500; i++)
+	for (int i = 0; i < 1000; i++)
 	{
-		r = RandomNumber(1, 999999999);
+		r = RandomNumber(1, 99999999);
 		if (cardReaderTree->IsDifferentNode(r)) { break; }
 	}
 	return r;
