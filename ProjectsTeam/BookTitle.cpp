@@ -2,10 +2,6 @@
 BookTitle::BookTitle(const wxString& title) : wxFrame(NULL, -1,
 	title, wxDefaultPosition, wxSize(1280, 680))
 {
-	//back end
-	saveFile = new SaveTextFile<Title>("BookTitle.txt");
-	//catch error
-	checkInput = new CheckInput();
 	//create color;
 	wxColour lightYellow, lightBlue, red, middleYellow;
 	middleYellow.Set("#ECFF82");
@@ -217,6 +213,7 @@ void BookTitle::MainKeyDown(int keyCode)
 }
 void BookTitle::OnKeyDown(wxKeyEvent& event)
 {
+	event.StopPropagation();
 	int keyCode = event.GetKeyCode();
 	MainKeyDown(keyCode);
 	if (!isTurnOnEnterPanel)
@@ -263,6 +260,7 @@ void BookTitle::OnKeyDown(wxKeyEvent& event)
 }
 void BookTitle::OnGridKeyDown(wxKeyEvent& event)
 {
+	event.StopPropagation();
 	int keyCode = event.GetKeyCode();
 	MainKeyDown(keyCode);
 	int col = grid->GetGridCursorCol();
@@ -746,17 +744,8 @@ void BookTitle::SaveToList()
 }
 void BookTitle::SaveFile()
 {
-	int length = titleList->GetList()->Length();
-	if (length == 0)
-	{
-		saveFile->ClearData();
-		wxMessageBox(wxT("NOTHING TO SAVE"));
-		return;
-	}
-	QuickSort(0, length);
-	Title** arr = titleList->GetList()->ToArray();
-	saveFile->WriteToFile(arr, length);
-	wxMessageBox(wxT("LUU THANH CONG"));
+	ISaveFile* isaveFile = dynamic_cast<ISaveFile*>(this->GetParent());
+	isaveFile->SaveFile();
 }
 void BookTitle::LoadData()
 {

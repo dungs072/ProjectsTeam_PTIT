@@ -45,11 +45,16 @@ public:
 	}
 	void WriteToFile(T** arr, int length)
 	{
+		
 		ofstream osFile;
 		osFile.open(nameFile, ios::out | ios::trunc);
 		if (osFile.is_open())
 		{
 			osFile << length << endl;
+			if (length == 0)
+			{
+				return;
+			}
 			if (std::is_same<T, CardReader>::value)
 			{
 				CardReader** p = reinterpret_cast<CardReader**>(arr);

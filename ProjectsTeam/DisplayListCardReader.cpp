@@ -4,19 +4,15 @@ DisplayListCardReader::DisplayListCardReader(const wxString& title)
 {
 	
 	// stateText
-	
 	sexText = new string[2]{ "NAM","NU" };
 	wxColour lightYellow, organColor, lightBlue,red;
 	lightYellow.Set(wxT("#E0EBB7"));
 	organColor.Set(wxT("#FFAB03"));
 	lightBlue.Set(wxT("#7FB1E3"));
 	red.Set(wxT("#F74A4A"));
-	checkInput = new CheckInput();
-	//Create SaveFile
-	saveFile = new SaveTextFile<CardReader>("ListReaders.txt");
 	//create panel
 	wxPanel* mainPanel = new wxPanel(this, -1, wxDefaultPosition, wxDefaultSize);
-	wxPanel* takeNotePanel = new wxPanel(mainPanel, -1, wxDefaultPosition, wxSize(300, 100));
+	wxPanel* takeNotePanel = new wxPanel(mainPanel, -1, wxPoint(170,570), wxSize(400, 25));
 
 	//create boxsizer
 	wxBoxSizer* vGridBox = new wxBoxSizer(wxVERTICAL);
@@ -25,11 +21,9 @@ DisplayListCardReader::DisplayListCardReader(const wxString& title)
 	//create static text
 	gridLabel = new wxStaticText(mainPanel, -1,
 		wxT("DANH SACH THE DOC"), wxPoint(-1, -1), wxSize(350, 40), wxALIGN_CENTRE_HORIZONTAL);
-	wxStaticText* guideText = new wxStaticText(takeNotePanel, -1,
-		wxT("HUONG DAN"), wxPoint(100, 5), wxSize(100, 20), wxALIGN_CENTER_HORIZONTAL);
 	wxStaticText* saveGuideText = new wxStaticText(takeNotePanel, -1,
-		wxT("F2 - LUU FILE"), wxPoint(20, 30), wxSize(100, 20));
-	SetTextSize(gridLabel, 20);
+		wxT("CO THE CHINH SUA DU LIEU, F2 LUU FILE"), wxPoint(50, 5), wxSize(300, 20), wxALIGN_CENTER);
+	checkInput->SetTextSize(gridLabel, 20);
 	//create Button
 	wxButton* sortCodeButton = new wxButton(mainPanel, SORT_CODE,
 		wxT("Sap xep danh sach theo ma the"), wxDefaultPosition, wxSize(200, 50));
@@ -76,7 +70,6 @@ DisplayListCardReader::DisplayListCardReader(const wxString& title)
 	//Set Color
 	gridLabel->SetBackgroundColour(lightBlue);
 	takeNotePanel->SetBackgroundColour(lightYellow);
-	guideText->SetBackgroundColour(organColor);
 	exitMenuButton->SetBackgroundColour(red);
 	//do boxsizer
 	vGridBox->Add(gridLabel, 0, wxTOP | wxBOTTOM | wxALIGN_CENTER, 10);
@@ -84,7 +77,6 @@ DisplayListCardReader::DisplayListCardReader(const wxString& title)
 	vGridBox->Add(exitMenuButton, 0, wxTOP, 20);
 	vButtonBox->Add(sortCodeButton, 0, wxTOP, 250);
 	vButtonBox->Add(sortNameButton, 0);
-	vButtonBox->Add(takeNotePanel, 0, wxTOP, 100);
 	mainHBox->Add(vGridBox, 0, wxLEFT, 10);
 	mainHBox->Add(vButtonBox, 0, wxLEFT, 40);
 	mainPanel->SetSizer(mainHBox);
@@ -120,21 +112,21 @@ void DisplayListCardReader::EditCurrentCell(wxGridEvent& event)
 	wxString wxOldText = event.GetString();
 	if (wxOldText == wxT(""))
 	{
-		ErrorMessageBox("Khong the chinh chua o nay ");
+		checkInput->ErrorMessageBox("Khong the chinh sua o nay ");
 		grid->SetCellValue(row, col, wxOldText);
 		return;
 	}
 	//find data
 	string keyCodeStr = string(grid->GetCellValue(row, 0).mb_str());
-	ulong keyCode = CastWxStringToInt(keyCodeStr);
-	int key = CastWxStringToInt(keyCodeStr);
+	ulong keyCode = checkInput->CastWxStringToInt(keyCodeStr);
+	int key = checkInput->CastWxStringToInt(keyCodeStr);
 	CardReader* curEditCard = cardReaderTree->Search(keyCode)->data;
 
 	wxString wxNewText = grid->GetCellValue(row, col);
 	//main error
-	if (IsWhiteSpaceAllText(wxNewText))
+	if (checkInput->IsWhiteSpaceAllText(wxNewText))
 	{
-		ErrorMessageBox("Loi Nhap Lieu ");
+		checkInput->ErrorMessageBox("Loi Nhap Lieu ");
 		grid->SetCellValue(row, col, wxOldText);
 		return;
 	}
@@ -142,15 +134,8 @@ void DisplayListCardReader::EditCurrentCell(wxGridEvent& event)
 	//col errors
 	if (col == 1 || col == 2)
 	{
-		ModifyTextInput(wxNewText);
-		if (!IsWord(wxNewText))
-		{
-			ErrorMessageBox("Loi Nhap Lieu ");
-			grid->SetCellValue(row, col, wxOldText);
-			return;
-		}
-
-		UpperWxString(wxNewText);
+		checkInput->ModifyTextInput(wxNewText);
+		checkInput->UpperWxString(wxNewText);
 		grid->SetCellValue(row, col, wxNewText);
 		if (col == 1)
 		{
@@ -165,22 +150,15 @@ void DisplayListCardReader::EditCurrentCell(wxGridEvent& event)
 	}
 	if (col == 3)
 	{
-		int num = CastWxStringToInt(wxNewText);
+		int num = checkInput->CastWxStringToInt(wxNewText);
 		grid->SetCellValue(row, col,sexText[num]);
 		string str = sexText[num];
 		curEditCard->SetSex(str);
 	}
 	if (col == 4)
 	{
-		ModifyTextInput(wxNewText);
-		int num = CastWxStringToInt(wxNewText);
-		if (!IsRightCodeState(1, num))
-		{
-			ErrorMessageBox("Loi Nhap Lieu ");
-			grid->SetCellValue(row, col, wxOldText);
-			
-			return;
-		}
+		checkInput->ModifyTextInput(wxNewText);
+		int num =checkInput->CastWxStringToInt(wxNewText);
 		grid->SetCellValue(row, col, checkInput->GetCardState(num));
 		curEditCard->SetState(checkInput->GetCardState(num));
 	}
@@ -189,6 +167,7 @@ void DisplayListCardReader::EditCurrentCell(wxGridEvent& event)
 }
 void DisplayListCardReader::OnKeyDown(wxKeyEvent& event)
 {
+	event.StopPropagation();
 	if (event.GetKeyCode() == WXK_F2)
 	{
 		SaveFile();
@@ -197,6 +176,7 @@ void DisplayListCardReader::OnKeyDown(wxKeyEvent& event)
 }
 void DisplayListCardReader::OnGridKeyDown(wxKeyEvent& event)
 {
+	event.StopPropagation();
 	int keyCode = event.GetKeyCode();
 	int col = grid->GetGridCursorCol();
 	if (!canEdit)
@@ -223,14 +203,14 @@ void DisplayListCardReader::OnGridKeyDown(wxKeyEvent& event)
 	}
 	else if (col == 3)
 	{
-		if (checkInput->HasInRangeNumber(keyCode, 0, 1))
+		if (checkInput->HasInRangeNumber(keyCode, 0, 1) || checkInput->HasRightEntering(keyCode, false))
 		{
 			event.Skip();
 		}
 	}
 	else if (col == 4)
 	{
-		if (checkInput->HasInRangeNumber(keyCode, 0, 1))
+		if (checkInput->HasInRangeNumber(keyCode, 0, 1) || checkInput->HasRightEntering(keyCode, false))
 		{
 			event.Skip();
 		}
@@ -248,126 +228,8 @@ void DisplayListCardReader::LoadData()
 }
 void DisplayListCardReader::SaveFile()
 {
-	//to sort with code reader//dont missunderstand:))
-	CardReader**arr = cardReaderTree->ToSameTreeArray();
-	saveFile->WriteToFile(arr, length);
-	wxMessageBox(wxString::Format("LUU THANH CONG"));
-	delete[]arr;
-}
-bool DisplayListCardReader::IsWhiteSpaceAllText(wxString text)
-{
-	std::string strText = std::string(text.mb_str());
-	for (char str : strText)
-	{
-		if (str != ' ')
-		{
-			return false;
-		}
-	}
-	return true;
-}
-bool DisplayListCardReader::IsWord(wxString text)
-{
-	std::string strText = std::string(text.mb_str());
-	for (int i = 0; i < strText.length(); i++)
-	{
-		if (!(strText[i] >= 'a' && strText[i] <= 'z'))
-		{
-			if (!(strText[i] >= 'A' && strText[i] <= 'Z'))
-			{
-				if (strText[i] != ' ')
-					return false;
-			}
-		}
-	}
-	return true;
-}
-bool DisplayListCardReader::IsRightSex(wxString text)
-{
-	std::string strText = std::string(text.mb_str());
-	strText = UpperText(strText);
-	if (strText == "") { return false; }
-	ModifyString(strText);
-	wxString myWxString(strText.c_str(), wxConvUTF8);
-	if (strText == "NAM" || strText == "NU")
-	{
-		text = myWxString;
-		return true;
-	}
-	return false;
-}
-bool DisplayListCardReader::IsRightCodeState(int maxNumber, int currentNumber)
-{
-	return currentNumber >= 0 && currentNumber <= maxNumber;
-}
-void DisplayListCardReader::ModifyTextInput(wxString& text)
-{
-	std::string strText = std::string(text.mb_str());
-	ModifyString(strText);
-	wxString myWxString(strText.c_str(), wxConvUTF8);
-	text = myWxString;
-}
-void DisplayListCardReader::ModifyString(string& strText)
-{
-	for (int i = 0; i < strText.length(); i++)
-	{
-		if (strText[i] == ' ' && strText[i + 1] == ' ')
-		{
-			strText.erase(strText.begin() + i);
-			i--;
-		}
-	}
-	if (strText[0] == ' ')
-	{
-		strText.erase(strText.begin());
-	}
-	int length = strText.length();
-	if (strText[length - 1] == ' ')
-	{
-		strText.erase(strText.begin() + length - 1);
-	}
-}
-void DisplayListCardReader::UpperWxString(wxString& text)
-{
-	std::string strText = std::string(text.mb_str());
-	strText = UpperText(strText);
-	wxString myWxString(strText.c_str(), wxConvUTF8);
-	text = myWxString;
-}
-string DisplayListCardReader::UpperText(string text)
-{
-	for (int i = 0; i < text.length(); i++)
-	{
-		if ((text[i] >= 'Z' && text[i] <= 'A'))
-		{
-			return "";
-		}
-		if (text[i] <= 'z' && text[i] >= 'a')
-		{
-			text[i] -= 32;
-		}
-	}
-	return text;
-}
-int DisplayListCardReader::CastWxStringToInt(wxString text)
-{
-	int i, j;
-	int number = 0;
-	string strText = string(text.mb_str());
-	for (i = strText.length() - 1, j = 0; i >= 0; i--, j++)
-	{
-		if (strText[i] < '0' || strText[i]>'9')
-		{
-			return -1;
-		}
-		number += (strText[i] - '0') * pow(10, j);
-	}
-	return number;
-}
-void DisplayListCardReader::ErrorMessageBox(string message)
-{
-	wxString myWxString(message.c_str(), wxConvUTF8);
-	wxMessageBox(myWxString);
+	ISaveFile* isaveFile = dynamic_cast<ISaveFile*>(this->GetParent());
+	isaveFile->SaveFile();
 }
 void DisplayListCardReader::DisplayCell(CardReader** arr, int length)
 {
@@ -416,12 +278,6 @@ wxString DisplayListCardReader::CastUlongToWxString(ulong number)
 	std::reverse(rawCodeReader.begin(), rawCodeReader.end());
 	wxString myWxString(rawCodeReader.c_str(), wxConvUTF8);
 	return myWxString;
-}
-void DisplayListCardReader::SetTextSize(wxStaticText* text, int size)
-{
-	wxFont tempFont = text->GetFont();
-	tempFont.SetPointSize(size);
-	text->SetFont(tempFont);
 }
 void DisplayListCardReader::DisplayTabel(bool state)
 {
@@ -498,10 +354,12 @@ void DisplayListCardReader::QuickSort(CardReader** A, int l, int h)
 		QuickSort(A, j + 1, h);
 	}
 }
-void DisplayListCardReader::SetCardReaders(BSTree<CardReader>* cardReaders)
+void DisplayListCardReader::SetData(BSTree<CardReader>* cardReaders,
+	CheckInput* checkInput)
 {
 	cardReaderTree = cardReaders;
 	this->length = cardReaders->GetNumberNodes();
+	this->checkInput = checkInput;
 }
 
 void DisplayListCardReader::OnSelectingGrid(wxGridRangeSelectEvent& WXUNUSED(event))

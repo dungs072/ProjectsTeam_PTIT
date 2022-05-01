@@ -394,7 +394,7 @@ namespace DataStructure
 			}
 			while (p != nullptr)
 			{
-				tempArr[k] = &(p->data);
+				tempArr[k] = &p->data;
 				k++;
 				p = p->next;
 			}

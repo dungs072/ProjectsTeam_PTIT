@@ -2,27 +2,28 @@
 AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
 	wxDefaultPosition, wxSize(1280, 680)),timer(this,TIMER_ID)
 {
+	checkInput = new CheckInput();
 	timer.Start();
 	LoadDataIntoTempMemory();
 	// window control
 	readerCard = new ReaderCard("THE DOC GIA");
-	readerCard->SetCardReaders(treeCardReader);
+	readerCard->SetData(treeCardReader,checkInput);
 	displayCardReader = new DisplayListCardReader("DANH SACH THE DOC GIA");
-	displayCardReader->SetCardReaders(treeCardReader);
+	displayCardReader->SetData(treeCardReader,checkInput);
 	bookTitle = new BookTitle("DAU SACH");
-	bookTitle->SetTitleList(titleList);
+	bookTitle->SetData(titleList,checkInput);
 	displayTitle = new DisplayListTitle("DANH SACH DAU SACH");
-	displayTitle->SetListTitle(titleList);
+	displayTitle->SetData(titleList,checkInput);
 	findInforBook = new FindInforBook("TIM KIEM THONG TIN DAU SACH");
-	findInforBook->SetTitleList(titleList);
+	findInforBook->SetData(titleList,checkInput);
 	lendBook = new LendBook("MUON SACH");
-	lendBook->SetData(treeCardReader, titleList);
+	lendBook->SetData(treeCardReader, titleList,checkInput);
 	giveBook = new GiveBook("TRA SACH");
-	giveBook->SetData(treeCardReader, titleList);
+	giveBook->SetData(treeCardReader, titleList, checkInput);
 	overDueList = new OverDueList("THE DOC GIA QUA HAN");
-	overDueList->SetCardReader(treeCardReader);
+	overDueList->SetCardReader(treeCardReader,checkInput);
 	mostBorrowings = new MostBorrowings("TOP 10 SACH MUON NHIEU NHAT");
-	mostBorrowings->SetTitleList(titleList);
+	mostBorrowings->SetTitleList(titleList,checkInput);
 	this->AddChild(readerCard);
 	this->AddChild(displayCardReader);
 	this->AddChild(bookTitle);
@@ -33,7 +34,7 @@ AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
 	this->AddChild(overDueList);
 	this->AddChild(mostBorrowings);
 
-	checkInput = new CheckInput();
+	
 	//create color;
 	wxColour lightYellow, greenColor, organColor, lightBlue,midBlue,
 		eggYellow, lightRed, red, middleYellow;
@@ -85,10 +86,12 @@ AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
 	mainVBox->Add(runningTextPanel, 0, wxTOP | wxALIGN_CENTER, 10);
 	mainPanel->SetSizer(mainVBox);
 	//Register event
+	mainMenuButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnMainMenu, this);
 	exitButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnExit, this);
 	adminReaderCardButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnReaderCardPanel, this);
 	adminTitleButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnTitlePanel, this);
 	adminFunctionBookButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnFunctionBookPanel, this);
+	
 	//Set color
 	buttonPanel->SetBackgroundColour(lightYellow);
 	titleMenu->SetBackgroundColour(lightBlue);
@@ -207,7 +210,11 @@ void AdminMenu::OnExit(wxCommandEvent& WXUNUSED(event))
 {
 	this->Close();
 }
-
+void AdminMenu::OnMainMenu(wxCommandEvent& WXUNUSED(event))
+{
+	this->Hide();
+	this->GetParent()->Show();
+}
 
 void AdminMenu::OnTimer(wxTimerEvent& event)
 {
@@ -221,7 +228,7 @@ void AdminMenu::OnTimer(wxTimerEvent& event)
 		distance -= 1;
 		
 		runningText->SetPosition(wxPoint(distance,13));
-	}
+	} 
 }
 void AdminMenu::TurnOnPanel(int index)
 {
@@ -267,6 +274,19 @@ void AdminMenu::LoadDataIntoTempMemory()
 	delete[]titles;
 	delete[]arr;
 
+}
+void AdminMenu::SaveFile()
+{
+	//check here if list is null
+	int lengthCard = treeCardReader->GetNumberNodes();
+	int lengthTitle = titleList->GetList()->Length();
+
+	CardReader** arrCard = treeCardReader->ToSameTreeArray();
+	Title** arrTitle = titleList->GetList()->ToArray();
+	cardReaderFile->WriteToFile(arrCard, lengthCard);
+	titleFile->WriteToFile(arrTitle, lengthTitle);
+	wxMessageBox(wxString::Format("LUU THANH CONG"));
+	delete[]arrCard;
 }
 wxBEGIN_EVENT_TABLE(AdminMenu, wxFrame)
 EVT_TIMER(TIMER_ID, AdminMenu::OnTimer)

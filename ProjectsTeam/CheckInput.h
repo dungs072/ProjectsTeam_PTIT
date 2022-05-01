@@ -6,10 +6,17 @@ using std::string;
 typedef unsigned long long ulong;
 class CheckInput
 {
-	string* cardState = new string[2]{ "KHOA","HOAT DONG" };
-	string* stateBook = new string[3]{ "CHO MUON DUOC","DA CO DOC GIA MUON","DA THANH LY" };
-	string* stateBorrowBook = new string[3]{ "DANG MUON","DA TRA","MAT SACH" };
+	string* cardState;
+	string* stateBook;
+	string* stateBorrowBook;
 public:
+	CheckInput()
+	{
+		cardState = new string[2]{ "KHOA","HOAT DONG" };
+		stateBook = new string[3]{ "CHO MUON DUOC","DA CO DOC GIA MUON","DA THANH LY" };
+		stateBorrowBook = new string[3]{ "DANG MUON","DA TRA","MAT SACH" };
+
+	}
 	~CheckInput()
 	{
 		delete[]cardState;

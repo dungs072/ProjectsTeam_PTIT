@@ -4,14 +4,14 @@
 #include<ctime>
 #include"CheckInput.h"
 #include"Title.h"
-#include"SaveTextFile.h"
+#include"ISaveFile.h"
 using namespace DataStructure;
 class BookTitle:public wxFrame
 {
 private:
 	//backend
-	SaveTextFile<Title>* saveFile;
 	TitleList* titleList;
+	CheckInput* checkInput;
 	//frontend
 	int maxItem = 0;
 	bool isTurnOnEnterPanel = true;
@@ -19,7 +19,7 @@ private:
 	wxPanel* takeNotePanel;
 	wxGrid* grid;
 	wxTextCtrl** enterText;
-	CheckInput* checkInput;
+	
 	//method
 	void CreateEnterArea(wxPanel* enterPanel);
 	void CreateTakeNoteArea(wxPanel* takeNotePanel);
@@ -74,12 +74,12 @@ public:
 	BookTitle(const wxString& title);
 	~BookTitle()
 	{
-		delete saveFile;
 		delete[]enterText;
 	}
-	void SetTitleList(TitleList* titleList)
+	void SetData(TitleList* titleList,CheckInput* checkInput)
 	{
 		this->titleList = titleList;
+		this->checkInput = checkInput;
 	}
 	DECLARE_EVENT_TABLE();
 

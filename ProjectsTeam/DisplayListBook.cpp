@@ -9,7 +9,6 @@ DisplayListBook::DisplayListBook(const wxString& title) :wxFrame(NULL, -1,
 	red.Set(wxT("#F74A4A"));
 
 	//backend
-	saveFile = new SaveTextFile<Title>("BookTitle.txt");
 	stateBook = new string[3]{ "CHO MUON DUOC","DA CO DOC GIA MUON","DA THANH LY" };
 	//Create panel
 	wxPanel* mainPanel = new wxPanel(this, -1);
@@ -386,14 +385,8 @@ void DisplayListBook::SaveToList()
 }
 void DisplayListBook::SaveFile()
 {
-	if (titleList == nullptr)
-	{
-		wxMessageBox("Danh sach dau sach rong");
-		return;
-	}
-	Title** arr = titleList->GetList()->ToArray();
-	saveFile->WriteToFile(arr, titleList->GetList()->Length());
-	wxMessageBox(wxT("LUU THANH CONG"));
+	ISaveFile* isaveFile = dynamic_cast<ISaveFile*>(this->GetParent());
+	isaveFile->SaveFile();
 }
 void DisplayListBook::LoadData()
 {

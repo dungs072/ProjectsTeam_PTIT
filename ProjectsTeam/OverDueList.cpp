@@ -11,8 +11,6 @@ OverDueList::OverDueList(const wxString& title) :wxFrame(NULL, -1, title,
 		else if (c1->GetNumberDayOverDue() > c2->GetNumberDayOverDue()) { return -1; }
 		return 0;
 	};
-	checkInput = new CheckInput();
-	saveFile = new SaveTextFile<CardReader>("ListReaders.txt");
 	wxColour lightYellow, red;
 	lightYellow.Set(wxT("#E0EBB7"));
 	red.Set(wxT("#F74A4A"));
@@ -92,12 +90,18 @@ void OverDueList::OnShow(wxShowEvent& event)
 	if (event.IsShown())
 	{
 		ClearOldDataInTable();
-		LoadFile();
-		LoadFileToTable();
+		LoadData();
+		LoadDataToTable();
 	}
 }
-void OverDueList::LoadFile()
+void OverDueList::LoadData()
 {
+	if (arr != nullptr)
+	{
+		delete[]arr;
+		arr = nullptr;
+	}
+	this->arr = treeCardReader->ToSameTreeArray();
 	overDueCardList->Clear();
 
 	if (arrOverDue != nullptr)
@@ -109,7 +113,7 @@ void OverDueList::LoadFile()
 	sort->QuickSort(arrOverDue, 0, lengthOverDue);
 	//have to modify here
 }
-void OverDueList::LoadFileToTable()
+void OverDueList::LoadDataToTable()
 {
 	if (lengthOverDue == 0)
 	{

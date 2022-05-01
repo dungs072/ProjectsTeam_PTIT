@@ -2,11 +2,11 @@
 #include<wx/wx.h>
 #include<wx/grid.h>
 #include"CardReader.h"
-#include"SaveTextFile.h"
 #include"BSTree.h"
 #include"Title.h"
 #include"CheckInput.h"
 #include"ControlDateTime.h"
+#include"ISaveFile.h"
 typedef unsigned long long ulong;
 class GiveBook:public wxFrame
 {
@@ -16,8 +16,6 @@ private:
 	//backend
 	ControlDateTime* controlDateTime = nullptr;
 	CheckInput* checkInput;
-	SaveTextFile<CardReader>* saveFileCard = nullptr;
-	SaveTextFile<Title>* saveFileTitle = nullptr;
 	BSTree<CardReader>* treeCardReader = nullptr;
 	TitleList* titleList = nullptr;
 	CardReader* foundCard = nullptr;
@@ -89,20 +87,17 @@ public:
 	{
 		delete[] displayTitleText;
 		delete[] displayText;
-		delete[]listBorrowBook;
+		delete[] listBorrowBook;
 		delete[]listBook;
-		delete saveFileCard;
-		delete saveFileTitle;
-		delete checkInput;
-		delete foundCard;
 		delete searchPanel;
 		delete grid;
 		delete controlDateTime;
 	}
-	void SetData(BSTree<CardReader>* treeCard, TitleList* titleList)
+	void SetData(BSTree<CardReader>* treeCard, TitleList* titleList,CheckInput* checkInput)
 	{
 		this->treeCardReader = treeCard;
 		this->titleList = titleList;
+		this->checkInput = checkInput;
 	}
 	DECLARE_EVENT_TABLE();
 };

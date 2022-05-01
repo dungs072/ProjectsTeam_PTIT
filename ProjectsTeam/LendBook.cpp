@@ -4,9 +4,6 @@ LendBook::LendBook(const wxString& title) :
 {
 	//back end
 	controlDateTime = new ControlDateTime();
-	cardFile = new SaveTextFile<CardReader>("ListReaders.txt");
-	titleFile = new SaveTextFile<Title>("BookTitle.txt");
-	checkInput = new CheckInput();
 	//color
 	wxColor lightOrange;
 	lightOrange.Set("#F5DBB8");
@@ -890,6 +887,7 @@ void LendBook::ClearOldDataInBookGrid()
 }
 void LendBook::OnKeyDown(wxKeyEvent& event)
 {
+	event.StopPropagation();
 	if (enterSearchText->HasFocus())
 	{
 		int keyCode = event.GetKeyCode();
@@ -919,12 +917,8 @@ void LendBook::OnKeyDown(wxKeyEvent& event)
 }
 void LendBook::SaveFile()
 {
-	CardReader** arrCard = treeCardReader->ToSameTreeArray();
-	Title** arrTitle = titleList->GetList()->ToArray();
-	cardFile->WriteToFile(arrCard, treeCardReader->GetNumberNodes());
-	titleFile->WriteToFile(arrTitle, titleList->GetList()->Length());
-	wxMessageBox("LUU THANH CONG");
-	delete[]arrCard;
+	ISaveFile* isaveFile = dynamic_cast<ISaveFile*>(this->GetParent());
+	isaveFile->SaveFile();
 }
 void LendBook::DeleteBorrowingBook()
 {

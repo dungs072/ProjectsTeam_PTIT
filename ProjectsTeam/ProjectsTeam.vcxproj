@@ -167,10 +167,12 @@
     <ClCompile Include="FindInforBook.cpp" />
     <ClCompile Include="FormatText.cpp" />
     <ClCompile Include="GiveBook.cpp" />
+    <ClCompile Include="ISaveFile.cpp" />
     <ClCompile Include="LendBook.cpp" />
     <ClCompile Include="LinearList.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="DoublyNode.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="MostBorrowings.cpp" />
     <ClCompile Include="OverDueCard.cpp" />
     <ClCompile Include="OverDueList.cpp" />
@@ -202,8 +204,10 @@
     <ClInclude Include="FindInforBook.h" />
     <ClInclude Include="FormatText.h" />
     <ClInclude Include="GiveBook.h" />
+    <ClInclude Include="ISaveFile.h" />
     <ClInclude Include="LendBook.h" />
     <ClInclude Include="LinearList.h" />
+    <ClInclude Include="MainMenu.h" />
     <ClInclude Include="MostBorrowings.h" />
     <ClInclude Include="OverDueCard.h" />
     <ClInclude Include="OverDueList.h" />

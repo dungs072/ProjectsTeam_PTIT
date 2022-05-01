@@ -267,6 +267,10 @@ namespace DataStructure
 		}
 		T** ToSameTreeArray()
 		{
+			if (numberNodes == 0)
+			{
+				return nullptr;
+			}
 			T** arr = new T * [numberNodes];
 			int index = 0;
 			BSTNode<T>* t = rootNode;
@@ -278,7 +282,7 @@ namespace DataStructure
 			{
 				node = queue->Dequeue();
 				t = &node;
-				arr[index] = (t->data);
+				arr[index] = t->data;
 				index++;
 				if (t->leftNode != nullptr)
 				{

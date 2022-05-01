@@ -13,7 +13,6 @@ MostBorrowings::MostBorrowings(const wxString& title) :wxFrame(NULL, -1, title,
 		else if (t1->GetCountBorrow() < t2->GetCountBorrow()) { return 1; }
 		return 0;
 	};
-	checkInput = new CheckInput();
 	wxPanel* mainPanel = new wxPanel(this, -1);
 	wxButton* exitMainMenu = new wxButton(mainPanel, -1, wxT("EXIT MENU"), 
 		wxPoint(20, 600), wxSize(-1, -1));
@@ -107,4 +106,25 @@ void MostBorrowings::OnExitMenu(wxCommandEvent& WXUNUSED(event))
 {
 	this->GetParent()->Show();
 	this->Hide();
+}
+void MostBorrowings::OnSelectingGrid(wxGridRangeSelectEvent& WXUNUSED(event))
+{
+	if (grid->IsSelection())
+	{
+		grid->ClearSelection();
+	}
+}
+void MostBorrowings::OnSelectedGrid(wxCommandEvent& WXUNUSED(event))
+{
+	if (grid->IsSelection())
+	{
+		grid->ClearSelection();
+	}
+}
+void MostBorrowings::OnSelectedLabelGrid(wxCommandEvent& WXUNUSED(event))
+{
+	if (grid->IsSelection())
+	{
+		grid->ClearSelection();
+	}
 }

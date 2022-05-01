@@ -1,5 +1,6 @@
 #pragma once
 #include"DoublyLinkedList.h"
+#include<wx/wx.h>
 namespace DataStructure
 {
 	template<class T>
@@ -15,6 +16,8 @@ namespace DataStructure
 		~Queue()
 		{
 			listQueue->Clear();
+			delete listQueue;
+			
 		}
 		void Enqueue(T data)
 		{

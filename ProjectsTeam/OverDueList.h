@@ -3,7 +3,6 @@
 #include<wx/grid.h>
 #include"CheckInput.h"
 #include"CardReader.h"
-#include"SaveTextFile.h"
 #include"BSTree.h"
 #include"SortAlgorithm.h"
 #include"OverDueCard.h"
@@ -12,15 +11,14 @@ class OverDueList:public wxFrame
 {
 private:
 	CheckInput* checkInput;
-	SaveTextFile<CardReader>* saveFile;
 	BSTree<CardReader>* treeCardReader;
 	CardReader** arr;
 	OverDueCard** arrOverDue;
 	DoublyLinkedList<OverDueCard>* overDueCardList;
 	SortAlgorithm<OverDueCard>* sort;
 
-	void LoadFile();
-	void LoadFileToTable();
+	void LoadData();
+	void LoadDataToTable();
 	//void GetDataOverDue();
 	int FindLongestBorrowDay(CardReader* card);
 	void FindOverDueListCard();
@@ -41,22 +39,12 @@ public:
 	~OverDueList()
 	{
 		delete checkInput;
-		delete saveFile;
-		
 	}
-	void SetCardReader(BSTree<CardReader>* treeCard)
+	void SetCardReader(BSTree<CardReader>* treeCard,CheckInput* checkInput)
 	{
 		this->treeCardReader = treeCard;
-		if (arr != nullptr)
-		{
-			for (int i = 0; i < length; i++)
-			{
-				delete arr[i];
-			}
-			delete[]arr;
-			arr = nullptr;
-		}
-		this->arr = treeCard->ToSameTreeArray();
+		this->checkInput = checkInput;
+	
 	}
 	
 };

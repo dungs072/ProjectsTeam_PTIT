@@ -11,7 +11,8 @@
 #include"GiveBook.h"
 #include"OverDueList.h"
 #include"MostBorrowings.h"
-class AdminMenu:public wxFrame
+#include"ISaveFile.h"
+class AdminMenu:public wxFrame,public ISaveFile
 {
 private:
 	//data is stored in heap memory
@@ -57,6 +58,7 @@ private:
 	void OnFunctionBookPanel(wxCommandEvent& event);
 
 	void OnExit(wxCommandEvent& event);
+	void OnMainMenu(wxCommandEvent& event);
 
 	void OnTimer(wxTimerEvent& event);
 	
@@ -64,13 +66,15 @@ private:
 
 	void LoadDataIntoTempMemory();
 
+	void SaveFile();
+
 	int distance = -550;
 
 public:
 	AdminMenu(const wxString& title);
 	~AdminMenu()
 	{
-		delete checkInput;
+		//delete checkInput;
 		delete choicePanel;
 		delete treeCardReader;
 		delete titleList;

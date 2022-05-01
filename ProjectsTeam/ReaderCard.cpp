@@ -5,8 +5,6 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 	srand((ulong)time(0));//for random number
 	//backend
 	numberRowIsFilled = 0;
-	saveFile = new SaveTextFile<CardReader>("ListReaders.txt");
-	checkInput = new CheckInput();
 	//frontend
 	//colors
 	wxColour lightYellow, lightBlue, lightRed, red;
@@ -26,7 +24,7 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 	hotKeyPanel = new wxPanel(mainPanel, -1, wxPoint(150, 590), wxSize(550, 30));
 	wxStaticText* labelText = new wxStaticText(labelTitleBackGround, -1,
 		wxT("DANH SACH THE DOC"), wxPoint(50, -1), wxSize(350, 30));
-	SetTextSize(*labelText, 30);
+	checkInput->SetTextSize(labelText, 30);
 	//create label guide user
 	wxStaticText* labelGuide = new wxStaticText(mainPanel, -1, "HUONG DAN",
 		wxPoint(-1, -1), wxSize(100, 15), wxALIGN_CENTRE_HORIZONTAL);
@@ -75,7 +73,6 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 	CreateHotKeyArea();
 	MakeEnCodeText();
 	//LoadFile();
-
 	guidePanel->SetBackgroundColour(lightYellow);
 
 	vRightBox->Add(noteBook, 0, wxTOP, 80);
@@ -122,12 +119,6 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 
 }
 
-void ReaderCard::SetTextSize(wxStaticText& text, int size)
-{
-	wxFont tempFont = text.GetFont();
-	tempFont.SetPointSize(size);
-	text.SetFont(tempFont);
-}
 void ReaderCard::CreateEnterArea()
 {
 	wxColour lightBlue2, lightGreen, defaultColor;
@@ -265,15 +256,6 @@ void ReaderCard::SaveToList(wxTextCtrl** textCtrlList, int length, int& pos)
 		ErrorMessageBox(pos, "Loi Nhap Lieu ");
 		return;
 	}
-	for (int j = 0; j < 2; j++)
-	{
-		if (!IsWord(textCtrlList[j]))
-		{
-			ErrorMessageBox(pos, "Loi Nhap Lieu ");
-			return;
-		}
-	}
-
 	int i = 0;
 	if (pos == grid->GetNumberRows())
 	{
@@ -306,7 +288,6 @@ void ReaderCard::SaveToList(wxTextCtrl** textCtrlList, int length, int& pos)
 	for (i = 1; i < 5; i++)
 	{
 		ModifyTextInput(textCtrlList[i - 1]);
-		//UpperWxString(textCtrlList[i - 1]);
 		grid->SetCellValue(pos, i, textCtrlList[i - 1]->GetValue());
 		grid->SetCellAlignment(pos, i, wxALIGN_CENTER, wxALIGN_CENTER);
 
@@ -393,6 +374,7 @@ void ReaderCard::MainKeyDown(int keyCode)
 }
 void ReaderCard::OnKeyDown(wxKeyEvent& event)
 {
+	event.StopPropagation();
 	int keyCode = event.GetKeyCode();
 	MainKeyDown(keyCode);
 	if (enterText[2]->HasFocus() || enterText[3]->HasFocus())
@@ -419,6 +401,7 @@ void ReaderCard::OnKeyDown(wxKeyEvent& event)
 }
 void ReaderCard::OnGridKeyDown(wxKeyEvent& event)
 {
+	event.StopPropagation();
 	int keyCode = event.GetKeyCode();
 	MainKeyDown(keyCode);
 	int col = grid->GetGridCursorCol();
@@ -512,17 +495,8 @@ void ReaderCard::SetDefaultColorForRow()
 }
 void ReaderCard::SaveFile()
 {
-	if (cardReaderTree->GetNumberNodes() == 0)
-	{
-		wxMessageBox("NOTHING TO SAVE");
-		saveFile->ClearData();
-		return;
-	}
-	int length = cardReaderTree->GetNumberNodes();
-	CardReader** arr = cardReaderTree->ToSameTreeArray();
-	saveFile->WriteToFile(arr, length);
-	wxMessageBox(wxString::Format("LUU THANH CONG"));
-	delete[]arr;
+	ISaveFile *isaveFile = dynamic_cast<ISaveFile*>(this->GetParent());
+	isaveFile->SaveFile();
 }
 void ReaderCard::LoadData()
 {
@@ -615,45 +589,6 @@ void ReaderCard::ShowMessageClear()
 	}
 	delete dialog;
 }
-void ReaderCard::MoveDownToAnotherTextCtrl(wxTextCtrl** textCtrl, int length)
-{
-	for (int i = 0; i < length; i++)
-	{
-		if (textCtrl[i]->HasFocus())
-		{
-			if (i < length - 1)
-			{
-				textCtrl[i + 1]->SetFocus();
-				return;
-			}
-			else if (i == length - 1)
-			{
-				textCtrl[0]->SetFocus();
-				return;
-			}
-
-		}
-	}
-}
-void ReaderCard::MoveUpToAnotherTextCtrl(wxTextCtrl** textCtrl, int length)
-{
-	for (int i = 0; i < length; i++)
-	{
-		if (textCtrl[i]->HasFocus())
-		{
-			if (i > 0)
-			{
-				textCtrl[i - 1]->SetFocus();
-				return;
-			}
-			else if (i == 0)
-			{
-				textCtrl[length - 1]->SetFocus();
-				return;
-			}
-		}
-	}
-}
 void ReaderCard::ModifyTextInput(wxTextCtrl* textCtrl)
 {
 	wxString wxStr = textCtrl->GetLineText(0);
@@ -699,13 +634,6 @@ void ReaderCard::MakeEnCodeText()
 	stateText = new std::string[2]{ "KHOA","HOAT DONG" };
 	sexText = new std::string[2]{ "NAM","NU" };
 }
-void ReaderCard::UpperWxString(wxString& wxStr)
-{
-	std::string strText = std::string(wxStr.mb_str());
-	strText = UpperText(strText);
-	wxString myWxString(strText.c_str(), wxConvUTF8);
-	wxStr = myWxString;
-}
 void ReaderCard::EditCurrentCell(wxGridEvent& event)
 {
 	int row = grid->GetGridCursorRow();
@@ -719,7 +647,7 @@ void ReaderCard::EditCurrentCell(wxGridEvent& event)
 	}
 	wxString wxNewText = grid->GetCellValue(row, col);
 	//main error
-	if (IsWhiteSpaceAllText(wxNewText))
+	if (checkInput->IsWhiteSpaceAllText(wxNewText))
 	{
 		ErrorMessageBox(-1, "Loi Nhap Lieu ");
 		grid->SetCellValue(row, col, wxOldText);
@@ -730,38 +658,20 @@ void ReaderCard::EditCurrentCell(wxGridEvent& event)
 	if (col == 1 || col == 2)
 	{
 		ModifyTextInput(wxNewText);
-		if (!IsWord(wxNewText))
-		{
-			ErrorMessageBox(-1, "Loi Nhap Lieu ");
-			grid->SetCellValue(row, col, wxOldText);
-			return;
-		}
 
-		UpperWxString(wxNewText);
+		checkInput->UpperWxString(wxNewText);
 		grid->SetCellValue(row, col, wxNewText);
 	}
 	if (col == 3)
 	{
 		ModifyTextInput(wxNewText);
-		int num = CastWxStringToInt(wxNewText);
-		if (!IsRightCodeState(1, num))
-		{
-			ErrorMessageBox(-1, "Loi Nhap Lieu ");
-			grid->SetCellValue(row, col, wxOldText);
-			return;
-		}
+		int num = checkInput->CastWxStringToInt(wxNewText);
 		grid->SetCellValue(row, col, sexText[num]);
 	}
 	if (col == 4)
 	{
 		ModifyTextInput(wxNewText);
-		int num = CastWxStringToInt(wxNewText);
-		if (!IsRightCodeState(1, num))
-		{
-			ErrorMessageBox(-1, "Loi Nhap Lieu ");
-			grid->SetCellValue(row, col, wxOldText);
-			return;
-		}
+		int num = checkInput->CastWxStringToInt(wxNewText);
 		grid->SetCellValue(row, col, stateText[num]);
 	}
 	ulong key = CastWxStringToUlong(grid->GetCellValue(row, 0));
@@ -807,73 +717,7 @@ CardReader* ReaderCard::CreateCardReader(wxTextCtrl** textCtrlList, ulong cardCo
 }
 bool ReaderCard::IsWhiteSpaceAllText(wxTextCtrl* textCtrl)
 {
-	return IsWhiteSpaceAllText(textCtrl->GetLineText(0));
-}
-bool ReaderCard::IsWhiteSpaceAllText(wxString wxStr)
-{
-	std::string strText = std::string(wxStr.mb_str());
-	for (char str : strText)
-	{
-		if (str != ' ')
-		{
-			return false;
-		}
-	}
-	return true;
-}
-bool ReaderCard::IsWord(wxTextCtrl* textCtrl)
-{
-	wxString wxStr = textCtrl->GetLineText(0);
-	return IsWord(wxStr);
-}
-bool ReaderCard::IsWord(wxString wxStr)
-{
-	std::string strText = std::string(wxStr.mb_str());
-	for (int i = 0; i < strText.length(); i++)
-	{
-		if (!(strText[i] >= 'a' && strText[i] <= 'z'))
-		{
-			if (!(strText[i] >= 'A' && strText[i] <= 'Z'))
-			{
-				if (strText[i] != ' ')
-					return false;
-			}
-		}
-	}
-	return true;
-}
-bool ReaderCard::IsRightSex(wxString& wxStr)
-{
-	std::string strText = std::string(wxStr.mb_str());
-	strText = UpperText(strText);
-	if (strText == "") { return false; }
-	ModifyString(strText);
-	wxString myWxString(strText.c_str(), wxConvUTF8);
-	if (strText == "NAM" || strText == "NU")
-	{
-		wxStr = myWxString;
-		return true;
-	}
-	return false;
-}
-bool ReaderCard::IsRightCodeState(int maxNumber, int number)
-{
-	return number >= 0 && number <= maxNumber;
-}
-string ReaderCard::UpperText(string text)
-{
-	for (int i = 0; i < text.length(); i++)
-	{
-		if ((text[i] >= 'Z' && text[i] <= 'A'))
-		{
-			return "";
-		}
-		if (text[i] <= 'z' && text[i] >= 'a')
-		{
-			text[i] -= 32;
-		}
-	}
-	return text;
+	return checkInput->IsWhiteSpaceAllText(textCtrl->GetLineText(0));
 }
 string ReaderCard::EditCardCode(ulong number, int maxLengthCode)
 {
@@ -908,22 +752,7 @@ string ReaderCard::EditCardCode(ulong number, int maxLengthCode)
 int ReaderCard::CastWxStringToInt(wxTextCtrl* textCtrl)
 {
 	wxString wxStr = textCtrl->GetLineText(0);
-	return CastWxStringToInt(wxStr);
-}
-int ReaderCard::CastWxStringToInt(wxString wxStr)
-{
-	int i, j;
-	int number = 0;
-	string strText = string(wxStr.mb_str());
-	for (i = strText.length() - 1, j = 0; i >= 0; i--, j++)
-	{
-		if (strText[i] < '0' || strText[i]>'9')
-		{
-			return -1;
-		}
-		number += (strText[i] - '0') * pow(10, j);
-	}
-	return number;
+	return checkInput->CastWxStringToInt(wxStr);
 }
 ulong ReaderCard::CastWxStringToUlong(wxString wxStr)
 {
@@ -1015,10 +844,13 @@ int ReaderCard::GetMaxLength(int col)
 		return 1;
 	}
 }
-void ReaderCard::SetCardReaders(BSTree<CardReader>* cardReaders)
+void ReaderCard::SetData(BSTree<CardReader>* cardReaders,
+	CheckInput* checkInput)
 {
-	cardReaderTree = cardReaders;
+	this->cardReaderTree = cardReaders;
+	this->checkInput = checkInput;
 }
+
 BEGIN_EVENT_TABLE(ReaderCard, wxFrame)
 EVT_CHAR_HOOK(ReaderCard::OnKeyDown)
 END_EVENT_TABLE()

@@ -15,10 +15,6 @@ FindInforBook::FindInforBook(const wxString& title) :
 			else return 0;
 		}
 	};
-	//Backend
-	stateBook = new string[3]{ "CHO MUON DUOC","DA CO DOC GIA MUON","DA THANH LY" };
-	checkInput = new CheckInput();
-	saveFile = new SaveTextFile<Title>("BookTitle.txt");
 	
 	//Create color
 	wxColour lightYellow, lightBlue, red;
@@ -182,7 +178,7 @@ void FindInforBook::EditCurrentCell(wxGridEvent& event)
 	}
 	int index = checkInput->CastWxStringToInt(wxNewText);
 	string bookCode = string(grid->GetCellValue(row, 0).mb_str());
-	grid->SetCellValue(row, col, stateBook[index]);
+	grid->SetCellValue(row, col, checkInput->GetBookState(index));
 	SinglyNode<Book>* tempBook = foundTitle->GetListBook()->First();
 	while (tempBook != nullptr)
 	{
@@ -509,6 +505,7 @@ void FindInforBook::OnGridKeyDown(wxKeyEvent& event)
 }
 void FindInforBook::OnKeyDown(wxKeyEvent& event)
 {
+	event.StopPropagation();
 	if (event.GetKeyCode() == WXK_F2)
 	{
 		SaveFile();
@@ -562,7 +559,8 @@ void FindInforBook::OnKeyDown(wxKeyEvent& event)
 }
 void FindInforBook::SaveFile()
 {
-	saveFile->WriteToFile(arr, length);
+	ISaveFile* isaveFile = dynamic_cast<ISaveFile*>(this->GetParent());
+	isaveFile->SaveFile();
 }
 void FindInforBook::LoadData()
 {
@@ -640,7 +638,7 @@ void FindInforBook::DisplayOnTable()
 	{
 		int index = tempBook->data.GetState();
 		grid->SetCellValue(i, 0, tempBook->data.GetBookCode());
-		grid->SetCellValue(i, 1, stateBook[index]);
+		grid->SetCellValue(i, 1, checkInput->GetBookState(index));
 		grid->SetReadOnly(i, 0);
 		for (int k = 0; k < 2; k++)
 		{

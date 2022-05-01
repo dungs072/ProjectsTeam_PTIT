@@ -4,9 +4,6 @@ GiveBook::GiveBook(const wxString& title) :wxFrame(NULL, -1, title,
 {
 	//backend
 	controlDateTime = new ControlDateTime();
-	checkInput = new CheckInput();
-	saveFileCard = new SaveTextFile<CardReader>("ListReaders.txt");
-	saveFileTitle = new SaveTextFile<Title>("BookTitle.txt");
 	listBorrowBook = new BorrowBook * [3];
 	listBook = new Book * [3];
 
@@ -137,11 +134,13 @@ void GiveBook::CreateDisplayInforCard()
 		wxPoint(20, 125), wxSize(100, 15));
 	displayTitleText[2] = new wxStaticText(searchPanel, -1, wxT("TRANG THAI:"),
 		wxPoint(20, 175), wxSize(100, 15));
-
+	wxStaticText* guideText = new wxStaticText(searchPanel, -1, wxT("F2 - LUU FILE"),
+		wxPoint(115, 225), wxSize(150, 15));
 	for (int i = 0; i < 3; i++)
 	{
 		displayText[i] = new wxStaticText(searchPanel, -1, wxT(""),
 			wxPoint(20, 95 + i * 50), wxSize(260, 25),wxALIGN_CENTER);
+		
 		displayText[i]->SetBackgroundColour(lightBlue);
 	}
 }
@@ -191,6 +190,7 @@ void GiveBook::OnEnter(wxCommandEvent& WXUNUSED(event))
 }
 void GiveBook::OnKeyDown(wxKeyEvent& event)
 {
+	event.StopPropagation();
 	int keyCode = event.GetKeyCode();
 	if (enterText->HasFocus())
 	{
@@ -217,6 +217,10 @@ void GiveBook::DisplayCardOnPanel()
 	displayText[0]->SetLabel(foundCard->GetFirstName() + " " + foundCard->GetLastName());
 	displayText[1]->SetLabel(foundCard->GetSex());
 	displayText[2]->SetLabel(foundCard->GetState());
+	for (int i = 0; i < 3; i++)
+	{
+		checkInput->SetTextSize(displayText[i], 12);
+	}
 }
 void GiveBook::FindInforBorrowBook()
 {
@@ -300,13 +304,8 @@ void GiveBook::LoadData()
 }
 void GiveBook::SaveFile()
 {
-	CardReader** arrCard = treeCardReader->ToSameTreeArray();
-	Title** arrTitle = titleList->GetList()->ToArray();
-	saveFileCard->WriteToFile(arrCard, treeCardReader->GetNumberNodes());
-	saveFileTitle->WriteToFile(arrTitle, titleList->GetList()->Length());
-	wxMessageBox("LUU THANH CONG");
-	delete[]arrCard;
-	// i have to notice to delete memory
+	ISaveFile* isaveFile = dynamic_cast<ISaveFile*>(this->GetParent());
+	isaveFile->SaveFile();
 }
 void GiveBook::OnSelectingGrid(wxGridRangeSelectEvent& WXUNUSED(event))
 {
@@ -359,9 +358,6 @@ void GiveBook::OnLostBook(wxCommandEvent& WXUNUSED(event))
 		if (bookCodeSelected == listBorrowBook[i]->GetBookCode())
 		{
 			listBorrowBook[i]->SetStateBorrow(2);
-			//listBook[i]->SetState(0);
-			//listBorrowBook[i] = nullptr;
-			//listBook[i] = nullptr;
 			break;
 		}
 	}

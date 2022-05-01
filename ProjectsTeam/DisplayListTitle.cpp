@@ -14,13 +14,9 @@ DisplayListTitle::DisplayListTitle(const wxString& title) : wxFrame(NULL, -1, ti
 			else return 0;
 		}
 	};
-	saveFile = new SaveTextFile<Title>("BookTitle.txt");
-	maxItem = saveFile->GetSizeArray();
 	//child window
 	listBook = new DisplayListBook(wxT("DANH MUC SACH"));
 	this->AddChild(listBook);
-	//catch error
-	checkInput = new CheckInput();
 	//create color;
 	wxColour lightYellow, greenColor, organColor, lightBlue, red;
 	lightYellow.Set(wxT("#E0EBB7"));
@@ -167,6 +163,7 @@ void DisplayListTitle::CreateKeyNoteArea(wxPanel* keyNotePanel)
 }
 void DisplayListTitle::OnKeyDown(wxKeyEvent& event)
 {
+	event.StopPropagation();
 	if (event.GetKeyCode() == WXK_F2)
 	{
 		SaveFile();
@@ -179,6 +176,7 @@ void DisplayListTitle::OnKeyDown(wxKeyEvent& event)
 }
 void DisplayListTitle::OnGridKeyDown(wxKeyEvent& event)
 {
+	event.StopPropagation();
 	if (event.GetKeyCode() == WXK_F2)
 	{
 		SaveFile();
@@ -427,7 +425,7 @@ void DisplayListTitle::EditCurrentCell(wxGridEvent& event)
 }
 void DisplayListTitle::OnButtonDown(wxCommandEvent& WXUNUSED(event))
 {
-	listBook->SetListTitle(titleList);
+	listBook->SetData(titleList,checkInput);
 	listBook->SetTitle(selectedTitle);
 	listBook->Show(true);
 	this->Show(false);
@@ -536,10 +534,8 @@ void DisplayListTitle::EditTable(Title* title, int row)
 }
 void DisplayListTitle::SaveFile()
 {
-	Title** arr = titleList->GetList()->ToArray();
-	sort->QuickSort(arr, 0, titleList->GetList()->Length());
-	saveFile->WriteToFile(arr, maxItem);
-	wxMessageBox(wxT("LUU THANH CONG"));
+	ISaveFile* isaveFile = dynamic_cast<ISaveFile*>(this->GetParent());
+	isaveFile->SaveFile();
 }
 void DisplayListTitle::LoadData()
 {

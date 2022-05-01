@@ -19,11 +19,16 @@ private:
 	void ClearOldData(Title** arr);
 	void OnShow(wxShowEvent& event);
 	void OnExitMenu(wxCommandEvent& event);
+
+	void OnSelectingGrid(wxGridRangeSelectEvent& event);
+	void OnSelectedGrid(wxCommandEvent& event);
+	void OnSelectedLabelGrid(wxCommandEvent& event);
 public:
 	MostBorrowings(const wxString& title);
-	void SetTitleList(TitleList* titleList)
+	void SetTitleList(TitleList* titleList,CheckInput* checkInput)
 	{
 		this->titleList = titleList;
+		this->checkInput = checkInput;
 	}
 };
 

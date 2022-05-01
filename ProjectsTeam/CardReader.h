@@ -39,10 +39,7 @@ public:
 	}
 	~CardReader()
 	{
-		/*if (listBorrowBook != nullptr&&listBorrowBook->Length()>0)
-		{
-			delete listBorrowBook;
-		}*/
+		//delete listBorrowBook;
 	}
 	ulong GetCardCode() { return cardCode; }
 	string GetLastName() { return lastName; }

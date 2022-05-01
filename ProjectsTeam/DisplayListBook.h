@@ -3,7 +3,7 @@
 #include<wx/grid.h>
 #include"Title.h"
 #include"CheckInput.h"
-#include"SaveTextFile.h"
+#include"ISaveFile.h"
 class DisplayListBook:public wxFrame
 {
 private:
@@ -11,10 +11,9 @@ private:
 	int count = 0;
 	int maxItem = 0;
 	string* stateBook;
-	SaveTextFile<Title>* saveFile;
 	TitleList *titleList = nullptr;
+	CheckInput* checkInput;
 	//Frontend
-	CheckInput* checkInput = new CheckInput();
 	wxGrid* grid;
 	wxPanel* enterPanel;
 	wxPanel* takeNotePanel;
@@ -64,9 +63,10 @@ public:
 	{
 		currentTitle = title;
 	}
-	void SetListTitle(TitleList* list)
+	void SetData(TitleList* list,CheckInput* checkInput)
 	{
-		titleList = list;
+		this->titleList = list;
+		this->checkInput = checkInput;
 	}
 	DECLARE_EVENT_TABLE();
 };

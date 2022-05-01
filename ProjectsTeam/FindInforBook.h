@@ -2,8 +2,9 @@
 #include<wx/wx.h>
 #include<wx/grid.h>
 #include"CheckInput.h"
-#include"SaveTextFile.h"
+#include"ISaveFile.h"
 #include"SortAlgorithm.h"
+#include"Title.h"
 using std::string;
 class FindInforBook:public wxFrame
 {
@@ -11,11 +12,9 @@ private:
 	//Backend
 	SortAlgorithm<Title>* sort;
 	CheckInput* checkInput;
-	SaveTextFile<Title>* saveFile;
 	Title* foundTitle = nullptr;
 	TitleList* titleList = nullptr;
 	Title** arr = nullptr;
-	string* stateBook;
 	//FontEnd
 	wxGrid* grid;
 	wxPanel* searchPanel;
@@ -70,14 +69,12 @@ public:
 	~FindInforBook()
 	{
 		delete sort;
-		delete checkInput;
-		delete saveFile;
-		delete[] stateBook;
 		delete[]displayText;
 	}
-	void SetTitleList(TitleList* titleList)
+	void SetData(TitleList* titleList,CheckInput* checkInput)
 	{
 		this->titleList = titleList;
+		this->checkInput = checkInput;
 	}
 	DECLARE_EVENT_TABLE();
 };

@@ -3,10 +3,11 @@
 #include<wx/grid.h>
 #include<cmath>
 #include"CardReader.h"
-#include"SaveTextFile.h"
+#include"Title.h"
 #include"CheckInput.h"
 #include"BSTree.h"
 #include"ControlDateTime.h"
+#include"ISaveFile.h"
 typedef unsigned long long ulong;
 class LendBook:public wxFrame
 {
@@ -18,8 +19,6 @@ private:
 	CardReader* foundCardReader = nullptr;
 	Title* selectedTitle = nullptr;
 	Book* selectedBook = nullptr;
-	SaveTextFile<CardReader>* cardFile;
-	SaveTextFile<Title>* titleFile;
 	CheckInput* checkInput;
 	ControlDateTime* controlDateTime;
 
@@ -116,10 +115,12 @@ private:
 public:
 
 	LendBook(const wxString& title);
-	void SetData(BSTree<CardReader>* cardReaders, TitleList* titlelist)
+	void SetData(BSTree<CardReader>* cardReaders, TitleList* titlelist,
+				CheckInput* checkInput)
 	{
 		this->treeCardReader = cardReaders;
 		this->titleList = titlelist;
+		this->checkInput = checkInput;
 	}
 	DECLARE_EVENT_TABLE();
 };

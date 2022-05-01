@@ -1,19 +1,18 @@
 #include<iostream>
-#include"AdminMenu.h"
+#include"MainMenu.h"
 using std::cout;
 using std::endl;
 using namespace DataStructure;
 typedef unsigned long long ulong;
-class ReaderCardApp :public wxApp
+class MainApp :public wxApp
 {
 public:
 	virtual bool OnInit();
 };
-IMPLEMENT_APP(ReaderCardApp);
-bool ReaderCardApp::OnInit()
+IMPLEMENT_APP(MainApp);
+bool MainApp::OnInit()
 {
-	
-	AdminMenu* menu = new AdminMenu("ADMINISTRATOR MENU");
-	menu->Show(true);
+	MainMenu* mainMenu = new MainMenu("MAIN MENU");
+	mainMenu->Show();
 	return true;
 }

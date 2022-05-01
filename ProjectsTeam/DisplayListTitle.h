@@ -3,9 +3,9 @@
 #include<wx/wx.h>
 #include<wx/grid.h>
 #include"CheckInput.h"
-#include"SaveTextFile.h"
 #include"DisplayListBook.h"
 #include"SortAlgorithm.h"
+#include"ISaveFile.h"
 typedef unsigned int uint;
 using namespace DataStructure;
 class DisplayListTitle :public wxFrame
@@ -14,7 +14,6 @@ private:
 	//backend
 	SortAlgorithm<Title>* sort;
 	CheckInput* checkInput = new CheckInput();
-	SaveTextFile<Title>* saveFile;
 	TitleList* titleList;
 	Title* selectedTitle = nullptr;
 	//Frontend
@@ -60,9 +59,10 @@ private:
 	bool canEdit = true;
 public:
 	DisplayListTitle(const wxString& title);
-	void SetListTitle(TitleList* titleList)
+	void SetData(TitleList* titleList,CheckInput* checkInput)
 	{
 		this->titleList = titleList;
+		this->checkInput = checkInput;
 	}
 	DECLARE_EVENT_TABLE();
 };
