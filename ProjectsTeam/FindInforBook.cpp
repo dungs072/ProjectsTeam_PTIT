@@ -492,13 +492,16 @@ void FindInforBook::OnGridKeyDown(wxKeyEvent& event)
 
 		if (checkInput->HasInRangeNumber(keyCode,0,2) || checkInput->HasRightEntering(keyCode, true))
 		{
-			event.Skip();
-			if (checkInput->HasInRangeNumber(keyCode, 0, 2))
+			if (keyCode != '1')
 			{
-				int i = keyCode - '0';
-				grid->SetCellValue(row, col, wxT(""));
-				grid->SetCellValue(row, col, checkInput->GetBookState(i));
-				EditData(row, col, i);
+				event.Skip();
+				if (checkInput->HasInRangeNumber(keyCode, 0, 2))
+				{
+					int i = keyCode - '0';
+					grid->SetCellValue(row, col, wxT(""));
+					grid->SetCellValue(row, col, checkInput->GetBookState(i));
+					EditData(row, col, i);
+				}
 			}
 		}
 	}

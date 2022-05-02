@@ -86,6 +86,7 @@ void DisplayListBook::CreateEnterArea()
 	temp.Add("NONE");
 	for (int i = 0; i < 3; i++)
 	{
+		if (i == 1) continue;
 		temp.Add(stateBook[i]);
 	}
 	wxColor orange, lightBlue;
@@ -211,14 +212,18 @@ void DisplayListBook::OnGridKeyDown(wxKeyEvent& event)
 	{
 		if (checkInput->HasInRangeNumber(keyCode, 0, 2) || checkInput->HasRightEntering(keyCode, true))
 		{
-			event.Skip();
-			if (checkInput->HasInRangeNumber(keyCode, 0, 2))
+			if (keyCode != '1')// i dont have choice
 			{
-				int i = keyCode - '0';
-				grid->SetCellValue(row, col,wxT(""));
-				grid->SetCellValue(row, col, checkInput->GetBookState(i));
-				EditData(row, col,i);
+				event.Skip();
+				if (checkInput->HasInRangeNumber(keyCode, 0, 2))
+				{
+					int i = keyCode - '0';
+					grid->SetCellValue(row, col, wxT(""));
+					grid->SetCellValue(row, col, checkInput->GetBookState(i));
+					EditData(row, col, i);
+				}
 			}
+			
 		}
 	}
 	else if (col == 2)
