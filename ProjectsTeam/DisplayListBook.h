@@ -14,6 +14,7 @@ private:
 	TitleList *titleList = nullptr;
 	CheckInput* checkInput;
 	//Frontend
+	wxWindow* grandPas;
 	wxGrid* grid;
 	wxPanel* enterPanel;
 	wxPanel* takeNotePanel;
@@ -35,7 +36,7 @@ private:
 	void OnChoice(wxCommandEvent& event);
 	void OnEnter(wxCommandEvent& event);
 	void EditCurrentCell(wxGridEvent& event);
-	bool CheckStateBook(wxString text);
+	void EditData(int row, int col,int index);
 	bool CheckPos(wxString text);
 
 	void ShowMessageClear();
@@ -67,6 +68,10 @@ public:
 	{
 		this->titleList = list;
 		this->checkInput = checkInput;
+	}
+	void SetGrandPas(wxWindow* grandPas)
+	{
+		this->grandPas = grandPas;
 	}
 	DECLARE_EVENT_TABLE();
 };

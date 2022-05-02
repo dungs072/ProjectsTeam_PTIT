@@ -153,6 +153,10 @@ void CheckInput::ModifyString(string& strText)
 		strText.erase(strText.begin());
 	}
 	int length = strText.length();
+	if (length == 0)
+	{
+		return;
+	}
 	if (strText[length - 1] == ' ')
 	{
 		strText.erase(strText.begin() + length - 1);

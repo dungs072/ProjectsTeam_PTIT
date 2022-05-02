@@ -27,6 +27,7 @@ private:
 	void OnSortCode(wxCommandEvent& event);
 	void OnSortName(wxCommandEvent& event);
 	void EditCurrentCell(wxGridEvent& event);
+	void EditData(int row,int col);
 	void OnKeyDown(wxKeyEvent& event);
 	void OnGridKeyDown(wxKeyEvent& event);
 	void OnExitMenu(wxCommandEvent& event);

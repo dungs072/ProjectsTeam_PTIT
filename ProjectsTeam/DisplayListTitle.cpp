@@ -17,6 +17,7 @@ DisplayListTitle::DisplayListTitle(const wxString& title) : wxFrame(NULL, -1, ti
 	//child window
 	listBook = new DisplayListBook(wxT("DANH MUC SACH"));
 	this->AddChild(listBook);
+	
 	//create color;
 	wxColour lightYellow, greenColor, organColor, lightBlue, red;
 	lightYellow.Set(wxT("#E0EBB7"));
@@ -417,10 +418,6 @@ void DisplayListTitle::EditCurrentCell(wxGridEvent& event)
 	sort->QuickSort(arr, 0, maxItem);
 	LoadListToTable();
 
-	//I have to check Leak Memory here
-	//delete cell memory
-	//delete arr;
-
 	event.Skip();
 }
 void DisplayListTitle::OnButtonDown(wxCommandEvent& WXUNUSED(event))
@@ -443,6 +440,7 @@ void DisplayListTitle::OnShow(wxShowEvent& event)
 		{
 			grid->DeleteRows(30, maxItem - 30);
 		}
+		listBook->SetGrandPas(this->GetParent());
 		maxItem = titleList->GetList()->Length();
 		ClearOldDataInTable();
 		LoadData();
@@ -696,6 +694,7 @@ int DisplayListTitle::GetMaxLength(int col)
 	{
 		return 11;
 	}
+	return -1;
 }
 
 BEGIN_EVENT_TABLE(DisplayListTitle, wxFrame)

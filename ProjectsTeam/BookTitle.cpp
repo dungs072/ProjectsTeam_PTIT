@@ -1028,6 +1028,7 @@ int BookTitle::GetMaxLength(int col)
 	{
 		return 11;
 	}
+	return -1;
 }
 BEGIN_EVENT_TABLE(BookTitle, wxFrame)
 EVT_CHAR_HOOK(BookTitle::OnKeyDown)

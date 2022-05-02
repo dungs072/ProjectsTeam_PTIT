@@ -26,7 +26,7 @@ FindInforBook::FindInforBook(const wxString& title) :
 	searchPanel = new wxPanel(mainPanel, -1, wxPoint(-1, -1), wxSize(400, 550));
 	//Create static text
 	titleGridText = new wxStaticText(mainPanel, -1, wxT("MUC SACH CUA: ")
-		, wxPoint(-1, -1), wxSize(300, 30), wxALIGN_CENTER);
+		, wxPoint(-1, -1), wxSize(400, 30), wxALIGN_CENTER);
 	checkInput->SetTextSize(titleGridText, 15);
 	hideFocusText = new wxTextCtrl(mainPanel,-1,wxT(""),wxPoint(-1,-1),wxSize(10,10));
 	hideFocusText->Hide();
@@ -42,14 +42,14 @@ FindInforBook::FindInforBook(const wxString& title) :
 	grid->DisableDragRowSize();
 	//Create button
 	wxButton* exitMenuButton = new wxButton(mainPanel, -1, 
-		wxT("EXIT MENU"), wxPoint(10, 600), wxSize(100, 20));
+		wxT("EXIT MENU"), wxPoint(10, 600), wxSize(100, 25));
 	//Create boxsizer
 	wxBoxSizer* mainHBox = new wxBoxSizer(wxHORIZONTAL);
 	wxBoxSizer* vGridBox = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer* vRightBox = new wxBoxSizer(wxVERTICAL);
 	//Set box sizer
 	vGridBox->Add(titleGridText, 0, wxALIGN_CENTER | wxTOP, 20);
-	vGridBox->Add(grid, 0, wxTOP, 20);
+	vGridBox->Add(grid, 0, wxTOP|wxLEFT, 30);
 	mainHBox->Add(vGridBox, 0, wxLEFT, 100);
 	vRightBox->Add(searchPanel, 0, wxTOP, 50);
 	mainHBox->Add(vRightBox, 0, wxLEFT, 200);
@@ -146,12 +146,6 @@ void FindInforBook::EditCurrentCell(wxGridEvent& event)
 	int row = grid->GetGridCursorRow();
 	int col = grid->GetGridCursorCol();
 	wxString wxOldText = event.GetString();
-	if (wxOldText == "DA CO DOC GIA MUON")
-	{
-		checkInput->ErrorMessageBox("SACH DA DUOC MUON KHONG THE SUA");
-		grid->SetCellValue(row, col, wxOldText);
-		return;
-	}
 	if (wxOldText == wxT(""))
 	{
 		checkInput->ErrorMessageBox("Khong the chinh chua o nay ");
@@ -166,29 +160,28 @@ void FindInforBook::EditCurrentCell(wxGridEvent& event)
 		grid->SetCellValue(row, col, wxOldText);
 		return;
 	}
-	checkInput->ModifyTextInput(wxNewText);
-	if (col == 1)
-	{
-		if (!CheckStateBook(wxNewText))
-		{
-			checkInput->ErrorMessageBox("LOI TRANG THAI SACH");
-			grid->SetCellValue(row, col, wxOldText);
-			return;
-		}
-	}
-	int index = checkInput->CastWxStringToInt(wxNewText);
-	string bookCode = string(grid->GetCellValue(row, 0).mb_str());
-	grid->SetCellValue(row, col, checkInput->GetBookState(index));
-	SinglyNode<Book>* tempBook = foundTitle->GetListBook()->First();
-	while (tempBook != nullptr)
-	{
-		if (tempBook->data.GetBookCode() == bookCode)
-		{
-			tempBook->data.SetState(index);
-		}
-		tempBook = tempBook->next;
-	}
 	event.Skip();
+}
+void FindInforBook::EditData(int row, int col, int index)
+{
+	string bookCode = string(grid->GetCellValue(row, 0).mb_str());
+	if (bookCode == "")
+	{
+		checkInput->ErrorMessageBox("Khong the chinh sua o nay ");
+		grid->SetCellValue(row, col, wxT(""));
+		return;
+	}
+	Book* book = &(foundTitle->GetListBook()->FindSinglyNode(bookCode)->data);
+	if (book->GetState() == 1)
+	{
+		checkInput->ErrorMessageBox("SACH DANG MUON KHONG THE CHINH SUA");
+		grid->SetCellValue(row, col, checkInput->GetBookState(1));
+		return;
+	}
+	else
+	{
+		book->SetState(index);
+	}
 }
 void FindInforBook::OnEnter(wxCommandEvent& WXUNUSED(event))
 {
@@ -500,6 +493,13 @@ void FindInforBook::OnGridKeyDown(wxKeyEvent& event)
 		if (checkInput->HasInRangeNumber(keyCode,0,2) || checkInput->HasRightEntering(keyCode, true))
 		{
 			event.Skip();
+			if (checkInput->HasInRangeNumber(keyCode, 0, 2))
+			{
+				int i = keyCode - '0';
+				grid->SetCellValue(row, col, wxT(""));
+				grid->SetCellValue(row, col, checkInput->GetBookState(i));
+				EditData(row, col, i);
+			}
 		}
 	}
 }

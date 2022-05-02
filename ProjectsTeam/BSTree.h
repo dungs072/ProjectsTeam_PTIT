@@ -257,8 +257,11 @@ namespace DataStructure
 					node = stack->Pop();
 					t = &node;
 					//std::cout << t->data.GetCardCode() << " ";
-					arr[index] = (t->data);
-					index++;
+					if (index < numberNodes)
+					{
+						arr[index] = (t->data);
+						index++;
+					}
 					t = t->rightNode;
 				}
 			}
@@ -282,8 +285,11 @@ namespace DataStructure
 			{
 				node = queue->Dequeue();
 				t = &node;
-				arr[index] = t->data;
-				index++;
+				if (index < numberNodes)
+				{
+					arr[index] = t->data;
+					index++;
+				}
 				if (t->leftNode != nullptr)
 				{
 					queue->Enqueue(*(t->leftNode));

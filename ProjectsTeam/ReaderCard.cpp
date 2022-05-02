@@ -21,7 +21,7 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 	enterTextBackGround = new wxPanel(noteBook, -1, wxPoint(-1, -1), wxSize(300, 300));
 	searchTextBackGround = new wxPanel(noteBook, -1, wxPoint(-1, -1), wxSize(300, 300));
 	guidePanel = new wxPanel(mainPanel, -1, wxPoint(-1, -1), wxSize(450, 500));
-	hotKeyPanel = new wxPanel(mainPanel, -1, wxPoint(150, 590), wxSize(550, 30));
+	hotKeyPanel = new wxPanel(mainPanel, -1, wxPoint(130, 590), wxSize(550, 30));
 	wxStaticText* labelText = new wxStaticText(labelTitleBackGround, -1,
 		wxT("DANH SACH THE DOC"), wxPoint(50, -1), wxSize(350, 30));
 	checkInput->SetTextSize(labelText, 30);
@@ -57,7 +57,7 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 		if (i == 3) { grid->SetColSize(i, 75); continue; }
 		grid->SetColSize(i, 107);
 	}
-	
+
 	grid->DisableDragColSize();
 	grid->DisableDragRowSize();
 	grid->SetSelectionMode(wxGrid::wxGridSelectionModes::wxGridSelectRows);
@@ -244,18 +244,12 @@ void ReaderCard::SaveToList(wxTextCtrl** textCtrlList, int length, int& pos)
 	{
 		if (IsWhiteSpaceAllText(textCtrlList[j]))
 		{
+			wxMessageBox(textCtrlList[j]->GetValue());
 			ErrorMessageBox(pos, "Chua Nhap Thong Tin Du ");
 			return;
 		}
 	}
 	ModifyTextInput(textCtrlList[3]);
-	int stateCard = CastWxStringToInt(textCtrlList[3]);
-	int sexCard = CastWxStringToInt(textCtrlList[2]);
-	if (stateCard == -1)
-	{
-		ErrorMessageBox(pos, "Loi Nhap Lieu ");
-		return;
-	}
 	int i = 0;
 	if (pos == grid->GetNumberRows())
 	{
@@ -265,8 +259,6 @@ void ReaderCard::SaveToList(wxTextCtrl** textCtrlList, int length, int& pos)
 			grid->SetReadOnly(i, 0);
 		}
 	}
-	textCtrlList[3]->SetLabelText(stateText[stateCard]);
-	textCtrlList[2]->SetLabelText(sexText[sexCard]);
 	ulong cardCode = 0;
 	wxString wxStrCode;
 	WriteHashCode(textCtrlList, cardCode, wxStrCode);
@@ -379,24 +371,37 @@ void ReaderCard::OnKeyDown(wxKeyEvent& event)
 	MainKeyDown(keyCode);
 	if (enterText[2]->HasFocus() || enterText[3]->HasFocus())
 	{
-		if(checkInput->HasInRangeNumber(keyCode,0,1)||checkInput->HasRightEntering(keyCode,false))
+		if (checkInput->HasInRangeNumber(keyCode, 0, 1) || checkInput->HasRightEntering(keyCode, false))
 		{
 			event.Skip();
+			if (checkInput->HasInRangeNumber(keyCode, 0, 1))
+			{
+				int i = keyCode - '0';
+				if (enterText[2]->HasFocus())
+				{
+					enterText[2]->SetValue(sexText[i]);
+				}
+				else if (enterText[3]->HasFocus())
+				{
+					enterText[3]->SetValue(checkInput->GetCardState(i));
+				}
+			}
+
 		}
 		else
 		{
 			return;
 		}
 	}
-	if (enterText[0]->HasFocus()||enterText[1]->HasFocus())
+	if (enterText[0]->HasFocus() || enterText[1]->HasFocus())
 	{
-		if (checkInput->HasAlpha(keyCode)||checkInput->HasRightEntering(keyCode,true))
+		if (checkInput->HasAlpha(keyCode) || checkInput->HasRightEntering(keyCode, true))
 		{
 			event.Skip();
 		}
 		else return;
 	}
-	
+
 	event.Skip();
 }
 void ReaderCard::OnGridKeyDown(wxKeyEvent& event)
@@ -416,31 +421,41 @@ void ReaderCard::OnGridKeyDown(wxKeyEvent& event)
 	}
 	if (col == 1)
 	{
-		
-		if (checkInput->HasAlpha(keyCode)||checkInput->HasRightEntering(keyCode,true))
+
+		if (checkInput->HasAlpha(keyCode) || checkInput->HasRightEntering(keyCode, true))
 		{
 			event.Skip();
+			
 		}
 	}
 	else if (col == 2)
 	{
-		if (checkInput->HasAlpha(keyCode)||checkInput->HasRightEntering(keyCode,true))
+		if (checkInput->HasAlpha(keyCode) || checkInput->HasRightEntering(keyCode, true))
 		{
 			event.Skip();
 		}
 	}
-	else if (col == 3)
+	else if (col == 3||col==4)
 	{
-		if (checkInput->HasInRangeNumber(keyCode, 0, 1)||checkInput->HasRightEntering(keyCode,false))
+		if (checkInput->HasInRangeNumber(keyCode, 0, 1) || checkInput->HasRightEntering(keyCode, false))
 		{
 			event.Skip();
-		}
-	}
-	else if (col == 4)
-	{
-		if (checkInput->HasInRangeNumber(keyCode, 0, 1)||checkInput->HasRightEntering(keyCode,false))
-		{
-			event.Skip();
+			if (checkInput->HasInRangeNumber(keyCode, 0, 1))
+			{
+				int i = keyCode - '0';
+				grid->SetCellValue(row, col, wxT(""));
+				if (col == 3)
+				{
+					grid->SetCellValue(row, col, (sexText[i]));
+					EditData(row,col);
+				}
+				else if (col == 4)
+				{
+					grid->SetCellValue(row, col, checkInput->GetCardState(i));
+					EditData(row,col);
+				}
+
+			}
 		}
 	}
 }
@@ -495,7 +510,7 @@ void ReaderCard::SetDefaultColorForRow()
 }
 void ReaderCard::SaveFile()
 {
-	ISaveFile *isaveFile = dynamic_cast<ISaveFile*>(this->GetParent());
+	ISaveFile* isaveFile = dynamic_cast<ISaveFile*>(this->GetParent());
 	isaveFile->SaveFile();
 }
 void ReaderCard::LoadData()
@@ -674,7 +689,20 @@ void ReaderCard::EditCurrentCell(wxGridEvent& event)
 		int num = checkInput->CastWxStringToInt(wxNewText);
 		grid->SetCellValue(row, col, stateText[num]);
 	}
+	EditData(row,col);
+	//wxMessageBox(event.GetString());
+	event.Skip();
+}
+void ReaderCard::EditData(int row,int col)
+{
+	if (grid->GetCellValue(row, 0) == "")
+	{
+		checkInput->ErrorMessageBox("Khong the chinh sua o nay");
+		grid->SetCellValue(row, col, wxT(""));
+		return;
+	}
 	ulong key = CastWxStringToUlong(grid->GetCellValue(row, 0));
+	
 	string lastName = string(grid->GetCellValue(row, 1).mb_str());
 	string firstName = string(grid->GetCellValue(row, 2).mb_str());
 	string sex = string(grid->GetCellValue(row, 3).mb_str());
@@ -687,8 +715,6 @@ void ReaderCard::EditCurrentCell(wxGridEvent& event)
 	CardReader* temp = new CardReader(key, lastName, firstName, sex, stateStr);
 	temp->SetListBorrowBook(tempList);
 	cardReaderTree->Add(temp);
-	//wxMessageBox(event.GetString());
-	event.Skip();
 }
 void ReaderCard::WriteHashCode(wxTextCtrl** textCtrlList, ulong& hashCode, wxString& wxStrCode)
 {
@@ -772,7 +798,7 @@ ulong ReaderCard::CastWxStringToUlong(wxString wxStr)
 }
 ulong ReaderCard::CreateHashCode()
 {
-	
+
 	ulong r;
 	for (int i = 0; i < 1000; i++)
 	{

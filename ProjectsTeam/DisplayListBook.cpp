@@ -198,6 +198,7 @@ void DisplayListBook::OnGridKeyDown(wxKeyEvent& event)
 	int keyCode = event.GetKeyCode();
 	MainKeyDown(keyCode);
 	int col = grid->GetGridCursorCol();
+	int row = grid->GetGridCursorRow();
 	if (!canEdit)
 	{
 		if (checkInput->HasRightEntering(keyCode, false))
@@ -208,21 +209,28 @@ void DisplayListBook::OnGridKeyDown(wxKeyEvent& event)
 	}
 	if (col == 1)
 	{
-		if (checkInput->HasInRangeNumber(keyCode,0,2) || checkInput->HasRightEntering(keyCode, true))
+		if (checkInput->HasInRangeNumber(keyCode, 0, 2) || checkInput->HasRightEntering(keyCode, true))
 		{
 			event.Skip();
+			if (checkInput->HasInRangeNumber(keyCode, 0, 2))
+			{
+				int i = keyCode - '0';
+				grid->SetCellValue(row, col,wxT(""));
+				grid->SetCellValue(row, col, checkInput->GetBookState(i));
+				EditData(row, col,i);
+			}
 		}
 	}
 	else if (col == 2)
 	{
-		if (checkInput->HasAlphaAndNumber(keyCode) || 
-			checkInput->HasRightEntering(keyCode, true)||
-			keyCode==',')
+		if (checkInput->HasAlphaAndNumber(keyCode) ||
+			checkInput->HasRightEntering(keyCode, true) ||
+			keyCode == ',')
 		{
 			event.Skip();
 		}
 	}
-	
+
 }
 void DisplayListBook::OnChoice(wxCommandEvent& event)
 {
@@ -275,28 +283,17 @@ void DisplayListBook::EditCurrentCell(wxGridEvent& event)
 	string bookCode = string(grid->GetCellValue(row, 0).mb_str());
 	if (col == 1)
 	{
-		if (wxOldText == "DA CO DOC GIA MUON")
+		if (checkInput->IsWhiteSpaceAllText(wxNewText))
 		{
-			checkInput->ErrorMessageBox("SACH DANG MUON KHONG THE CHINH SUA");
+			checkInput->ErrorMessageBox("Loi trang thai");
 			grid->SetCellValue(row, col, wxOldText);
 			return;
-		}
-		if (!CheckStateBook(wxNewText))
-		{
-			checkInput->ErrorMessageBox("LOI TRANG THAI MA SACH");
-			grid->SetCellValue(row, col, wxOldText);
-			return;
-		}
-		else
-		{
-			int index = checkInput->CastWxStringToInt(wxNewText);
-			grid->SetCellValue(row, col, stateBook[index]);
-			currentTitle->GetListBook()->FindSinglyNode(bookCode)->data.SetState(index);
 		}
 	}
-	else if (col == 2)
+	if (col == 2)
 	{
-		if (!CheckPos(wxNewText))
+		checkInput->ModifyTextInput(wxNewText);
+		if (!CheckPos(wxNewText) || wxNewText == "")
 		{
 			checkInput->ErrorMessageBox("LOI VI TRI");
 			grid->SetCellValue(row, col, wxOldText);
@@ -310,7 +307,27 @@ void DisplayListBook::EditCurrentCell(wxGridEvent& event)
 			currentTitle->GetListBook()->FindSinglyNode(bookCode)->data.SetPos(tempStr);
 		}
 	}
-
+}
+void DisplayListBook::EditData(int row, int col,int index)
+{
+	string bookCode = string(grid->GetCellValue(row, 0).mb_str());
+	if (bookCode == "")
+	{
+		checkInput->ErrorMessageBox("Khong the chinh sua o nay ");
+		grid->SetCellValue(row, col, wxT(""));
+		return;
+	}
+	Book *book = &(currentTitle->GetListBook()->FindSinglyNode(bookCode)->data);
+	if (book->GetState()==1)
+	{
+		checkInput->ErrorMessageBox("SACH DANG MUON KHONG THE CHINH SUA");
+		grid->SetCellValue(row, col, checkInput->GetBookState(1));
+		return;
+	}
+	else
+	{
+		book->SetState(index);
+	}
 }
 void DisplayListBook::ShowMessageClear()
 {
@@ -385,7 +402,8 @@ void DisplayListBook::SaveToList()
 }
 void DisplayListBook::SaveFile()
 {
-	ISaveFile* isaveFile = dynamic_cast<ISaveFile*>(this->GetParent());
+	ISaveFile* isaveFile = dynamic_cast<ISaveFile*>(grandPas);
+
 	isaveFile->SaveFile();
 }
 void DisplayListBook::LoadData()
@@ -403,7 +421,7 @@ void DisplayListBook::LoadData()
 		}
 		grid->SetReadOnly(maxItem, 0);
 		maxItem++;
-		
+
 		if (maxItem + 1 > grid->GetNumberRows())
 		{
 			grid->AppendRows(1);
@@ -424,13 +442,6 @@ void DisplayListBook::LoadData()
 	}
 
 	count = checkInput->CastStringToNumber(numberText) + 1;
-}
-bool DisplayListBook::CheckStateBook(wxString text)
-{
-	checkInput->ModifyTextInput(text);
-	if (!checkInput->IsNumber(text)) { return false; }
-	int number = checkInput->CastWxStringToInt(text);
-	return checkInput->IsInRangeNumber(0, 2, number);
 }
 bool DisplayListBook::CheckPos(wxString text)
 {
@@ -481,7 +492,7 @@ void DisplayListBook::OnSelectedCell(wxGridEvent& event)
 	{
 		grid->ClearSelection();
 	}
-	
+
 	canEdit = true;
 	event.Skip();
 }

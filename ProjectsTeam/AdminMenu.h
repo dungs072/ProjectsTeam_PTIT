@@ -22,6 +22,7 @@ private:
 	TitleList* titleList;
 	//---------------------------------//
 
+	
 	ReaderCard* readerCard;
 	DisplayListCardReader* displayCardReader;
 	BookTitle* bookTitle;
@@ -32,6 +33,10 @@ private:
 	OverDueList* overDueList;
 	MostBorrowings* mostBorrowings;
 	CheckInput* checkInput;
+
+	wxColor darkYellow,lightYellow,
+			blueGreen,lightOrange,
+			lightBlack,orange,red,green,darkRed;
 
 	wxStaticText* runningText;
 	wxPanel** choicePanel;
@@ -61,6 +66,8 @@ private:
 	void OnMainMenu(wxCommandEvent& event);
 
 	void OnTimer(wxTimerEvent& event);
+	void OnShow(wxShowEvent& event);
+	void OnKeyDown(wxKeyEvent& event);
 	
 	void TurnOnPanel(int index);
 

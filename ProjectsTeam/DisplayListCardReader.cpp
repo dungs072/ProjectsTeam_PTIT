@@ -87,6 +87,7 @@ void DisplayListCardReader::OnShow(wxShowEvent& event)
 	if (event.IsShown())
 	{
 		LoadData();
+		ClearGridValue();
 	}
 }
 void DisplayListCardReader::OnSortCode(wxCommandEvent& WXUNUSED(event))
@@ -119,7 +120,6 @@ void DisplayListCardReader::EditCurrentCell(wxGridEvent& event)
 	//find data
 	string keyCodeStr = string(grid->GetCellValue(row, 0).mb_str());
 	ulong keyCode = checkInput->CastWxStringToInt(keyCodeStr);
-	int key = checkInput->CastWxStringToInt(keyCodeStr);
 	CardReader* curEditCard = cardReaderTree->Search(keyCode)->data;
 
 	wxString wxNewText = grid->GetCellValue(row, col);
@@ -165,6 +165,28 @@ void DisplayListCardReader::EditCurrentCell(wxGridEvent& event)
 	
 	event.Skip();
 }
+void DisplayListCardReader::EditData(int row, int col)
+{
+	string keyCodeStr = string(grid->GetCellValue(row, 0).mb_str());
+	if (keyCodeStr == "")
+	{
+		checkInput->ErrorMessageBox("Khong the chinh sua o nay");
+		grid->SetCellValue(row, col, wxT(""));
+		return;
+	}
+	ulong keyCode = checkInput->CastWxStringToInt(keyCodeStr);
+	CardReader* curEditCard = cardReaderTree->Search(keyCode)->data;
+	if (col == 3)
+	{
+		string str = string(grid->GetCellValue(row, col).mb_str());
+		curEditCard->SetSex(str);
+	}
+	if (col == 4)
+	{
+		string str = string(grid->GetCellValue(row, col).mb_str());
+		curEditCard->SetState(str);
+	}
+}
 void DisplayListCardReader::OnKeyDown(wxKeyEvent& event)
 {
 	event.StopPropagation();
@@ -177,8 +199,13 @@ void DisplayListCardReader::OnKeyDown(wxKeyEvent& event)
 void DisplayListCardReader::OnGridKeyDown(wxKeyEvent& event)
 {
 	event.StopPropagation();
+	if (event.GetKeyCode() == WXK_F2)
+	{
+		SaveFile();
+	}
 	int keyCode = event.GetKeyCode();
 	int col = grid->GetGridCursorCol();
+	int row = grid->GetGridCursorRow();
 	if (!canEdit)
 	{
 		if (checkInput->HasRightEntering(keyCode, false))
@@ -201,18 +228,27 @@ void DisplayListCardReader::OnGridKeyDown(wxKeyEvent& event)
 			event.Skip();
 		}
 	}
-	else if (col == 3)
+	else if (col == 3||col==4)
 	{
 		if (checkInput->HasInRangeNumber(keyCode, 0, 1) || checkInput->HasRightEntering(keyCode, false))
 		{
 			event.Skip();
-		}
-	}
-	else if (col == 4)
-	{
-		if (checkInput->HasInRangeNumber(keyCode, 0, 1) || checkInput->HasRightEntering(keyCode, false))
-		{
-			event.Skip();
+			if (checkInput->HasInRangeNumber(keyCode, 0, 1))
+			{
+				int i = keyCode - '0';
+				grid->SetCellValue(row, col, wxT(""));
+				if (col == 3)
+				{
+					grid->SetCellValue(row, col, (sexText[i]));
+					EditData(row,col);
+				}
+				else if (col == 4)
+				{
+					grid->SetCellValue(row, col, checkInput->GetCardState(i));
+					EditData(row,col);
+				}
+
+			}
 		}
 	}
 }

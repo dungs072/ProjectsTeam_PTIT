@@ -1,13 +1,11 @@
 #pragma once
 #include<wx/wx.h>
 #include<wx/grid.h>
-#include<wx/event.h>
 #include<wx/notebook.h>
 #include<iostream>
 #include<String>
 #include<math.h>
 #include<time.h>
-#include<typeinfo>
 #include"BSTree.h"
 #include"CheckInput.h"
 #include"ISaveFile.h"
@@ -54,6 +52,7 @@ private:
 	void OnGridKeyDown(wxKeyEvent& event);
 	void OnGridTexting(wxCommandEvent& event);
 	void EditCurrentCell(wxGridEvent& event);
+	void EditData(int row,int col);
 	void OnCardMenu(wxCommandEvent& event);
 	void OnShow(wxShowEvent& event);
 	void OnKeyDownTextCltrToUpper(wxCommandEvent& event);

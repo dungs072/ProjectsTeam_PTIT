@@ -2,6 +2,15 @@
 AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
 	wxDefaultPosition, wxSize(1280, 680)),timer(this,TIMER_ID)
 {
+	darkYellow.Set("#D6DB8F");
+	lightYellow.Set("#F3F7BE");
+	blueGreen.Set("#70D4BB");
+	lightOrange.Set("#F5E4D5");
+	lightBlack.Set("#EDD3B4");
+	orange.Set("#E6A85C");
+	red.Set("#EB7D55");
+	green.Set("#70DE54");
+	darkRed.Set("#F06969");
 	checkInput = new CheckInput();
 	timer.Start();
 	LoadDataIntoTempMemory();
@@ -35,18 +44,6 @@ AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
 	this->AddChild(mostBorrowings);
 
 	
-	//create color;
-	wxColour lightYellow, greenColor, organColor, lightBlue,midBlue,
-		eggYellow, lightRed, red, middleYellow;
-	middleYellow.Set("#ECFF82");
-	lightYellow.Set(wxT("#E0EBB7"));
-	greenColor.Set(wxT("#03FF29"));
-	organColor.Set(wxT("#FFAB03"));
-	lightBlue.Set(wxT("#7FB1E3"));
-	eggYellow.Set(wxT("#FDFF69"));
-	lightRed.Set(wxT("#FA8E8E"));
-	red.Set(wxT("#F74A4A"));
-	midBlue.Set(wxT("#ACD0E0"));
 	//create Panel
 	wxPanel* mainPanel = new wxPanel(this, -1);
 	wxPanel* buttonPanel = new wxPanel(mainPanel, -1, wxDefaultPosition, wxSize(1000, 100));
@@ -92,20 +89,29 @@ AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
 	adminTitleButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnTitlePanel, this);
 	adminFunctionBookButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnFunctionBookPanel, this);
 	
+	this->Bind(wxEVT_SHOW, &AdminMenu::OnShow, this);
 	//Set color
 	buttonPanel->SetBackgroundColour(lightYellow);
-	titleMenu->SetBackgroundColour(lightBlue);
-	backgroundPanel->SetBackgroundColour(lightYellow);
-	runningTextPanel->SetBackgroundColour(lightYellow);
+	titleMenu->SetBackgroundColour(blueGreen);
+	backgroundPanel->SetBackgroundColour(lightOrange);
+	runningTextPanel->SetBackgroundColour(red);
 	for (int i = 0; i < 3; i++)
 	{
-		choicePanel[i]->SetBackgroundColour(midBlue);
+		choicePanel[i]->SetBackgroundColour(lightBlack);
 		choicePanel[i]->Hide();
 	}
 	CreateReaderCardChoice();
 	CreateTitleChoice();
 	CreateBookFunctionChoice();
 	Centre();
+
+	//Set Color
+	adminReaderCardButton->SetBackgroundColour(darkYellow);
+	adminTitleButton->SetBackgroundColour(darkYellow);
+	adminFunctionBookButton->SetBackgroundColour(darkYellow);
+
+	mainMenuButton->SetBackgroundColour(green);
+	exitButton->SetBackgroundColour(darkRed);
 }
 void AdminMenu::CreateReaderCardChoice()
 {
@@ -120,6 +126,11 @@ void AdminMenu::CreateReaderCardChoice()
 	readerCardButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnReaderCard, this);
 	displayCard->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnDisplayCardReader, this);
 	displayOverDueList->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnOverDueList, this);
+
+	//Set color
+	readerCardButton->SetBackgroundColour(orange);
+	displayCard->SetBackgroundColour(orange);
+	displayOverDueList->SetBackgroundColour(orange);
 }
 void AdminMenu::CreateTitleChoice()
 {
@@ -133,6 +144,11 @@ void AdminMenu::CreateTitleChoice()
 	titleButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnTitle, this);
 	displayTitle->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnDisplayTitle, this);
 	findInforBook->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnFindInforBook, this);
+
+	//Set color
+	titleButton->SetBackgroundColour(orange);
+	displayTitle->SetBackgroundColour(orange);
+	findInforBook->SetBackgroundColour(orange);
 }
 void AdminMenu::CreateBookFunctionChoice()
 {
@@ -146,6 +162,11 @@ void AdminMenu::CreateBookFunctionChoice()
 	borrowBook->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnBorrowBook, this);
 	giveBook->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnGiveBook, this);
 	mostBorrow->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &AdminMenu::OnMostBorrowings, this);
+
+	//Set Color
+	borrowBook->SetBackgroundColour(orange);
+	giveBook->SetBackgroundColour(orange);
+	mostBorrow->SetBackgroundColour(orange);
 }
 
 void AdminMenu::OnReaderCard(wxCommandEvent& WXUNUSED(event))
@@ -230,6 +251,14 @@ void AdminMenu::OnTimer(wxTimerEvent& event)
 		runningText->SetPosition(wxPoint(distance,13));
 	} 
 }
+void AdminMenu::OnShow(wxShowEvent& event)
+{
+	if (event.IsShown())
+	{
+		distance = -550;
+	}
+	event.Skip();
+}
 void AdminMenu::TurnOnPanel(int index)
 {
 	//enter index>3||index<0 to disable all pannel
@@ -288,7 +317,11 @@ void AdminMenu::SaveFile()
 	wxMessageBox(wxString::Format("LUU THANH CONG"));
 	delete[]arrCard;
 }
+void AdminMenu::OnKeyDown(wxKeyEvent& event)
+{
+	event.StopPropagation();
+}
 wxBEGIN_EVENT_TABLE(AdminMenu, wxFrame)
+EVT_CHAR_HOOK(AdminMenu::OnKeyDown)
 EVT_TIMER(TIMER_ID, AdminMenu::OnTimer)
 wxEND_EVENT_TABLE()
-

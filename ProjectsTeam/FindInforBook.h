@@ -49,6 +49,7 @@ private:
 	void OnExitMenu(wxCommandEvent& event);
 	void OnKeyDownTextCltrToUpper(wxCommandEvent& _rCommandEvent);
 	void EditCurrentCell(wxGridEvent& event);
+	void EditData(int row, int col, int index);
 	void OnKeyDown(wxKeyEvent& event);
 	void OnGridKeyDown(wxKeyEvent& event);
 	void OnEnter(wxCommandEvent& event);

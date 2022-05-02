@@ -301,6 +301,7 @@ void LendBook::OnEnter(wxCommandEvent& WXUNUSED(event))
 		selectedBook = nullptr;
 		
 		titleGrid->ClearSelection();
+		selectedTitleButton->Hide();
 		return;
 	}
 	foundCardReader = searchNode->data;
@@ -320,7 +321,7 @@ void LendBook::SetDefaultGrid()
 	//titleGrid->Refresh();
 	backTitleButton->Hide();
 	selectedBookButton->Hide();
-	selectedTitleButton->Show();
+	//selectedTitleButton->Show();
 	titleGridText->SetLabel("DANH SACH DAU SACH");
 	this->Refresh();
 }
@@ -949,6 +950,7 @@ void LendBook::SetValueAfterDelete(string bookCode)
 	string ISBN = bookCode.substr(0, 4);
 	Title* tempTitle = titleList->GetData(ISBN);
 	if (tempTitle == nullptr) { return; }
+	tempTitle->SetCountBorrow(tempTitle->GetCountBorrow() - 1);
 	SinglyNode<Book>* tempBook = tempTitle->GetListBook()->FindSinglyNode(bookCode);
 	tempBook->data.SetState(0);
 	LoadListBookToTable();
