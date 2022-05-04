@@ -18,7 +18,7 @@ BookTitle::BookTitle(const wxString& title) : wxFrame(NULL, -1,
 		wxDefaultPosition, wxSize(570, 30));
 	//Create Button
 	wxButton* exitMenu = new wxButton(mainPanel, -1,
-		wxT("EXIT MENU"), wxPoint(10, 600), wxSize(100, 25));
+		wxT("EXIT MENU"), wxPoint(10, 600), wxSize(100, 30));
 
 	//create wxStatic Text
 	wxStaticText* gridTitle = new wxStaticText(mainPanel, -1,

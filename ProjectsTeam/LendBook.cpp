@@ -9,7 +9,7 @@ LendBook::LendBook(const wxString& title) :
 	lightOrange.Set("#F5DBB8");
 	wxColour lightYellow, greenColor, organColor, lightBlue, lightRed, red;
 	lightYellow.Set(wxT("#E0EBB7"));
-	greenColor.Set(wxT("#03FF29"));
+	greenColor.Set(wxT("#70DE54"));
 	organColor.Set(wxT("#FFAB03"));
 	lightBlue.Set(wxT("#7FB1E3"));
 	lightRed.Set(wxT("#FA8E8E"));
@@ -134,7 +134,7 @@ LendBook::LendBook(const wxString& title) :
 
 	//create button
 	wxButton* exitMenuButton = new wxButton(displayInforPanel, -1, wxT("EXIT MENU"),
-		wxPoint(10, 470), wxSize(70, 25));
+		wxPoint(10, 470), wxSize(100, 30));
 
 	//Register event
 	exitMenuButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &LendBook::OnExitMenuButton, this);
@@ -965,7 +965,7 @@ bool LendBook::HasBorrowingDayLong()
 	{
 		
 		int numberDayBorrow = *now - *(tempBook->data.GetBorrowDate());
-		if (numberDayBorrow > 7)
+		if (numberDayBorrow > 7&&tempBook->data.GetReturnDate()==nullptr)
 		{
 			delete now;
 			return true;

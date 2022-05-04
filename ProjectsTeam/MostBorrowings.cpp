@@ -15,7 +15,7 @@ MostBorrowings::MostBorrowings(const wxString& title) :wxFrame(NULL, -1, title,
 	};
 	wxPanel* mainPanel = new wxPanel(this, -1);
 	wxButton* exitMainMenu = new wxButton(mainPanel, -1, wxT("EXIT MENU"), 
-		wxPoint(20, 600), wxSize(-1, -1));
+		wxPoint(20, 600), wxSize(100, 30));
 	wxStaticText* titlePanel = new wxStaticText(mainPanel, -1,
 		wxT("TOP 10 CUON SACH DUOC MUON NHIEU NHAT"), 
 		wxPoint(-1, -1), wxSize(500, 30),wxALIGN_CENTRE);

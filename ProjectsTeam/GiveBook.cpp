@@ -84,7 +84,7 @@ GiveBook::GiveBook(const wxString& title) :wxFrame(NULL, -1, title,
 	lostBookButton = new wxButton(mainPanel, -1, wxT("BAO MAT SACH"), 
 								wxPoint(-1, -1), wxSize(100, -1));
 	wxButton* exitMenuButton = new wxButton(mainPanel, -1, wxT("EXIT MENU"),
-		wxPoint(20, 600), wxSize(-1, -1));
+		wxPoint(20, 600), wxSize(100, 30));
 
 	//create boxsizer
 	wxBoxSizer* mainVBox = new wxBoxSizer(wxVERTICAL);
@@ -134,8 +134,8 @@ void GiveBook::CreateDisplayInforCard()
 		wxPoint(20, 125), wxSize(100, 15));
 	displayTitleText[2] = new wxStaticText(searchPanel, -1, wxT("TRANG THAI:"),
 		wxPoint(20, 175), wxSize(100, 15));
-	wxStaticText* guideText = new wxStaticText(searchPanel, -1, wxT("F2 - LUU FILE"),
-		wxPoint(115, 225), wxSize(150, 15));
+	wxStaticText* guideText = new wxStaticText(searchPanel, -1, wxT("HOT KEY: F2 - SAVE FILE"),
+		wxPoint(90, 225), wxSize(150, 15));
 	for (int i = 0; i < 3; i++)
 	{
 		displayText[i] = new wxStaticText(searchPanel, -1, wxT(""),

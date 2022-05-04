@@ -22,7 +22,7 @@ DisplayListCardReader::DisplayListCardReader(const wxString& title)
 	gridLabel = new wxStaticText(mainPanel, -1,
 		wxT("DANH SACH THE DOC"), wxPoint(-1, -1), wxSize(350, 40), wxALIGN_CENTRE_HORIZONTAL);
 	wxStaticText* saveGuideText = new wxStaticText(takeNotePanel, -1,
-		wxT("CO THE CHINH SUA DU LIEU, F2 LUU FILE"), wxPoint(50, 5), wxSize(300, 20), wxALIGN_CENTER);
+		wxT("HOT KEY: F2 - LUU FILE"), wxPoint(50, 5), wxSize(300, 20), wxALIGN_CENTER);
 	checkInput->SetTextSize(gridLabel, 20);
 	//create Button
 	wxButton* sortCodeButton = new wxButton(mainPanel, SORT_CODE,

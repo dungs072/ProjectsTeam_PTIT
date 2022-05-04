@@ -21,7 +21,7 @@ DisplayListTitle::DisplayListTitle(const wxString& title) : wxFrame(NULL, -1, ti
 	//create color;
 	wxColour lightYellow, greenColor, organColor, lightBlue, red;
 	lightYellow.Set(wxT("#E0EBB7"));
-	greenColor.Set(wxT("#03FF29"));
+	greenColor.Set(wxT("#70DE54"));
 	organColor.Set(wxT("#FFAB03"));
 	lightBlue.Set(wxT("#7FB1E3"));
 	red.Set(wxT("#F74A4A"));
@@ -33,9 +33,9 @@ DisplayListTitle::DisplayListTitle(const wxString& title) : wxFrame(NULL, -1, ti
 		wxDefaultPosition, wxSize(300, 300));
 	//Create button
 	bookButton = new wxButton(functionPanel, -1,
-		wxT("MUC SACH->>"), wxPoint(170,250 ), wxSize(100, 20));
+		wxT("MUC SACH->>"), wxPoint(170,250 ), wxSize(100, 25));
 	wxButton* exitMenu = new wxButton(mainPanel, -1,
-		wxT("EXIT MENU"), wxPoint(10, 600), wxSize(100, 25));
+		wxT("EXIT MENU"), wxPoint(10, 600), wxSize(100, 30));
 	//create wxStatic Text
 	wxStaticText* gridTitle = new wxStaticText(mainPanel, -1,
 		wxT("DANH SACH DAU SACH"), wxPoint(-1, -1), wxSize(400, 40), wxALIGN_CENTER);
@@ -159,7 +159,7 @@ void DisplayListTitle::CreateTakeNoteArea(wxPanel* takeNotePanel)
 void DisplayListTitle::CreateKeyNoteArea(wxPanel* keyNotePanel)
 {
 	wxStaticText* keyNoteText = new wxStaticText(keyNotePanel, -1,
-		wxT("KEYHOT :   F2 - SAVE FILE, F9 - CHON DAU SACH, CHINH SUA CLICK VAO O CAN CHINH SUA"),
+		wxT("HOT KEY :   F2 - SAVE FILE, F9 - CHON DAU SACH, CHINH SUA CLICK VAO O CAN CHINH SUA"),
 		wxPoint(10, 10), wxSize(550, 20), wxALIGN_CENTER_HORIZONTAL);
 }
 void DisplayListTitle::OnKeyDown(wxKeyEvent& event)

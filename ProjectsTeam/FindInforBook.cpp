@@ -42,7 +42,7 @@ FindInforBook::FindInforBook(const wxString& title) :
 	grid->DisableDragRowSize();
 	//Create button
 	wxButton* exitMenuButton = new wxButton(mainPanel, -1, 
-		wxT("EXIT MENU"), wxPoint(10, 600), wxSize(100, 25));
+		wxT("EXIT MENU"), wxPoint(10, 600), wxSize(100, 30));
 	//Create boxsizer
 	wxBoxSizer* mainHBox = new wxBoxSizer(wxHORIZONTAL);
 	wxBoxSizer* vGridBox = new wxBoxSizer(wxVERTICAL);
@@ -121,6 +121,9 @@ void FindInforBook::CreateDisplayArea()
 	displayText[3]->SetMaxLength(17);
 	displayText[4]->SetMaxLength(4);
 	displayText[5]->SetMaxLength(11);
+
+	wxStaticText* hotKeyText = new wxStaticText(displayInforPanel, -1,
+		wxT("HOT KEY: F2 - SAVE FILE"), wxPoint(90, 350), wxSize(200, 20),wxALIGN_CENTER);
 	//register event
 	searchEnterText->Connect(wxID_ANY, wxEVT_COMMAND_TEXT_UPDATED,
 		(wxObjectEventFunction)&FindInforBook::OnKeyDownTextCltrToUpper);
