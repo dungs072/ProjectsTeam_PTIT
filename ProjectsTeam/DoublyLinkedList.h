@@ -6,8 +6,12 @@
 using std::string;
 namespace DataStructure
 {
-	template<typename T>
+	//class UDoublyLinkedList {
+	//public:
+	//	virtual ~DoublyLinkedList() = 0;
+	//};
 
+	template<typename T>
 	class DoublyLinkedList
 	{
 	private:
@@ -42,12 +46,13 @@ namespace DataStructure
 			return false;
 		}
 
-
 	public:
 		~DoublyLinkedList()
 		{
 			Clear();
 		}
+=======
+	public:
 		DoublyLinkedList()
 		{
 			first = nullptr;
@@ -118,6 +123,7 @@ namespace DataStructure
 				first = t;
 			}
 			length++;
+
 		}
 		void AddFirst(DoublyNode<T>* DoublyNode)
 		{
@@ -382,6 +388,7 @@ namespace DataStructure
 				p = p->next;
 			}
 		}
+
 		T** ToArray()
 		{
 			int k = 0;
@@ -399,6 +406,10 @@ namespace DataStructure
 				p = p->next;
 			}
 			return tempArr;
+    }
+		~DoublyLinkedList()
+		{
+			Clear();
 		}
 	};
 }

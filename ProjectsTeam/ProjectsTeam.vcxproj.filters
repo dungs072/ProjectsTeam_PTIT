@@ -84,6 +84,7 @@
     <ClCompile Include="BookTitle.cpp">
       <Filter>Source Files\FrontEnd</Filter>
     </ClCompile>
+    <ClCompile Include="BookCatalog.cpp">
     <ClCompile Include="ReaderCard.cpp">
       <Filter>Source Files\FrontEnd</Filter>
     </ClCompile>
@@ -226,6 +227,12 @@
     </ClInclude>
     <ClInclude Include="OverDueList.h">
       <Filter>Header Files</Filter>
+    <ClInclude Include="Vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BookCatalog.h">
+    <ClInclude Include="DateTime.h">
+      <Filter>Header Files\Fomat</Filter>
     </ClInclude>
     <ClInclude Include="OverDueCard.h">
       <Filter>Header Files\Data Structure</Filter>

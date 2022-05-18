@@ -152,6 +152,8 @@
   <ItemGroup>
     <ClCompile Include="AdminMenu.cpp" />
     <ClCompile Include="Book.cpp" />
+=======
+    <ClCompile Include="BookCatalog.cpp" />
     <ClCompile Include="BookTitle.cpp" />
     <ClCompile Include="BorrowBook.cpp" />
     <ClCompile Include="BSTNode.cpp" />
@@ -188,6 +190,7 @@
   <ItemGroup>
     <ClInclude Include="AdminMenu.h" />
     <ClInclude Include="Book.h" />
+    <ClInclude Include="BookCatalog.h" />
     <ClInclude Include="BookTitle.h" />
     <ClInclude Include="BorrowBook.h" />
     <ClInclude Include="BSTNode.h" />
@@ -219,6 +222,7 @@
     <ClInclude Include="SortAlgorithm.h" />
     <ClInclude Include="Stack.h" />
     <ClInclude Include="Title.h" />
+    <ClInclude Include="Vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
