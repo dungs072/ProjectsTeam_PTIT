@@ -6,11 +6,6 @@
 using std::string;
 namespace DataStructure
 {
-	//class UDoublyLinkedList {
-	//public:
-	//	virtual ~DoublyLinkedList() = 0;
-	//};
-
 	template<typename T>
 	class DoublyLinkedList
 	{
@@ -51,8 +46,6 @@ namespace DataStructure
 		{
 			Clear();
 		}
-=======
-	public:
 		DoublyLinkedList()
 		{
 			first = nullptr;
@@ -406,10 +399,6 @@ namespace DataStructure
 				p = p->next;
 			}
 			return tempArr;
-    }
-		~DoublyLinkedList()
-		{
-			Clear();
 		}
 	};
 }
