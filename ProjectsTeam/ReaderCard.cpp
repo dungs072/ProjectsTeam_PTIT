@@ -244,7 +244,6 @@ void ReaderCard::SaveToList(wxTextCtrl** textCtrlList, int length, int& pos)
 	{
 		if (IsWhiteSpaceAllText(textCtrlList[j]))
 		{
-			wxMessageBox(textCtrlList[j]->GetValue());
 			ErrorMessageBox(pos, "Chua Nhap Thong Tin Du ");
 			return;
 		}
