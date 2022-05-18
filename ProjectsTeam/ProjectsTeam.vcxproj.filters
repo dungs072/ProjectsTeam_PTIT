@@ -19,10 +19,19 @@
     <Filter Include="Source Files\BackEnd">
       <UniqueIdentifier>{186eaf40-2136-433a-92fb-d4e61ac38894}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Fomat">
+    <Filter Include="Header Files\AL&amp;DT">
+      <UniqueIdentifier>{6fc4d6f8-f7f4-4786-b7a0-7637ed79e767}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Functional">
+      <UniqueIdentifier>{2716a9e9-33b8-43a6-a4d9-537fef6aa78e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Functional\Fomat">
       <UniqueIdentifier>{4d47eaf2-1682-4c16-bc4c-9e9526b37462}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Format">
+    <Filter Include="Header Files\Data Structure">
+      <UniqueIdentifier>{331d9ee1-76fe-4111-b6ef-3506363fe254}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Function">
       <UniqueIdentifier>{664f0c3b-cab5-4682-acd5-13e017ef89f6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -63,9 +72,6 @@
     <ClCompile Include="DisplayListCardReader.cpp">
       <Filter>Source Files\FrontEnd</Filter>
     </ClCompile>
-    <ClCompile Include="CardReaderMenu.cpp">
-      <Filter>Source Files\FrontEnd</Filter>
-    </ClCompile>
     <ClCompile Include="CheckInput.cpp">
       <Filter>Source Files\BackEnd</Filter>
     </ClCompile>
@@ -83,67 +89,144 @@
       <Filter>Source Files\FrontEnd</Filter>
     </ClCompile>
     <ClCompile Include="DateTime.cpp">
-      <Filter>Source Files\Format</Filter>
+      <Filter>Source Files\Function</Filter>
     </ClCompile>
     <ClCompile Include="FormatText.cpp">
-      <Filter>Source Files\Format</Filter>
+      <Filter>Source Files\Function</Filter>
     </ClCompile>
     <ClCompile Include="DisplayListTitle.cpp">
       <Filter>Source Files\FrontEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="Book.cpp">
+      <Filter>Source Files\BackEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="DisplayListBook.cpp">
+      <Filter>Source Files\FrontEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="AdminMenu.cpp">
+      <Filter>Source Files\FrontEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="SortAlgorithm.cpp">
+      <Filter>Source Files\BackEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="FindInforBook.cpp">
+      <Filter>Source Files\FrontEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="BorrowBook.cpp">
+      <Filter>Source Files\BackEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="LendBook.cpp">
+      <Filter>Source Files\FrontEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="ControlDateTime.cpp">
+      <Filter>Source Files\BackEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="GiveBook.cpp">
+      <Filter>Source Files\FrontEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="OverDueList.cpp">
+      <Filter>Source Files\FrontEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="OverDueCard.cpp">
+      <Filter>Source Files\BackEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="MostBorrowings.cpp">
+      <Filter>Source Files\FrontEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ISaveFile.cpp">
+      <Filter>Source Files\Function</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ReaderCard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DoublyLinkedList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DoublyNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Stack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SinglyNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SinglyLinkedList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BSTree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BSTNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Queue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CardReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SaveTextFile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DisplayListCardReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CardReaderMenu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CheckInput.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LinearList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Title.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BookTitle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DateTime.h">
+      <Filter>Header Files\Functional\Fomat</Filter>
+    </ClInclude>
+    <ClInclude Include="FormatText.h">
+      <Filter>Header Files\Functional\Fomat</Filter>
+    </ClInclude>
+    <ClInclude Include="DisplayListTitle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DisplayListBook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AdminMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FindInforBook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BSTNode.h">
+      <Filter>Header Files\AL&amp;DT</Filter>
+    </ClInclude>
+    <ClInclude Include="BSTree.h">
+      <Filter>Header Files\AL&amp;DT</Filter>
+    </ClInclude>
+    <ClInclude Include="DoublyLinkedList.h">
+      <Filter>Header Files\AL&amp;DT</Filter>
+    </ClInclude>
+    <ClInclude Include="DoublyNode.h">
+      <Filter>Header Files\AL&amp;DT</Filter>
+    </ClInclude>
+    <ClInclude Include="SortAlgorithm.h">
+      <Filter>Header Files\AL&amp;DT</Filter>
+    </ClInclude>
+    <ClInclude Include="LinearList.h">
+      <Filter>Header Files\AL&amp;DT</Filter>
+    </ClInclude>
+    <ClInclude Include="Queue.h">
+      <Filter>Header Files\AL&amp;DT</Filter>
+    </ClInclude>
+    <ClInclude Include="SinglyLinkedList.h">
+      <Filter>Header Files\AL&amp;DT</Filter>
+    </ClInclude>
+    <ClInclude Include="SinglyNode.h">
+      <Filter>Header Files\AL&amp;DT</Filter>
+    </ClInclude>
+    <ClInclude Include="Stack.h">
+      <Filter>Header Files\AL&amp;DT</Filter>
+    </ClInclude>
+    <ClInclude Include="SaveTextFile.h">
+      <Filter>Header Files\Functional</Filter>
+    </ClInclude>
+    <ClInclude Include="CheckInput.h">
+      <Filter>Header Files\Functional</Filter>
+    </ClInclude>
+    <ClInclude Include="Book.h">
+      <Filter>Header Files\Data Structure</Filter>
+    </ClInclude>
+    <ClInclude Include="CardReader.h">
+      <Filter>Header Files\Data Structure</Filter>
+    </ClInclude>
+    <ClInclude Include="Title.h">
+      <Filter>Header Files\Data Structure</Filter>
+    </ClInclude>
+    <ClInclude Include="BorrowBook.h">
+      <Filter>Header Files\Data Structure</Filter>
+    </ClInclude>
+    <ClInclude Include="LendBook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ControlDateTime.h">
+      <Filter>Header Files\Functional</Filter>
+    </ClInclude>
+    <ClInclude Include="GiveBook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OverDueList.h">
+      <Filter>Header Files</Filter>
     <ClInclude Include="Vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -151,11 +234,17 @@
     <ClInclude Include="DateTime.h">
       <Filter>Header Files\Fomat</Filter>
     </ClInclude>
-    <ClInclude Include="FormatText.h">
-      <Filter>Header Files\Fomat</Filter>
+    <ClInclude Include="OverDueCard.h">
+      <Filter>Header Files\Data Structure</Filter>
     </ClInclude>
-    <ClInclude Include="DisplayListTitle.h">
+    <ClInclude Include="MostBorrowings.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ISaveFile.h">
+      <Filter>Header Files\Functional</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

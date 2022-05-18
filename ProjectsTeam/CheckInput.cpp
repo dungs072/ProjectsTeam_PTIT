@@ -1,4 +1,22 @@
 #include "CheckInput.h"
+size_t CheckInput::CastStringToNumber(string strText)
+{
+	int i, j;
+	size_t number = 0;
+	for (i = strText.length() - 1, j = 0; i >= 0; i--, j++)
+	{
+		if (strText[i] < '0' || strText[i]>'9')
+		{
+			return -1;
+		}
+		number += (strText[i] - '0') * pow(10, j);
+	}
+	return number;
+}
+bool CheckInput::IsInRangeNumber(int startNumber, int endNumber,int number)
+{
+	return number >= startNumber && number <= endNumber;
+}
 bool CheckInput::IsNumber(wxString text)
 {
 	string strText = string(text.mb_str());
@@ -29,9 +47,30 @@ bool CheckInput::IsAlphabet(wxString text)
 bool CheckInput::IsWhiteSpaceAllText(wxString text)
 {
 	std::string strText = std::string(text.mb_str());
+	if (strText == "") { return true; }
 	for (char str : strText)
 	{
 		if (str != ' ')
+		{
+			return false;
+		}
+	}
+	return true;
+}
+bool CheckInput::HasNumberAlphabetAndComma(wxString text)
+{
+	std::string strText = std::string(text.mb_str());
+	for (int i = 0; i < strText.length(); i++)
+	{
+		if ((strText[i] >= 'A' && strText[i] <= 'Z') ||
+			(strText[i] >= 'a' && strText[i] <= 'z') ||
+			(strText[i] >= '0' && strText[i] <= '9') ||
+			(strText[i]==',')||
+			(strText[i] == ' '))
+		{
+			continue;
+		}
+		else
 		{
 			return false;
 		}
@@ -93,6 +132,7 @@ bool CheckInput::IsRightCodeState(int maxNumber, int currentNumber)
 }
 void CheckInput::ModifyTextInput(wxString& text)
 {
+	if (text == "") { return; }
 	std::string strText = std::string(text.mb_str());
 	ModifyString(strText);
 	wxString myWxString(strText.c_str(), wxConvUTF8);
@@ -113,6 +153,10 @@ void CheckInput::ModifyString(string& strText)
 		strText.erase(strText.begin());
 	}
 	int length = strText.length();
+	if (length == 0)
+	{
+		return;
+	}
 	if (strText[length - 1] == ' ')
 	{
 		strText.erase(strText.begin() + length - 1);
@@ -139,6 +183,26 @@ string CheckInput::UpperText(string text)
 		}
 	}
 	return text;
+}
+string CheckInput::CastIntToString(int data)
+{
+	string strTemp = "";
+	while (data) {
+		int temp = data % 10;
+		strTemp += temp + '0';
+		data /= 10;
+	}
+	string str = "";
+	int i;
+	for (i = strTemp.length() - 1; i >= 0; i--)
+	{
+		str += strTemp[i];
+	}
+	if (str == "")
+	{
+		str = "0";
+	}
+	return str;
 }
 int CheckInput::CastWxStringToInt(wxString text)
 {
@@ -204,4 +268,41 @@ void CheckInput::MoveUpToAnotherTextCtrl(wxTextCtrl** textCtrl, int length)
 			}
 		}
 	}
+}
+void CheckInput::ClearInforInEnterText(wxTextCtrl** enterText,int length)
+{
+	for (int i = 0; i < length; i++)
+	{
+		enterText[i]->Clear();
+	}
+}
+string CheckInput::EditCardCode(ulong number, int maxLengthCode)
+{
+	std::string codeReader = "";
+	std::string rawCodeReader = "";
+	int lengthNumber = 0;
+	while (number != 0)
+	{
+		int tempNumber = number;
+		for (int i = 0; i < 10; i++)
+		{
+			tempNumber -= i;
+			if (tempNumber % 10 == 0)
+			{
+				lengthNumber++;
+				number -= i;
+				number /= 10;
+				rawCodeReader += (i + '0');
+			}
+			tempNumber = number;
+		}
+	}
+	//reverse string
+	std::reverse(rawCodeReader.begin(), rawCodeReader.end());
+	for (int i = 0; i < maxLengthCode - lengthNumber; i++)
+	{
+		codeReader += "0";
+	}
+	codeReader += rawCodeReader;
+	return codeReader;
 }

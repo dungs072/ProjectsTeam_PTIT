@@ -1,20 +1,12 @@
 #include "BookTitle.h"
-BookTitle::BookTitle(const wxString& title) : wxFrame(NULL, -1, title, wxDefaultPosition, wxSize(1280, 680))
+BookTitle::BookTitle(const wxString& title) : wxFrame(NULL, -1,
+	title, wxDefaultPosition, wxSize(1280, 680))
 {
-	//back end
-	saveFile = new SaveTextFile<Title>("BookTitle.txt");
-	linearList = new LinearList<Title>(100);
-	//catch error
-	checkInput = new CheckInput();
 	//create color;
-	wxColour lightYellow, greenColor, organColor, lightBlue, eggYellow, lightRed, red, middleYellow;
+	wxColour lightYellow, lightBlue, red, middleYellow;
 	middleYellow.Set("#ECFF82");
 	lightYellow.Set(wxT("#E0EBB7"));
-	greenColor.Set(wxT("#03FF29"));
-	organColor.Set(wxT("#FFAB03"));
 	lightBlue.Set(wxT("#7FB1E3"));
-	eggYellow.Set(wxT("#FDFF69"));
-	lightRed.Set(wxT("#FA8E8E"));
 	red.Set(wxT("#F74A4A"));
 	//create panel
 	wxPanel* mainPanel = new wxPanel(this, -1);
@@ -24,6 +16,10 @@ BookTitle::BookTitle(const wxString& title) : wxFrame(NULL, -1, title, wxDefault
 		wxDefaultPosition, wxSize(375, 220));
 	wxPanel* keyNotePanel = new wxPanel(mainPanel, -1,
 		wxDefaultPosition, wxSize(570, 30));
+	//Create Button
+	wxButton* exitMenu = new wxButton(mainPanel, -1,
+		wxT("EXIT MENU"), wxPoint(10, 600), wxSize(100, 30));
+
 	//create wxStatic Text
 	wxStaticText* gridTitle = new wxStaticText(mainPanel, -1,
 		wxT("DANH SACH DAU SACH"), wxPoint(-1, -1), wxSize(400, 40), wxALIGN_CENTER);
@@ -36,7 +32,7 @@ BookTitle::BookTitle(const wxString& title) : wxFrame(NULL, -1, title, wxDefault
 	wxBoxSizer* mainHBox = new wxBoxSizer(wxHORIZONTAL);
 	//create Grid
 	grid = new wxGrid(mainPanel, -1, wxPoint(-1, -1), wxSize(745, 500));
-	grid->CreateGrid(26, 6);
+	grid->CreateGrid(30, 6);
 	grid->SetColLabelValue(0, wxT("ISBN"));
 	grid->SetColLabelValue(1, wxT("TEN SACH"));
 	grid->SetColLabelValue(2, wxT("SO TR"));
@@ -52,12 +48,14 @@ BookTitle::BookTitle(const wxString& title) : wxFrame(NULL, -1, title, wxDefault
 	grid->SetRowLabelSize(50);
 	grid->DisableDragColSize();
 	grid->DisableDragRowSize();
+	grid->SetSelectionMode(wxGrid::wxGridSelectionModes::wxGridSelectRows);
+	//Set sizer
 	vGridBox->Add(gridTitle, 0, wxTOP | wxALIGN_CENTER_HORIZONTAL, 20);
 	vGridBox->Add(grid, 0, wxLEFT | wxTOP, 20);
 	vGridBox->Add(keyNotePanel, 0, wxTOP | wxALIGN_CENTER, 10);
 	vRightBox->Add(enterPanel, 0, wxLEFT | wxTOP, 10);
 	vRightBox->Add(takeNotePanel, 0, wxLEFT | wxTOP, 10);
-	mainHBox->Add(vGridBox);
+	mainHBox->Add(vGridBox, 0, wxLEFT, 30);
 	mainHBox->Add(vRightBox);
 	mainPanel->SetSizer(mainHBox);
 
@@ -67,16 +65,23 @@ BookTitle::BookTitle(const wxString& title) : wxFrame(NULL, -1, title, wxDefault
 	CreateKeyNoteArea(keyNotePanel);
 
 	//Register event
+	grid->Bind(wxEVT_GRID_RANGE_SELECTING, &BookTitle::OnSelectingGrid, this);
+	grid->Bind(wxEVT_GRID_SELECT_CELL, &BookTitle::OnSelectedGrid, this);
+	grid->Bind(wxEVT_GRID_LABEL_LEFT_CLICK, &BookTitle::OnSelectedLabelGrid, this);
 	grid->Bind(wxEVT_GRID_CELL_CHANGED, &BookTitle::EditCurrentCell, this);
+	grid->Bind(wxEVT_CHAR_HOOK, &BookTitle::OnGridKeyDown, this);
+	grid->Bind(wxEVT_GRID_SELECT_CELL, &BookTitle::OnSelectedCell, this);
+	grid->Bind(wxEVT_TEXT, &BookTitle::OnGridTexting, this);
 
+	exitMenu->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &BookTitle::OnExitMenu, this);
 	Bind(wxEVT_TEXT_ENTER, &BookTitle::OnEnter, this);
-
+	Bind(wxEVT_SHOW, &BookTitle::OnShow, this);
 	//Set Color
 	gridTitle->SetBackgroundColour(lightBlue);
 	enterPanel->SetBackgroundColour(lightYellow);
 	takeNotePanel->SetBackgroundColour(middleYellow);
 	keyNotePanel->SetBackgroundColour(lightYellow);
-	LoadFile();
+	exitMenu->SetBackgroundColour(red);
 	Centre();
 }
 
@@ -103,6 +108,8 @@ void BookTitle::CreateEnterArea(wxPanel* enterPanel)
 		wxT("NXB:"), wxPoint(37, 270), wxSize(100, 15));
 	nameEnterText[5] = new wxStaticText(enterPanel, -1,
 		wxT("THE LOAI:"), wxPoint(37, 320), wxSize(100, 15));
+	wxStaticText* limitInput = new wxStaticText(enterPanel, -1,
+		wxT("GIOI HAN NHAP: 100 DAU SACH"), wxPoint(100, 375), wxSize(200, 15));
 	for (int i = 0; i < 6; i++)
 	{
 		enterText[i] = new wxTextCtrl(enterPanel, -1,
@@ -166,45 +173,166 @@ void BookTitle::CreateTakeNoteArea(wxPanel* takeNotePanel)
 void BookTitle::CreateKeyNoteArea(wxPanel* keyNotePanel)
 {
 	wxStaticText* keyNoteText = new wxStaticText(keyNotePanel, -1,
-		wxT("KEYHOT :   F2 - SAVE FILE, F4 - NHAP LIEU ( ENTER - LUU DAU SACH, DELETE - XOA DAU SACH )"),
+		wxT("F2-SAVE, F9-MO HOAC TAT CHE DO XOA (DELETE-XOA DAU SACH,ENTER-NHAP DAU SACH)"),
 		wxPoint(10, 10), wxSize(550, 20), wxALIGN_CENTER_HORIZONTAL);
 }
-void BookTitle::OnKeyDown(wxKeyEvent& event)
+void BookTitle::MainKeyDown(int keyCode)
 {
-	if (event.GetKeyCode() == WXK_F4)
+	if (keyCode == WXK_F4)
 	{
 		isTurnOnEnterPanel = !isTurnOnEnterPanel;
 		SwitchPanel(isTurnOnEnterPanel);
 		SwitchEnterText(isTurnOnEnterPanel);
 	}
+	if (keyCode == WXK_UP)
+	{
+		checkInput->MoveUpToAnotherTextCtrl(enterText, 6);
+	}
+	else if (keyCode == WXK_DOWN)
+	{
+		checkInput->MoveDownToAnotherTextCtrl(enterText, 6);
+	}
+	else if (keyCode == WXK_F2)
+	{
+		SaveFile();
+	}
+	else if (keyCode == WXK_DELETE)
+	{
+		ShowMessageClear();
+	}
+	else if (keyCode == WXK_F9)
+	{
+		isModeDelete = !isModeDelete;
+		if (grid->IsSelection())
+		{
+			grid->ClearSelection();
+		}
+		SetModeDelete(isModeDelete);
+
+	}
+}
+void BookTitle::OnKeyDown(wxKeyEvent& event)
+{
+	event.StopPropagation();
+	int keyCode = event.GetKeyCode();
+	MainKeyDown(keyCode);
 	if (!isTurnOnEnterPanel)
 	{
 		event.Skip();
 
 		return;
 	}
-	if (event.GetKeyCode() == WXK_UP)
+	
+	if (enterText[0]->HasFocus())
 	{
-		checkInput->MoveUpToAnotherTextCtrl(enterText, 6);
+		if (checkInput->HasAlpha(keyCode)||checkInput->HasRightEntering(keyCode,false))
+		{
+			event.Skip();
+		}
 	}
-	else if (event.GetKeyCode() == WXK_DOWN)
+	else if (enterText[3]->HasFocus() || enterText[5]->HasFocus())
 	{
-		checkInput->MoveDownToAnotherTextCtrl(enterText, 6);
+		if (checkInput->HasAlpha(keyCode)||checkInput->HasRightEntering(keyCode,true))
+		{
+			event.Skip();
+		}
 	}
-	else if (event.GetKeyCode() == WXK_F2)
+	else if (enterText[1]->HasFocus())
 	{
-		SaveFile();
+		if (checkInput->HasAlphaAndNumber(keyCode)||checkInput->HasRightEntering(keyCode,true))
+		{
+			event.Skip();
+		}
 	}
-	else if (event.GetKeyCode() == WXK_DELETE)
+	else if (enterText[2]->HasFocus() || enterText[4]->HasFocus())
 	{
-		ShowMessageClear();
+		if ((keyCode >= '0' && keyCode <= '9') ||
+			keyCode == WXK_BACK || keyCode == WXK_RETURN ||
+			keyCode == WXK_LEFT || keyCode == WXK_RIGHT)
+		{
+			event.Skip();
+		}
 	}
-
-	event.Skip();
+	else
+	{
+		event.Skip();
+	}
+}
+void BookTitle::OnGridKeyDown(wxKeyEvent& event)
+{
+	event.StopPropagation();
+	int keyCode = event.GetKeyCode();
+	MainKeyDown(keyCode);
+	int col = grid->GetGridCursorCol();
+	if (!canEdit)
+	{
+		if (checkInput->HasRightEntering(keyCode, false))
+		{
+			event.Skip();
+		}
+		return;
+	}
+	if (col == 0)
+	{
+		if (checkInput->HasAlpha(keyCode) || checkInput->HasRightEntering(keyCode, true))
+		{
+			event.Skip();
+		}
+	}
+	else if (col == 1)
+	{
+		if (checkInput->HasAlphaAndNumber(keyCode) || checkInput->HasRightEntering(keyCode, true))
+		{
+			event.Skip();
+		}
+	}
+	else if (col == 2)
+	{
+		if (checkInput->HasNumber(keyCode)||checkInput->HasRightEntering(keyCode,false))
+		{
+			event.Skip();
+		}
+	}
+	else if (col == 3)
+	{
+		if (checkInput->HasAlpha(keyCode) || checkInput->HasRightEntering(keyCode, true))
+		{
+			event.Skip();
+		}
+	}
+	else if (col == 4)
+	{
+		if (checkInput->HasNumber(keyCode) || checkInput->HasRightEntering(keyCode, false))
+		{
+			event.Skip();
+		}
+	}
+	else if (col == 5)
+	{
+		if (checkInput->HasAlpha(keyCode) || checkInput->HasRightEntering(keyCode, true))
+		{
+			event.Skip();
+		}
+	}
+}
+void BookTitle::SetModeDelete(bool state)
+{
+	for (int i = 0; i < maxItem; i++)
+	{
+		for (int j = 0; j < 6; j++)
+		{
+			grid->SetReadOnly(i, j, state);
+		}
+	}
 }
 void BookTitle::OnEnter(wxCommandEvent& WXUNUSED(event))
 {
 	if (!isTurnOnEnterPanel) { return; }
+	if(maxItem+1>titleList->GetList()->MaxLength())
+	{
+		wxMessageBox("GIOI HAN SACH LA 100 KHONG THE VUOT HON");
+		return;
+	}
 	for (int i = 0; i < 6; i++)
 	{
 		if (checkInput->IsWhiteSpaceAllText(enterText[i]->GetValue()))
@@ -226,7 +354,7 @@ void BookTitle::OnEnter(wxCommandEvent& WXUNUSED(event))
 	}
 	checkInput->ModifyTextInput(wxstr);
 	//checkInput->UpperWxString(wxstr);
-	if (!CheckDuplicateISBN(wxstr,-1))
+	if (!CheckDuplicateISBN(wxstr, -1))
 	{
 		checkInput->ErrorMessageBox("TRUNG ISBN CO TRONG DANH SACH");
 		enterText[0]->SetFocus();
@@ -271,6 +399,25 @@ void BookTitle::OnEnter(wxCommandEvent& WXUNUSED(event))
 	SaveToList();
 
 }
+void BookTitle::OnExitMenu(wxCommandEvent& WXUNUSED(event))
+{
+	this->Show(false);
+	GetParent()->Show();
+}
+void BookTitle::OnShow(wxShowEvent& event)
+{
+	if (event.IsShown())
+	{
+		if (maxItem > 30)
+		{
+			grid->DeleteRows(30, maxItem - 30);
+		}
+		LoadData();
+		isModeDelete = false;
+		SetModeDelete(false);
+	}
+	event.Skip();
+}
 void BookTitle::EditCurrentCell(wxGridEvent& event)
 {
 	int row = grid->GetGridCursorRow();
@@ -301,7 +448,7 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 			return;
 		}
 		checkInput->UpperWxString(wxNewText);
-		if (!CheckDuplicateISBN(wxNewText,row))
+		if (!CheckDuplicateISBN(wxNewText, row))
 		{
 			checkInput->ErrorMessageBox("TRUNG VOI ISBN CO TRONG DANH SACH");
 			grid->SetCellValue(row, col, wxOldText);
@@ -364,7 +511,9 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 	{
 		ISBN = string(wxOldText.mb_str());
 	}
-	linearList->Delete(ISBN);
+	BookList* tempList = titleList->GetData(ISBN)->GetListBook();
+	uint countBorrow = titleList->GetData(ISBN)->GetCountBorrow();
+	titleList->Delete(ISBN);
 	grid->SetCellValue(row, col, wxNewText);
 	ISBN = string(grid->GetCellValue(row, 0).mb_str());
 	string bookName = string(grid->GetCellValue(row, 1).mb_str());
@@ -372,14 +521,19 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 	string author = string(grid->GetCellValue(row, 3).mb_str());
 	uint nxb = checkInput->CastWxStringToInt(grid->GetCellValue(row, 4));
 	string type = string(grid->GetCellValue(row, 5).mb_str());
-	Title* title = new Title(ISBN, bookName, numberPage, author, nxb, type);
+	Title* title = new Title(ISBN, bookName, numberPage, author, nxb, type,countBorrow);
 	if (col == 5 || col == 1)
 	{
 		EditTable(title, row);
 		grid->DeleteRows(row, 1);
 		//grid->Refresh();
 	}
-	linearList->AddLast(title);
+	title->SetListBook(tempList);
+	titleList->GetList()->AddLast(title);
+
+	//load grid again();
+	QuickSort(0, maxItem);
+	LoadListToTable();
 	event.Skip();
 }
 void BookTitle::EditTable(Title* title, int row)
@@ -431,10 +585,11 @@ void BookTitle::EditTable(Title* title, int row)
 		if (CompareTitle(title, tempT) < 1)
 		{
 			pos = i;
-
+			tempT->GetListBook()->Clear();
 			delete tempT;
 			break;
 		}
+		tempT->GetListBook()->Clear();
 		delete tempT;
 		tempT = nullptr;
 	}
@@ -452,6 +607,7 @@ void BookTitle::EditTable(Title* title, int row)
 		grid->SetCellValue(pos, i, grid->GetCellValue(row, i));
 		grid->SetCellAlignment(pos, i, wxALIGN_CENTER, wxALIGN_CENTER);
 	}
+	
 }
 void BookTitle::OnKeyDownTextCltrToUpper(wxCommandEvent& _rCommandEvent)
 {
@@ -558,10 +714,12 @@ void BookTitle::SaveToList()
 		if (CompareTitle(curTitle, tempT) < 1)
 		{
 			pos = i;
-
+			tempT->GetListBook()->Clear();
 			delete tempT;
+			tempT = nullptr;
 			break;
 		}
+		tempT->GetListBook()->Clear();
 		delete tempT;
 		tempT = nullptr;
 	}
@@ -577,55 +735,36 @@ void BookTitle::SaveToList()
 		grid->SetCellAlignment(pos, i, wxALIGN_CENTER, wxALIGN_CENTER);
 	}
 	ClearInforInEnterText();
-	linearList->AddLast(curTitle);
+	titleList->GetList()->AddLast(curTitle);
 	maxItem++;
+	if (maxItem + 1 > grid->GetNumberRows())
+	{
+		grid->AppendRows(maxItem - grid->GetNumberRows() + 1);
+	}
 }
 void BookTitle::SaveFile()
 {
-	int length = linearList->Length();
-	if (length == 0)
-	{
-		saveFile->ClearData();
-		wxMessageBox(wxT("NOTHING TO SAVE"));
-		return;
-	}
-	QuickSort(0, length);
-	Title** arr = linearList->ToArray();
-	saveFile->WriteToFile(arr, length);
-	wxMessageBox(wxT("LIST IS SAVED SUCCESSFULLY"));
+	ISaveFile* isaveFile = dynamic_cast<ISaveFile*>(this->GetParent());
+	isaveFile->SaveFile();
 }
-void BookTitle::LoadFile()
+void BookTitle::LoadData()
 {
-
-	linearList->Clear();
-	int length = saveFile->GetLineCount();
-
-	if (length > linearList->MaxLength())
-	{
-		wxMessageBox("Danh sach trong file qua lon, khong the load duoc");
-		return;
-	}
-	Title** arr = new Title * [length];
-
-	saveFile->ReadFile(arr);
-
-	for (int i = 0; i < length; i++)
-	{
-		linearList->AddLast(arr[i]);
-		//wxMessageBox(wxString::Format("%i",i));
-	}
+	grid->Refresh();
+	ClearOldDataInGrid();
+	maxItem = titleList->GetList()->Length();
+	//QuickSort(0, maxItem);
 	LoadListToTable();
 
 }
 void BookTitle::LoadListToTable()
 {
-	if (linearList->Length() > grid->GetNumberRows())
+	if (maxItem > grid->GetNumberRows())
 	{
-		grid->AppendRows(linearList->Length() - grid->GetNumberRows());
+		grid->AppendRows(maxItem - grid->GetNumberRows() + 1);
 	}
-	for (int i = 0; i < linearList->Length(); i++)
+	for (int i = 0; i < maxItem; i++)
 	{
-		Title* temp = linearList->GetData(i);
+		Title* temp = titleList->GetList()->GetData(i);
 		grid->SetCellValue(i, 0, temp->GetISBN());
 		grid->SetCellValue(i, 1, temp->GetBookName());
 		grid->SetCellValue(i, 2, wxString::Format("%i", temp->GetPageNumber()));
@@ -637,7 +776,16 @@ void BookTitle::LoadListToTable()
 			grid->SetCellAlignment(i, j, wxALIGN_CENTER, wxALIGN_CENTER);
 		}
 	}
-	maxItem = linearList->Length();
+}
+void BookTitle::ClearOldDataInGrid()
+{
+	for (int i = 0; i < grid->GetNumberRows(); i++)
+	{
+		for (int j = 0; j < grid->GetNumberCols(); j++)
+		{
+			grid->SetCellValue(i,j,wxT(""));
+		}
+	}
 }
 void BookTitle::ShowMessageClear()
 {
@@ -648,36 +796,45 @@ void BookTitle::ShowMessageClear()
 	{
 		DeleteSelectedRows();
 	}
+	delete dialog;
+
 }
 void BookTitle::DeleteSelectedRows()
 {
 	if (grid->IsSelection())
 	{
-		wxGridUpdateLocker locker(grid);
-		for (int i = 0; i < grid->GetNumberRows();)
+		//wxMessageBox(wxString::Format("%i",cardCode));
+		int row = grid->GetSelectedRows()[0];
+		string ISBN = string(grid->GetCellValue(row, 0).mbc_str());
+		if (ISBN != "")
 		{
-			if (grid->IsInSelection(i, 0))
+			BookList* tempList = titleList->GetData(ISBN)->GetListBook();
+			if (tempList->Length() > 0)
 			{
-				//wxMessageBox(wxString::Format("%i",cardCode));
-
-				string ISBN = string(grid->GetCellValue(i, 0).mbc_str());
-				if (ISBN != "")
+				SinglyNode<Book>* tempBook = tempList->First();
+				while (tempBook != nullptr)
 				{
-					linearList->Delete(ISBN);
-					maxItem--;
-
-				}
-				grid->DeleteRows(i, 1);
-				if (grid->GetNumberRows() < 26)
-				{
-					int numberRowsNeed = 26 - grid->GetNumberRows();
-
-					grid->AppendRows(numberRowsNeed);
+					if (tempBook->data.GetState() == 1)
+					{
+						checkInput->ErrorMessageBox("DAU SACH CO SACH DANG MUON KHONG THE XOA");
+						return;
+					}
+					tempBook = tempBook->next;
 				}
 			}
-			else
-				i++;
+			titleList->Delete(ISBN);
+			delete tempList;
+			maxItem--;
+
 		}
+		grid->DeleteRows(row, 1);
+		if (grid->GetNumberRows() < 30)
+		{
+			int numberRowsNeed = 30 - grid->GetNumberRows();
+
+			grid->AppendRows(numberRowsNeed);
+		}
+
 	}
 }
 void BookTitle::SwitchPanel(bool state)
@@ -695,7 +852,6 @@ void BookTitle::SwitchEnterText(bool state)
 //
 // if khong luu gia tri thi xoa mang di va luu gia tri cu cua file vao mang
 //
-
 void BookTitle::ClearInforInEnterText()
 {
 	for (int i = 0; i < 6; i++)
@@ -740,7 +896,7 @@ bool BookTitle::CheckType(wxString text)
 {
 	return checkInput->IsWord(text);
 }
-bool BookTitle::CheckDuplicateISBN(wxString text,int row)
+bool BookTitle::CheckDuplicateISBN(wxString text, int row)
 {
 	for (int i = 0; i < maxItem; i++)
 	{
@@ -767,7 +923,6 @@ int BookTitle::CompareTitle(Title* t1, Title* t2)
 	}
 }
 
-
 //quickSort
 void BookTitle::Swap(Title* t1, Title* t2)
 {
@@ -777,16 +932,16 @@ void BookTitle::Swap(Title* t1, Title* t2)
 }
 int BookTitle::partition(int l, int h)
 {
-	Title* pivot = linearList->GetData(l);
+	Title* pivot = titleList->GetList()->GetData(l);
 	int i = l;
 	int j = h;
 	do
 	{
-		do { i++; if (i == j) { break; } } while (CompareTitle(linearList->GetData(i), pivot) < 1);
-		do { j--; } while (CompareTitle(linearList->GetData(j), pivot) == 1);
-		if (i < j) { Swap((linearList->GetData(i)), (linearList->GetData(j))); }
+		do { i++; if (i == j) { break; } } while (CompareTitle(titleList->GetList()->GetData(i), pivot) < 1);
+		do { j--; } while (CompareTitle(titleList->GetList()->GetData(j), pivot) == 1);
+		if (i < j) { Swap((titleList->GetList()->GetData(i)), (titleList->GetList()->GetData(j))); }
 	} while (i < j);
-	Swap(linearList->GetData(l), linearList->GetData(j));
+	Swap(titleList->GetList()->GetData(l), titleList->GetList()->GetData(j));
 	return j;
 }
 void BookTitle::QuickSort(int l, int h)
@@ -798,6 +953,82 @@ void BookTitle::QuickSort(int l, int h)
 		QuickSort(l, j);
 		QuickSort(j + 1, h);
 	}
+}
+void BookTitle::OnSelectingGrid(wxGridRangeSelectEvent& WXUNUSED(event))
+{
+	if (grid->IsSelection())
+	{
+		grid->ClearSelection();
+	}
+}
+void BookTitle::OnSelectedGrid(wxCommandEvent& WXUNUSED(event))
+{
+	if (isModeDelete) { return; }
+	grid->ClearSelection();
+}
+void BookTitle::OnSelectedLabelGrid(wxCommandEvent& WXUNUSED(event))
+{
+	if (grid->IsSelection())
+	{
+		grid->ClearSelection();
+	}
+}
+void BookTitle::OnSelectedCell(wxGridEvent& event)
+{
+	int row = event.GetRow();
+	int col = event.GetCol();
+	if (!isModeDelete)
+	{
+		grid->ClearSelection();
+	}
+	canEdit = true;
+	event.Skip();
+}
+void BookTitle::OnGridTexting(wxCommandEvent& event)
+{
+	int row = grid->GetGridCursorRow();
+	int col = grid->GetGridCursorCol();
+	event.SetString(grid->GetCellValue(row, col));
+	wxString tempStr = event.GetString();
+	int maxLength = GetMaxLength(col);
+	if (tempStr.Length() >= maxLength)
+	{
+		canEdit = false;
+	}
+	else
+	{
+		canEdit = true;
+	}
+	event.Skip();
+}
+int BookTitle::GetMaxLength(int col)
+{
+	if (col > 5) { return -1; }
+	if (col == 0)
+	{
+		return 4;
+	}
+	else if (col == 1)
+	{
+		return 24;
+	}
+	else if(col==2)
+	{
+		return 6;
+	}
+	else if (col == 3)
+	{
+		return 17;
+	}
+	else if (col == 4)
+	{
+		return 4;
+	}
+	else if (col == 5)
+	{
+		return 11;
+	}
+	return -1;
 }
 BEGIN_EVENT_TABLE(BookTitle, wxFrame)
 EVT_CHAR_HOOK(BookTitle::OnKeyDown)

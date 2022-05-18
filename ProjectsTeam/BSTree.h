@@ -98,6 +98,7 @@ namespace DataStructure
 		}
 		void Add(T* data)
 		{
+
 			numberNodes++;
 			if (rootNode == nullptr)
 			{
@@ -170,6 +171,7 @@ namespace DataStructure
 				}
 			}
 			delete temp, pointedTemp;
+			delete queue;
 			return height;
 		}
 		int Height()
@@ -228,13 +230,14 @@ namespace DataStructure
 					t = t->rightNode;
 				}
 			}
+			delete stack;
 
 		}
 		void InOrderTravelsal()
 		{
 			InOrderTravelsal(rootNode);
 		}
-		T** ToArray()
+		T** ToSortArray()
 		{
 			T** arr = new T * [numberNodes];
 			int index = 0;
@@ -254,11 +257,49 @@ namespace DataStructure
 					node = stack->Pop();
 					t = &node;
 					//std::cout << t->data.GetCardCode() << " ";
-					arr[index] = (t->data);
-					index++;
+					if (index < numberNodes)
+					{
+						arr[index] = (t->data);
+						index++;
+					}
 					t = t->rightNode;
 				}
 			}
+			delete stack;
+			return arr;
+		}
+		T** ToSameTreeArray()
+		{
+			if (numberNodes == 0)
+			{
+				return nullptr;
+			}
+			T** arr = new T * [numberNodes];
+			int index = 0;
+			BSTNode<T>* t = rootNode;
+			if (t == nullptr) { return nullptr; }
+			BSTNode<T> node;
+			Queue<BSTNode<T>>* queue = new Queue<BSTNode<T>>();
+			queue->Enqueue(*t);
+			while (!queue->IsEmpty())
+			{
+				node = queue->Dequeue();
+				t = &node;
+				if (index < numberNodes)
+				{
+					arr[index] = t->data;
+					index++;
+				}
+				if (t->leftNode != nullptr)
+				{
+					queue->Enqueue(*(t->leftNode));
+				}
+				if (t->rightNode != nullptr)
+				{
+					queue->Enqueue(*(t->rightNode));
+				}
+			}
+			delete queue;
 			return arr;
 		}
 		bool IsDifferentNode(ulong key)

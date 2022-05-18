@@ -1,13 +1,37 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
-#include<time.h>
+#include<iostream>
 #include<string>
+#include<ctime>
 using namespace std;
 
 class DateTime
 {
+private:
+	time_t now = time(0);
+	tm* currentDate = localtime(&now);
+	int day = 0;
+	int month = 0;
+	int year = 0;
+	string CastNumberToString(int number, int length);
+	int CastStringToNumber(string numStr);
+	string Format(int day, int month, int year);
+	
+	int CompareDates(string date1, string date2);
+
 public:
-	bool FormatDate(string& data);
+	DateTime();
+	DateTime(int day, int month, int year);
+	void ReverseDate(string& date);
+	string ToString();
+	
+	int CompareDate(string date);
+	
+	bool IsGreaterThanNow();
+
+	int operator -(DateTime&);
+
+	/*bool FormatDate(string& data);
 	string Day(string data);
 	string Month(string data);
 	string Year(string data);
@@ -21,7 +45,15 @@ public:
 	string CurrentDay();
 	string CurrentMonth();
 	string CurrentYear();
-	string CurrentDate();
+	string CurrentDate();*/
+	void CastDate(string dateStr);
+	void SetNow();
+	int GetCurrentYear();
+	int GetCurrentMonth();
+	int GetCurrentDay();
+	int GetDay();
+	int GetMonth();
+	int GetYear();
 };
 
 

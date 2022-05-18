@@ -1,6 +1,7 @@
 #pragma once
 #include<iostream>
 #include"SinglyNode.h"
+using std::string;
 namespace DataStructure
 {
 	template<typename T>
@@ -120,7 +121,30 @@ namespace DataStructure
 			delete p;
 			p = nullptr;
 			lengthList--;
-			return;
+		}
+		void Remove(SinglyNode<T>* prevNode, SinglyNode<T>* curNode)
+		{
+			//just use in methods in case curNode and prevNode have in SinglyLinkedList;
+			if (curNode == nullptr)
+			{
+				return;
+			}
+			if (prevNode == nullptr)
+			{
+				RemoveFirst();
+				
+			}
+			else if (curNode == lastSinglyNode)
+			{
+				RemoveLast();
+			}
+			else
+			{
+				prevNode->next = curNode->next;
+				curNode->next = nullptr;
+				delete curNode;
+				lengthList--;
+			}
 		}
 		void RemoveFirst()
 		{
@@ -261,13 +285,12 @@ namespace DataStructure
 			while (p != nullptr)
 			{
 				firstSinglyNode = firstSinglyNode->next;
-				p->next = nullptr;
-				delete p;
+				
 				if (p == lastSinglyNode)
 				{
 					SetListnullptr();
 				}
-				p = nullptr;
+				delete p;
 				p = firstSinglyNode;
 				lengthList--;
 			}

@@ -24,7 +24,10 @@ namespace DataStructure
 		}
 		~LinearList()
 		{
+			if (list == nullptr) { return; }
 			Clear();
+			delete[]list;
+			list = nullptr;
 		}
 		int Length()
 		{
@@ -65,21 +68,6 @@ namespace DataStructure
 			list[currentLength - 1] = nullptr;
 			currentLength--;
 		}
-		void Delete(string ISBN)
-		{
-			int pos = 0;
-			if (!HasInList(ISBN, pos)) { return; }
-			if (pos == -1) { return; }
-			T* temp = list[pos];
-			delete temp;
-			temp = nullptr;
-			for (int i = pos; i < currentLength-1; i++)
-			{
-				list[i] = list[i + 1];
-			}
-			list[currentLength-1] = nullptr;
-			currentLength--;
-		}
 		T* Search(int pos)
 		{
 			if (pos<0 || pos>currentLength-1) { return nullptr; }
@@ -88,19 +76,6 @@ namespace DataStructure
 		T* GetData(int pos)
 		{
 			return Search(pos);
-		}
-		bool HasInList(string ISBN, int& pos)
-		{
-			for (int i = 0; i < currentLength; i++)
-			{
-				if (list[i]->GetISBN() == ISBN)
-				{
-					pos = i;
-					return true;
-				}
-			}
-			pos = -1;
-			return false;
 		}
 		bool HasInList(T* data, int& pos)
 		{
@@ -127,11 +102,13 @@ namespace DataStructure
 		{
 			for (int i = 0; i < currentLength; i++)
 			{
+				if (list[i] == nullptr)
+				{
+					continue;
+				}
 				delete list[i];
 				list[i] = nullptr;
 			}
-			delete list;
-			list = nullptr;
 			currentLength = 0;
 		}
 		T** ToArray()

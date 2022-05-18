@@ -1,11 +1,15 @@
 #pragma once
 #include<iostream>
 #include<string>
+#include"BSTree.h"
+#include"BorrowBook.h"
 typedef unsigned long long ulong;
 using  std::string;
 using std::cout;
 using std::endl;
-class CardReader
+//more efficiency you have to create abstract class to have key code
+//for every class must have to use BST Tree
+class CardReader 
 {
 private:
 	ulong cardCode;
@@ -13,7 +17,7 @@ private:
 	string firstName;
 	string sex;
 	string state;
-	//create pointer;
+	BorrowBookList* listBorrowBook = nullptr;
 public:
 	CardReader(ulong cardCode ,string firstName,string lastName, string sex,string state)
 	{
@@ -22,6 +26,7 @@ public:
 		this->firstName = firstName;
 		this->sex = sex;
 		this->state = state;
+		listBorrowBook = new BorrowBookList();
 	}
 	CardReader() 
 	{
@@ -30,13 +35,19 @@ public:
 		firstName = "";
 		sex = "";
 		state = "";
-
+		listBorrowBook = new BorrowBookList();
+	}
+	~CardReader()
+	{
+		//delete listBorrowBook;
 	}
 	ulong GetCardCode() { return cardCode; }
 	string GetLastName() { return lastName; }
 	string GetFirstName() { return firstName; }
 	string GetSex() { return sex; }
 	string GetState() { return state; }
+	BorrowBookList* GetListBorrowBook() { return listBorrowBook; }
+	
 	void SetCardCode(ulong cardCode)
 	{
 		this->cardCode = cardCode;
@@ -56,6 +67,15 @@ public:
 	void SetState(string state)
 	{
 		this->state = state;
+	}
+	void SetListBorrowBook(BorrowBookList* list)
+	{
+		if (listBorrowBook != nullptr)
+		{
+			delete listBorrowBook;
+
+		}
+		listBorrowBook = list;
 	}
 	void DisplayCardReader()
 	{

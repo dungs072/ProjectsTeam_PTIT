@@ -9,12 +9,18 @@ namespace DataStructure
 		DoublyNode* prev;
 		DoublyNode* next;
 		T data;
+		DoublyNode() 
+		{
+			prev = nullptr;
+			next = nullptr;
+		}
 		DoublyNode(T value)
 		{
 			data = value;
 			prev = nullptr;
 			next = nullptr;
 		}
-		DoublyNode() {}
+		
+		//I modified here
 	};
 }

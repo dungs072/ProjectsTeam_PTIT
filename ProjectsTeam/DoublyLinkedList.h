@@ -2,6 +2,8 @@
 #include<iostream>
 #include"DoublyNode.h"
 #include<string>
+#include<wx/wx.h>
+using std::string;
 namespace DataStructure
 {
 	//class UDoublyLinkedList {
@@ -43,6 +45,13 @@ namespace DataStructure
 			}
 			return false;
 		}
+
+	public:
+		~DoublyLinkedList()
+		{
+			Clear();
+		}
+=======
 	public:
 		DoublyLinkedList()
 		{
@@ -300,31 +309,24 @@ namespace DataStructure
 		void Remove(DoublyNode<T>* doublyNode)
 		{
 			if (doublyNode == nullptr) { return; }
-			if (!HasInLinkedList(doublyNode)) { return; }
+			//if (!HasInLinkedList(doublyNode)) { return; }
 			if (doublyNode == first)
 			{
-				first = first->next;
-				first->prev = nullptr;
-				doublyNode->next = nullptr;
-				doublyNode->prev = nullptr;
-				length--;
+				RemoveFirst();
 				return;
 			}
-			DoublyNode<T>* p = first;
-			while (p != nullptr)
+			if (doublyNode == last)
 			{
-				if (p == doublyNode)
-				{
-					DoublyNode<T>* t = p;
-					if (p->prev) { p->prev->next = p->next; }
-					if (p->next) { p->next->prev = p->prev; }
-					t->next = nullptr;
-					t->prev = nullptr;
-					length--;
-					return;
-				}
-				p = p->next;
+				RemoveLast();
+				return;
 			}
+			if (doublyNode->prev) { doublyNode->prev->next = doublyNode->next; }
+			if (doublyNode->next) { doublyNode->next->prev = doublyNode->prev; }
+			doublyNode->next = nullptr;
+			doublyNode->prev = nullptr;
+			delete doublyNode;
+			length--;
+			
 		}
 		void Reverse()
 		{
@@ -386,6 +388,25 @@ namespace DataStructure
 				p = p->next;
 			}
 		}
+
+		T** ToArray()
+		{
+			int k = 0;
+			T** tempArr = new T* [length];
+			DoublyNode<T>* p = first;
+			if (p == nullptr)
+			{
+				std::cout << "Linked list is empty" << std::endl;
+				return nullptr;
+			}
+			while (p != nullptr)
+			{
+				tempArr[k] = &p->data;
+				k++;
+				p = p->next;
+			}
+			return tempArr;
+    }
 		~DoublyLinkedList()
 		{
 			Clear();
