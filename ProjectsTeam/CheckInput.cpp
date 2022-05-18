@@ -209,6 +209,7 @@ int CheckInput::CastWxStringToInt(wxString text)
 	int i, j;
 	int number = 0;
 	string strText = string(text.mb_str());
+	if (!IsNumber(text)) { return -1; }
 	for (i = strText.length() - 1, j = 0; i >= 0; i--, j++)
 	{
 		if (strText[i] < '0' || strText[i]>'9')

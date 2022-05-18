@@ -661,6 +661,7 @@ void ReaderCard::EditCurrentCell(wxGridEvent& event)
 		return;
 	}
 	wxString wxNewText = grid->GetCellValue(row, col);
+
 	//main error
 	if (checkInput->IsWhiteSpaceAllText(wxNewText))
 	{
@@ -681,12 +682,22 @@ void ReaderCard::EditCurrentCell(wxGridEvent& event)
 	{
 		ModifyTextInput(wxNewText);
 		int num = checkInput->CastWxStringToInt(wxNewText);
+		if(num==-1)
+		{
+			grid->SetCellValue(row, col, wxOldText);
+			return;
+		}
 		grid->SetCellValue(row, col, sexText[num]);
 	}
 	if (col == 4)
 	{
 		ModifyTextInput(wxNewText);
 		int num = checkInput->CastWxStringToInt(wxNewText);
+		if (num == -1)
+		{
+			grid->SetCellValue(row, col, wxOldText);
+			return;
+		}
 		grid->SetCellValue(row, col, stateText[num]);
 	}
 	EditData(row,col);

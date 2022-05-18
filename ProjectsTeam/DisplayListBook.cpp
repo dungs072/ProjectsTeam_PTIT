@@ -288,7 +288,8 @@ void DisplayListBook::EditCurrentCell(wxGridEvent& event)
 	string bookCode = string(grid->GetCellValue(row, 0).mb_str());
 	if (col == 1)
 	{
-		if (checkInput->IsWhiteSpaceAllText(wxNewText))
+		int num = checkInput->CastWxStringToInt(wxNewText);
+		if (checkInput->IsWhiteSpaceAllText(wxNewText)||num==-1)
 		{
 			checkInput->ErrorMessageBox("Loi trang thai");
 			grid->SetCellValue(row, col, wxOldText);

@@ -151,6 +151,11 @@ void DisplayListCardReader::EditCurrentCell(wxGridEvent& event)
 	if (col == 3)
 	{
 		int num = checkInput->CastWxStringToInt(wxNewText);
+		if (num == -1)
+		{
+			grid->SetCellValue(row, col, wxOldText);
+			return;
+		}
 		grid->SetCellValue(row, col,sexText[num]);
 		string str = sexText[num];
 		curEditCard->SetSex(str);
@@ -159,6 +164,11 @@ void DisplayListCardReader::EditCurrentCell(wxGridEvent& event)
 	{
 		checkInput->ModifyTextInput(wxNewText);
 		int num =checkInput->CastWxStringToInt(wxNewText);
+		if (num == -1)
+		{
+			grid->SetCellValue(row, col, wxOldText);
+			return;
+		}
 		grid->SetCellValue(row, col, checkInput->GetCardState(num));
 		curEditCard->SetState(checkInput->GetCardState(num));
 	}
