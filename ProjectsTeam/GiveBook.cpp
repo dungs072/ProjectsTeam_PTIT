@@ -98,6 +98,8 @@ GiveBook::GiveBook(const wxString& title) :wxFrame(NULL, -1, title,
 	mainVBox->Add(grid, 0,wxALIGN_CENTRE_HORIZONTAL|wxTOP,75);
 	mainVBox->Add(hButtonBox, 0, wxALIGN_CENTER_HORIZONTAL | wxTOP, 10);
 	//Register event
+	monthChoice->Bind(wxEVT_CHOICE, &GiveBook::OnMonthSelection, this);
+	yearChoice->Bind(wxEVT_CHOICE, &GiveBook::OnYearSelection, this);
 	Bind(wxEVT_SHOW, &GiveBook::OnShow, this);
 	Bind(wxEVT_TEXT_ENTER, &GiveBook::OnEnter, this);
 	grid->Bind(wxEVT_GRID_RANGE_SELECTING, &GiveBook::OnSelectingGrid, this);
@@ -547,6 +549,9 @@ void GiveBook::SetDefaultRangeDateTime()
 	monthChoice->Append(monthArray);
 	monthChoice->SetSelection(monthSelect);
 }
+
+
+
 void GiveBook::OnShowDialog(wxShowEvent& event)
 {
 	if (event.IsShown())
