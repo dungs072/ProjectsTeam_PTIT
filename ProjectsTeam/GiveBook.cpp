@@ -579,6 +579,10 @@ void GiveBook::OnOkButton(wxCommandEvent& WXUNUSED(event))
 
 	grid->DeleteRows(row, 1);
 	grid->AppendRows(1);
+	for (int i = 0; i < grid->GetNumberCols(); i++)
+	{
+		grid->SetReadOnly(2,i);
+	}
 	grid->SetRowSize(2, 30);
 	grid->ClearSelection();
 	dialog->Close();
