@@ -152,7 +152,6 @@
   <ItemGroup>
     <ClCompile Include="AdminMenu.cpp" />
     <ClCompile Include="Book.cpp" />
-=======
     <ClCompile Include="BookCatalog.cpp" />
     <ClCompile Include="BookTitle.cpp" />
     <ClCompile Include="BorrowBook.cpp" />
