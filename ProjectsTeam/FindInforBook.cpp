@@ -157,9 +157,10 @@ void FindInforBook::EditCurrentCell(wxGridEvent& event)
 	}
 	wxString wxNewText = grid->GetCellValue(row, col);
 	//main error
-	if (checkInput->IsWhiteSpaceAllText(wxNewText))
+	int num = checkInput->CastWxStringToInt(wxNewText);
+	if (checkInput->IsWhiteSpaceAllText(wxNewText)||num==-1)
 	{
-		checkInput->ErrorMessageBox("Khong duoc bo trong ");
+		checkInput->ErrorMessageBox("Loi trang thai ");
 		grid->SetCellValue(row, col, wxOldText);
 		return;
 	}
