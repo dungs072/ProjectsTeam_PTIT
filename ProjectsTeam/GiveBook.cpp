@@ -210,8 +210,8 @@ void GiveBook::OnKeyDown(wxKeyEvent& event)
 	if (keyCode == WXK_F2)
 	{
 		SaveFile();
+		event.Skip();
 	}
-
 }
 void GiveBook::DisplayCardOnPanel()
 {
@@ -323,9 +323,17 @@ void GiveBook::OnSelectedGrid(wxCommandEvent& WXUNUSED(event))
 		grid->ClearSelection();
 		return;
 	}
-	int row = grid->GetSelectedRows()[0];
-	bookCodeSelected = string(grid->GetCellValue(row, 1).mb_str());
-	hasRightSelection = bookCodeSelected.length() > 0;
+	if (grid->GetSelectedRows().Count() > 0)
+	{
+		int row = grid->GetSelectedRows()[0];
+		bookCodeSelected = string(grid->GetCellValue(row, 1).mb_str());
+		hasRightSelection = bookCodeSelected.length() > 0;
+		if (!hasRightSelection)
+		{
+			grid->ClearSelection();
+		}
+	}
+	
 }
 void GiveBook::OnSelectedLabelGrid(wxCommandEvent& WXUNUSED(event))
 {

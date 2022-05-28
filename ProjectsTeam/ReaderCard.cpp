@@ -823,6 +823,7 @@ ulong ReaderCard::RandomNumber(ulong minNumber, ulong maxNumber)
 	return minNumber + rand() % (maxNumber + 1 - minNumber);
 }
 
+
 void ReaderCard::OnSelectingGrid(wxGridRangeSelectEvent& WXUNUSED(event))
 {
 	grid->ClearSelection();
