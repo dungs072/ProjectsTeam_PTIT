@@ -930,8 +930,13 @@ void LendBook::DeleteBorrowingBook()
 		string bookCode = string(borrowingBookGrid->GetCellValue(row, 0).mb_str());
 		if (bookCode == "") { return; }
 		SetValueAfterDelete(bookCode);
-		foundCardReader->GetListBorrowBook()->Remove(bookCode);
+		//have to fix here
 
+
+
+
+		//have to fix here
+		foundCardReader->GetListBorrowBook()->Remove(bookCode);
 		borrowingBookGrid->DeleteRows(row, 1);
 		borrowingBookGrid->AppendRows(1);
 		borrowingBookGrid->SetRowSize(2, 25);

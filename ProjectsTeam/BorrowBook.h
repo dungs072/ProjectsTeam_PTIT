@@ -65,7 +65,7 @@ public:
 		DoublyNode<BorrowBook>* tempNode = borrowBookList->First();
 		while (tempNode != nullptr)
 		{
-			if (tempNode->data.GetBookCode() == bookCode)
+			if (tempNode->data.GetBookCode() == bookCode&&tempNode->data.GetStateBorrow()==0)
 			{
 				borrowBookList->Remove(tempNode);
 				return true;

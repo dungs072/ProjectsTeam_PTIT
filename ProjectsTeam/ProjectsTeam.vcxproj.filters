@@ -103,6 +103,9 @@
     <ClCompile Include="Main.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
+    <ClCompile Include="BookCatalog.cpp">
+      <Filter>Resources\TEMPLATE</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SortAlgorithm.h">
@@ -206,6 +209,9 @@
     </ClInclude>
     <ClInclude Include="OverDueCard.h">
       <Filter>Header\DS</Filter>
+    </ClInclude>
+    <ClInclude Include="BookCatalog.h">
+      <Filter>Resources\TEMPLATE</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

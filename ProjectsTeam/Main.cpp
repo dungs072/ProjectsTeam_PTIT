@@ -1,8 +1,6 @@
 
-#define _CRT_SECURE_NO_WARNINGS
 #include<iostream>
 #include"MainMenu.h"
-#include"SinglyLinkedList.h"
 using namespace std;
 using std::cout;
 using std::endl;
