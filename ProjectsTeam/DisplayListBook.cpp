@@ -388,7 +388,8 @@ void DisplayListBook::SaveToList()
 		wxMessageBox("LOI TRANG THAI SACH");
 		return;
 	}
-	string state = stateBook[index - 1];
+	index = index == 1 ? 0 : 2;
+	string state = stateBook[index];
 	grid->SetCellValue(maxItem, 0, bookCode);
 	grid->SetCellValue(maxItem, 1, state);
 	grid->SetCellValue(maxItem, 2, enterText->GetValue());
@@ -398,7 +399,7 @@ void DisplayListBook::SaveToList()
 	}
 	grid->SetReadOnly(maxItem, 0);
 
-	Book tempBook(bookCode, index - 1, string(enterText->GetValue().mb_str()));
+	Book tempBook(bookCode, index, string(enterText->GetValue().mb_str()));
 	enterText->Clear();
 	stateChoice->SetSelection(0);
 	currentTitle->GetListBook()->Add(tempBook);
