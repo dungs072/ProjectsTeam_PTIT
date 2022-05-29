@@ -21,8 +21,8 @@ GiveBook::GiveBook(const wxString& title) :wxFrame(NULL, -1, title,
 	wxStaticText* titleSearch = new wxStaticText(searchPanel, -1, wxT("NHAP MA THE DOC GIA"),
 		wxPoint(-1, 10), wxSize(300, 20), wxALIGN_CENTER);
 	//create Grid
-	grid = new wxGrid(mainPanel, -1, wxPoint(-1, -1), wxSize(1200, 123));
-	grid->CreateGrid(3, 7);
+	grid = new wxGrid(mainPanel, -1, wxPoint(-1, -1), wxSize(1200, 153));
+	grid->CreateGrid(4, 7);
 	grid->SetColLabelValue(0, wxT("TEN SACH"));
 	grid->SetColLabelValue(1, wxT("MA SACH"));
 	grid->SetColLabelValue(2, wxT("NGAY MUON"));
@@ -37,10 +37,11 @@ GiveBook::GiveBook(const wxString& title) :wxFrame(NULL, -1, title,
 		if (i == 3||i==2||i==4) { grid->SetColSize(i, 130); continue; }
 		grid->SetColSize(i, 126);
 	}
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		grid->SetRowSize(i, 30);
 	}
+	
 	grid->DisableDragColSize();
 	grid->DisableDragRowSize();
 	grid->SetSelectionMode(wxGrid::wxGridSelectionModes::wxGridSelectRows);
@@ -51,6 +52,7 @@ GiveBook::GiveBook(const wxString& title) :wxFrame(NULL, -1, title,
 			grid->SetReadOnly(i, j);
 		}
 	}
+	
 	//Create wxCtrlText
 	enterText = new wxTextCtrl(searchPanel,-1,wxT(""),
 		wxPoint(50,30),wxSize(200,25), wxTE_CENTER | wxTE_PROCESS_ENTER);
@@ -587,16 +589,18 @@ void GiveBook::OnOkButton(wxCommandEvent& WXUNUSED(event))
 	DateTime* dateChosen = new DateTime();
 	dateChosen->CastDate(date);
 	listBorrowBook[index]->SetReturnDate(dateChosen);
-	
 	int row = grid->GetSelectedRows()[0];
-
-	grid->DeleteRows(row, 1);
+	if (row < grid->GetNumberRows())
+	{
+		grid->DeleteRows(row, 1);
+	}
+	
 	grid->AppendRows(1);
 	for (int i = 0; i < grid->GetNumberCols(); i++)
 	{
-		grid->SetReadOnly(2,i);
+		grid->SetReadOnly(3,i);
 	}
-	grid->SetRowSize(2, 30);
+	grid->SetRowSize(3, 30);
 	grid->ClearSelection();
 	dialog->Close();
 	listBorrowBook[index] = nullptr;

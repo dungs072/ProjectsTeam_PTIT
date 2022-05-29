@@ -18,7 +18,7 @@ private:
 	string sex;
 	string state;
 	BorrowBookList* listBorrowBook = nullptr;
-	int stringCode = 0;
+	//int stringCode = 0;
 public:
 	CardReader(ulong cardCode ,string firstName,string lastName, string sex,string state)
 	{
@@ -78,14 +78,14 @@ public:
 		}
 		listBorrowBook = list;
 	}
-	void CalculateStringCode()
-	{
-		string codeString = firstName + lastName + sex;
-		for (int i = 0; i < codeString.length(); i++)
-		{
-			stringCode += codeString[i] * i;
-		}
-	}
+	//void CalculateStringCode()
+	//{
+	//	string codeString = firstName + lastName + sex;
+	//	for (int i = 0; i < codeString.length(); i++)
+	//	{
+	//		stringCode += codeString[i] * i;
+	//	}
+	//}
 	void DisplayCardReader()
 	{
 		cout << "card code: " << cardCode << endl;
