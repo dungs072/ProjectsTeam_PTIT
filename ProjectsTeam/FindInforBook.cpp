@@ -594,6 +594,7 @@ void FindInforBook::OnShow(wxShowEvent& event)
 		LoadData();
 		ClearAllOldData();
 		SetReadOnLyDisplayTable();
+		titleGridText->SetLabel("MUC SACH CUA: ");
 		maxItem = 0;
 	}
 	event.Skip();
