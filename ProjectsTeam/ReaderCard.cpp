@@ -1,8 +1,7 @@
 #include "ReaderCard.h"
 ReaderCard::ReaderCard(const wxString& title) :wxFrame
-(NULL, -1, title, wxPoint(-1, -1), wxSize(1280, 680)),timer(this, MTIMER_ID)
+(NULL, -1, title, wxPoint(-1, -1), wxSize(1280, 680)), timer(this, MTIMER_ID)
 {
-	timer.Start(1, wxTIMER_CONTINUOUS);
 	srand((ulong)time(0));//for random number
 	//backend
 	numberRowIsFilled = 0;
@@ -294,6 +293,10 @@ void ReaderCard::SaveToList(wxTextCtrl** textCtrlList, int length, int& pos)
 		textCtrlList[i]->Clear();
 	}
 	textCtrlList[0]->SetFocus();
+	for (int i = 0; i < grid->GetNumberCols(); i++)
+	{
+		grid->SetCellBackgroundColour(count, i, organColor);
+	}
 	count++;
 	if (pos == grid->GetNumberRows())
 	{
@@ -304,10 +307,9 @@ void ReaderCard::SaveToList(wxTextCtrl** textCtrlList, int length, int& pos)
 		}
 	}
 	onEnter = true;
-	for (int i = 0; i < grid->GetNumberCols(); i++)
-	{
-		grid->SetCellBackgroundColour(pos, i, organColor);
-	}
+	timer.Start(1000,true);
+	onEnter = false;
+
 }
 void ReaderCard::SearchOnList()
 {
@@ -434,7 +436,7 @@ void ReaderCard::OnGridKeyDown(wxKeyEvent& event)
 		if (checkInput->HasAlpha(keyCode) || checkInput->HasRightEntering(keyCode, true))
 		{
 			event.Skip();
-			
+
 		}
 	}
 	else if (col == 2)
@@ -444,7 +446,7 @@ void ReaderCard::OnGridKeyDown(wxKeyEvent& event)
 			event.Skip();
 		}
 	}
-	else if (col == 3||col==4)
+	else if (col == 3 || col == 4)
 	{
 		if (checkInput->HasInRangeNumber(keyCode, 0, 1) || checkInput->HasRightEntering(keyCode, false))
 		{
@@ -456,12 +458,12 @@ void ReaderCard::OnGridKeyDown(wxKeyEvent& event)
 				if (col == 3)
 				{
 					grid->SetCellValue(row, col, (sexText[i]));
-					EditData(row,col);
+					EditData(row, col);
 				}
 				else if (col == 4)
 				{
 					grid->SetCellValue(row, col, checkInput->GetCardState(i));
-					EditData(row,col);
+					EditData(row, col);
 				}
 
 			}
@@ -691,7 +693,7 @@ void ReaderCard::EditCurrentCell(wxGridEvent& event)
 	{
 		ModifyTextInput(wxNewText);
 		int num = checkInput->CastWxStringToInt(wxNewText);
-		if(num==-1)
+		if (num == -1)
 		{
 			grid->SetCellValue(row, col, wxOldText);
 			return;
@@ -709,11 +711,11 @@ void ReaderCard::EditCurrentCell(wxGridEvent& event)
 		}
 		grid->SetCellValue(row, col, stateText[num]);
 	}
-	EditData(row,col);
+	EditData(row, col);
 	//wxMessageBox(event.GetString());
 	event.Skip();
 }
-void ReaderCard::EditData(int row,int col)
+void ReaderCard::EditData(int row, int col)
 {
 	if (grid->GetCellValue(row, 0) == "")
 	{
@@ -722,7 +724,7 @@ void ReaderCard::EditData(int row,int col)
 		return;
 	}
 	ulong key = CastWxStringToUlong(grid->GetCellValue(row, 0));
-	
+
 	string lastName = string(grid->GetCellValue(row, 1).mb_str());
 	string firstName = string(grid->GetCellValue(row, 2).mb_str());
 	string sex = string(grid->GetCellValue(row, 3).mb_str());
@@ -900,22 +902,11 @@ void ReaderCard::SetData(BSTree<CardReader>* cardReaders,
 
 void ReaderCard::OnTimer(wxTimerEvent& event)
 {
-	if (onEnter)
+	for (int i = 0; i < grid->GetNumberCols(); i++)
 	{
-		timer.Start(1000);
+		grid->SetCellBackgroundColour(count - 1, i, *wxWHITE);
 	}
-	else
-	{
-		if (timer.IsRunning())
-		{
-			timer.Stop();
-			for (int i = 0; i < grid->GetNumberCols(); i++)
-			{
-				grid->SetCellBackgroundColour(count, i, *wxWHITE);
-			}
-		}
-	}
-
+	grid->Refresh();
 	event.Skip();
 }
 BEGIN_EVENT_TABLE(ReaderCard, wxFrame)
