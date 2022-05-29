@@ -483,6 +483,7 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 			grid->SetCellValue(row, col, wxOldText);
 			return;
 		}
+		checkInput->UpperWxString(wxNewText);
 	}
 	if (col == 4)
 	{
@@ -501,6 +502,7 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 			grid->SetCellValue(row, col, wxOldText);
 			return;
 		}
+		checkInput->UpperWxString(wxNewText);
 	}
 
 

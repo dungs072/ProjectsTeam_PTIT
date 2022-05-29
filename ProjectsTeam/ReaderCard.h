@@ -37,7 +37,7 @@ private:
 	wxPanel* searchTextBackGround;
 	wxPanel* hotKeyPanel;
 	wxPanel* guidePanel;
-
+	wxTimer timer;
 
 	void GuideToUser();
 	void CreateEnterArea();
@@ -74,6 +74,7 @@ private:
 	void OnSelectedGrid(wxCommandEvent& event);
 	void OnSelectedLabelGrid(wxCommandEvent& event);
 	void OnSelectedCell(wxGridEvent& event);
+	void OnTimer(wxTimerEvent& event);
 	void SetModeDelete(bool state);
 
 
@@ -91,6 +92,8 @@ private:
 	int numberRowIsFilled = 0;
 	bool isModeDelete = false;
 	bool canEdit = true;
+
+	bool onEnter = false;
 	DECLARE_EVENT_TABLE();
 public:
 	ReaderCard(const wxString& title);
@@ -101,3 +104,4 @@ public:
 const int CARD_MENU = 3;
 const int SAVE_FILE = 2;
 const int DefaultRows = 30;
+const int MTIMER_ID = 9;

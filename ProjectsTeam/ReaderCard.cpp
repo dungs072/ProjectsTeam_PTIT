@@ -1,7 +1,8 @@
 #include "ReaderCard.h"
 ReaderCard::ReaderCard(const wxString& title) :wxFrame
-(NULL, -1, title, wxPoint(-1, -1), wxSize(1280, 680))
+(NULL, -1, title, wxPoint(-1, -1), wxSize(1280, 680)),timer(this, MTIMER_ID)
 {
+	timer.Start(1, wxTIMER_CONTINUOUS);
 	srand((ulong)time(0));//for random number
 	//backend
 	numberRowIsFilled = 0;
@@ -301,6 +302,11 @@ void ReaderCard::SaveToList(wxTextCtrl** textCtrlList, int length, int& pos)
 		{
 			grid->SetReadOnly(i, 0);
 		}
+	}
+	onEnter = true;
+	for (int i = 0; i < grid->GetNumberCols(); i++)
+	{
+		grid->SetCellBackgroundColour(pos, i, organColor);
 	}
 }
 void ReaderCard::SearchOnList()
@@ -892,6 +898,27 @@ void ReaderCard::SetData(BSTree<CardReader>* cardReaders,
 	this->checkInput = checkInput;
 }
 
+void ReaderCard::OnTimer(wxTimerEvent& event)
+{
+	if (onEnter)
+	{
+		timer.Start(1000);
+	}
+	else
+	{
+		if (timer.IsRunning())
+		{
+			timer.Stop();
+			for (int i = 0; i < grid->GetNumberCols(); i++)
+			{
+				grid->SetCellBackgroundColour(count, i, *wxWHITE);
+			}
+		}
+	}
+
+	event.Skip();
+}
 BEGIN_EVENT_TABLE(ReaderCard, wxFrame)
 EVT_CHAR_HOOK(ReaderCard::OnKeyDown)
+EVT_TIMER(MTIMER_ID, ReaderCard::OnTimer)
 END_EVENT_TABLE()
