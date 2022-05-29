@@ -734,6 +734,7 @@ void BookTitle::SaveToList()
 		pos = maxItem;
 	}
 	grid->InsertRows(pos, 1);
+	grid->MakeCellVisible(pos, 0);
 
 	for (int i = 0; i < 6; i++)
 	{

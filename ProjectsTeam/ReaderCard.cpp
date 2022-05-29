@@ -240,6 +240,8 @@ void ReaderCard::OnEnter(wxCommandEvent& WXUNUSED(event))
 }
 void ReaderCard::SaveToList(wxTextCtrl** textCtrlList, int length, int& pos)
 {
+	wxColor organColor;
+	organColor.Set(wxT("#FFAB03"));
 	for (int j = 0; j < length; j++)
 	{
 		if (IsWhiteSpaceAllText(textCtrlList[j]))
@@ -273,6 +275,7 @@ void ReaderCard::SaveToList(wxTextCtrl** textCtrlList, int length, int& pos)
 			grid->SetReadOnly(pos, 0);
 			grid->SetCellValue(pos, 0, wxStrCode);
 			grid->SetCellAlignment(pos, 0, wxALIGN_CENTER, wxALIGN_CENTER);
+			grid->MakeCellVisible(pos, 0);
 			break;
 		}
 	}
@@ -321,6 +324,7 @@ void ReaderCard::SearchOnList()
 					grid->SetCellBackgroundColour(i, j, organColor);
 					if (j == 4) { break; }
 					displayText[j + 1]->SetValue(grid->GetCellValue(i, j + 1));
+					grid->MakeCellVisible(i, 0);
 				}
 				grid->Refresh();
 				return;

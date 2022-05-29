@@ -74,5 +74,19 @@ public:
 		}
 		return false;
 	}
+	BorrowBook* Search(string bookCode)
+	{
+		DoublyNode<BorrowBook>* tempNode = borrowBookList->First();
+		while (tempNode != nullptr)
+		{
+			if (tempNode->data.GetBookCode() == bookCode)
+			{
+				return &tempNode->data;
+			}
+			tempNode = tempNode->next;
+		}
+		return nullptr;
+	}
+	
 };
 

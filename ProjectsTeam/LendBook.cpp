@@ -924,11 +924,22 @@ void LendBook::SaveFile()
 void LendBook::DeleteBorrowingBook()
 {
 	if (foundCardReader == nullptr) { return; }
+
 	if (borrowingBookGrid->IsSelection())
 	{
+		
 		int row = borrowingBookGrid->GetSelectedRows()[0];
 		string bookCode = string(borrowingBookGrid->GetCellValue(row, 0).mb_str());
 		if (bookCode == "") { return; }
+		BorrowBook* tempBorrowBook = foundCardReader->GetListBorrowBook()->Search(bookCode);
+		if (tempBorrowBook != nullptr)
+		{
+			if (tempBorrowBook->GetStateBorrow() == 2)
+			{
+				checkInput->ErrorMessageBox("SACH DA BI LAM MAT");
+				return;
+			}
+		}
 		SetValueAfterDelete(bookCode);
 		foundCardReader->GetListBorrowBook()->Remove(bookCode);
 		borrowingBookGrid->DeleteRows(row, 1);
