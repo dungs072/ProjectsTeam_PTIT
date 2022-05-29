@@ -401,7 +401,8 @@ void DisplayListBook::SaveToList()
 
 	Book tempBook(bookCode, index, string(enterText->GetValue().mb_str()));
 	enterText->Clear();
-	stateChoice->SetSelection(0);
+	index = index == 0 ? 1 : 2;
+	stateChoice->SetSelection(index);
 	currentTitle->GetListBook()->Add(tempBook);
 	maxItem++;
 
