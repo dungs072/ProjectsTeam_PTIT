@@ -440,7 +440,6 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 	checkInput->ModifyTextInput(wxNewText);
 	if (col == 0)
 	{
-
 		if (!CheckISBN(wxNewText))
 		{
 			checkInput->ErrorMessageBox("LOI ISBN");
@@ -455,6 +454,7 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 			return;
 		}
 
+		
 	}
 	if (col == 1)
 	{
@@ -483,7 +483,6 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 			grid->SetCellValue(row, col, wxOldText);
 			return;
 		}
-		checkInput->UpperWxString(wxNewText);
 	}
 	if (col == 4)
 	{
@@ -502,7 +501,6 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 			grid->SetCellValue(row, col, wxOldText);
 			return;
 		}
-		checkInput->UpperWxString(wxNewText);
 	}
 
 
@@ -511,7 +509,14 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 	{
 		ISBN = string(wxOldText.mb_str());
 	}
-	BookList* tempList = titleList->GetData(ISBN)->GetListBook();
+	Title* currentTitle = titleList->GetData(ISBN);
+	BookList* tempList = currentTitle->GetListBook();// 
+	if (currentTitle->HasBorrowBook()&&col==0)
+	{
+		checkInput->ErrorMessageBox("DAU SACH DA CO SACH DUOC MUON");
+		grid->SetCellValue(row, col, wxOldText);
+		return;
+	}
 	uint countBorrow = titleList->GetData(ISBN)->GetCountBorrow();
 	titleList->Delete(ISBN);
 	grid->SetCellValue(row, col, wxNewText);
@@ -609,6 +614,7 @@ void BookTitle::EditTable(Title* title, int row)
 	}
 	
 }
+
 void BookTitle::OnKeyDownTextCltrToUpper(wxCommandEvent& _rCommandEvent)
 {
 	wxTextCtrl* pTextCtrl = dynamic_cast<wxTextCtrl*>(_rCommandEvent.GetEventObject());

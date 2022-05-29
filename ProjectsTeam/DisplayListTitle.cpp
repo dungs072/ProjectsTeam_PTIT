@@ -377,8 +377,16 @@ void DisplayListTitle::EditCurrentCell(wxGridEvent& event)
 		ISBN = string(wxOldText.mb_str());
 		
 	}
+
 	//set all book again acording to changing ISBN
-	BookList* tempBookList = titleList->GetData(ISBN)->GetListBook();
+	Title* currentTitle = titleList->GetData(ISBN);
+	BookList* tempBookList = currentTitle->GetListBook();
+	if (currentTitle->HasBorrowBook()&&col==0)
+	{
+		checkInput->ErrorMessageBox("DAU SACH DA CO SACH DUOC MUON");
+		grid->SetCellValue(row, col, wxOldText);
+		return;
+	}
 	uint countBorrow = titleList->GetData(ISBN)->GetCountBorrow();
 	SinglyNode<Book>* tempBook = tempBookList->First();
 

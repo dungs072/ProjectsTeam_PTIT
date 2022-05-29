@@ -130,6 +130,7 @@ bool CheckInput::IsRightCodeState(int maxNumber, int currentNumber)
 {
 	return currentNumber >= 0 && currentNumber <= maxNumber;
 }
+
 void CheckInput::ModifyTextInput(wxString& text)
 {
 	if (text == "") { return; }

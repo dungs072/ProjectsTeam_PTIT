@@ -263,6 +263,12 @@ void FindInforBook::OnEnter(wxCommandEvent& WXUNUSED(event))
 				UndoTitleData(0);
 				return; 
 			}
+			if (foundTitle->HasBorrowBook())
+			{
+				checkInput->ErrorMessageBox("DAU SACH DA CO SACH DUOC MUON");
+				UndoTitleData(0);
+				return;
+			}
 			displayText[0]->SetValue(tempwxstr);
 			ChangeTitleData(0, tempwxstr);
 		}
@@ -432,6 +438,7 @@ void FindInforBook::ChangeTitleData(int index,wxString wxData)
 	if (index == 0)
 	{
 		int i = 0;
+		
 		foundTitle->SetISBN(data);
 		SinglyNode<Book>* tempBook = foundTitle->GetListBook()->First();
 		while (tempBook != nullptr)

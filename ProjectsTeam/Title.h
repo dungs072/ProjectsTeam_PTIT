@@ -83,6 +83,19 @@ public:
 	string GetType();
 	BookList* GetListBook();
 	uint GetCountBorrow();
+	bool HasBorrowBook()
+	{
+		SinglyNode<Book>* tempBook = bookList->First();
+		while (tempBook != nullptr)
+		{
+			if (tempBook->data.GetState() == 1)
+			{
+				return true;
+			}
+			tempBook = tempBook->next;
+		}
+		return false;
+	}
 };
 class TitleList
 {
