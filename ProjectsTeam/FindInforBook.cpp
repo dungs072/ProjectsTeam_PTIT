@@ -299,6 +299,7 @@ void FindInforBook::OnEnter(wxCommandEvent& WXUNUSED(event))
 				UndoTitleData(1);
 				return; 
 			}
+			titleGridText->SetLabel("MUC SACH CUA: " + tempwxstr);
 			displayText[1]->SetValue(tempwxstr);
 			ChangeTitleData(1, tempwxstr);
 		}
