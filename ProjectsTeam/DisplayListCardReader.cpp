@@ -2,7 +2,6 @@
 DisplayListCardReader::DisplayListCardReader(const wxString& title)
 	:wxFrame(NULL, -1, title, wxDefaultPosition, wxSize(1280, 680))
 {
-	
 	// stateText
 	sexText = new string[2]{ "NAM","NU" };
 	wxColour lightYellow, organColor, lightBlue,red;

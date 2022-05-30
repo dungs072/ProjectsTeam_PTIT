@@ -152,7 +152,6 @@
   <ItemGroup>
     <ClCompile Include="AdminMenu.cpp" />
     <ClCompile Include="Book.cpp" />
-    <ClCompile Include="BookCatalog.cpp" />
     <ClCompile Include="BookFunction.cpp" />
     <ClCompile Include="BookTitle.cpp" />
     <ClCompile Include="BorrowBook.cpp" />
@@ -189,7 +188,6 @@
   <ItemGroup>
     <ClInclude Include="AdminMenu.h" />
     <ClInclude Include="Book.h" />
-    <ClInclude Include="BookCatalog.h" />
     <ClInclude Include="BookFunction.h" />
     <ClInclude Include="BookTitle.h" />
     <ClInclude Include="BorrowBook.h" />

@@ -305,9 +305,7 @@ void ReaderCard::SaveToList(wxTextCtrl** textCtrlList, int length, int& pos)
 			grid->SetReadOnly(i, 0);
 		}
 	}
-	onEnter = true;
 	timer.Start(1000,true);
-	onEnter = false;
 
 }
 void ReaderCard::SearchOnList()

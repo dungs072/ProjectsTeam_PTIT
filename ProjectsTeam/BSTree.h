@@ -98,7 +98,6 @@ namespace DataStructure
 		}
 		void Add(T* data)
 		{
-
 			numberNodes++;
 			if (rootNode == nullptr)
 			{

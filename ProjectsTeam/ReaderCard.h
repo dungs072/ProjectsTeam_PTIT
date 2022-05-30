@@ -93,7 +93,6 @@ private:
 	bool isModeDelete = false;
 	bool canEdit = true;
 
-	bool onEnter = false;
 	DECLARE_EVENT_TABLE();
 public:
 	ReaderCard(const wxString& title);

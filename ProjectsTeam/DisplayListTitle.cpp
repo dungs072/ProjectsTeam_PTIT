@@ -433,7 +433,6 @@ void DisplayListTitle::EditCurrentCell(wxGridEvent& event)
 	Title** arr = titleList->GetList()->ToArray();
 	sort->QuickSort(arr, 0, maxItem);
 	LoadListToTable();
-
 	event.Skip();
 }
 void DisplayListTitle::OnButtonDown(wxCommandEvent& WXUNUSED(event))
