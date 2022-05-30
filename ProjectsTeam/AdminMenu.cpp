@@ -230,6 +230,15 @@ void AdminMenu::OnFunctionBookPanel(wxCommandEvent& WXUNUSED(event))
 void AdminMenu::OnExit(wxCommandEvent& WXUNUSED(event))
 {
 	this->Close();
+	/*readerCard->Close();
+	displayCardReader->Close();
+	bookTitle->Close();
+	displayTitle->Close();
+	findInforBook->Close();
+	lendBook->Close();
+	giveBook->Close();
+	overDueList->Close();
+	mostBorrowings->Close();*/
 }
 void AdminMenu::OnMainMenu(wxCommandEvent& WXUNUSED(event))
 {

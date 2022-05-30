@@ -119,7 +119,7 @@ LendBook::LendBook(const wxString& title) :
 	for (int i = 0; i < 3; i++)
 	{
 		borrowingBookGrid->SetRowSize(i, 25);
-		for (int j = 0; j < 2; j++)
+		for (int j = 0; j < 3; j++)
 		{
 			borrowingBookGrid->SetReadOnly(i, j);
 		}
@@ -260,6 +260,14 @@ void LendBook::OnShow(wxShowEvent& event)
 
 		bookGrid->Hide();
 		titleGrid->Show();
+		if (borrowingBookGrid->IsSelection())
+		{
+			borrowingBookGrid->ClearSelection();
+		}
+		if (titleGrid->IsSelection())
+		{
+			titleGrid->ClearSelection();
+		}
 
 	}
 	else
