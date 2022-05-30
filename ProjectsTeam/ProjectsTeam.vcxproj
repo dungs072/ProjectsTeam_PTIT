@@ -166,7 +166,6 @@
     <ClCompile Include="DisplayListTitle.cpp" />
     <ClCompile Include="DoublyLinkedList.cpp" />
     <ClCompile Include="FindInforBook.cpp" />
-    <ClCompile Include="FormatText.cpp" />
     <ClCompile Include="GiveBook.cpp" />
     <ClCompile Include="ISaveFile.cpp" />
     <ClCompile Include="LendBook.cpp" />
@@ -204,7 +203,6 @@
     <ClInclude Include="DoublyLinkedList.h" />
     <ClInclude Include="DoublyNode.h" />
     <ClInclude Include="FindInforBook.h" />
-    <ClInclude Include="FormatText.h" />
     <ClInclude Include="GiveBook.h" />
     <ClInclude Include="ISaveFile.h" />
     <ClInclude Include="LendBook.h" />

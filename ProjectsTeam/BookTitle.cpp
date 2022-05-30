@@ -750,6 +750,7 @@ void BookTitle::SaveToList()
 	{
 		grid->AppendRows(maxItem - grid->GetNumberRows() + 1);
 	}
+	QuickSort(0, maxItem);
 }
 void BookTitle::SaveFile()
 {
@@ -760,6 +761,10 @@ void BookTitle::LoadData()
 {
 	grid->Refresh();
 	ClearOldDataInGrid();
+	if (grid->IsSelection())
+	{
+		grid->ClearSelection();
+	}
 	maxItem = titleList->GetList()->Length();
 	//QuickSort(0, maxItem);
 	LoadListToTable();

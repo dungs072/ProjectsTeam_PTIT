@@ -7,9 +7,6 @@
     <ClCompile Include="ControlDateTime.cpp">
       <Filter>Resources\FUNCTION</Filter>
     </ClCompile>
-    <ClCompile Include="FormatText.cpp">
-      <Filter>Resources\FUNCTION</Filter>
-    </ClCompile>
     <ClCompile Include="ISaveFile.cpp">
       <Filter>Resources\FUNCTION</Filter>
     </ClCompile>
@@ -148,9 +145,6 @@
       <Filter>Header\FUNCTION</Filter>
     </ClInclude>
     <ClInclude Include="ControlDateTime.h">
-      <Filter>Header\FUNCTION</Filter>
-    </ClInclude>
-    <ClInclude Include="FormatText.h">
       <Filter>Header\FUNCTION</Filter>
     </ClInclude>
     <ClInclude Include="ISaveFile.h">

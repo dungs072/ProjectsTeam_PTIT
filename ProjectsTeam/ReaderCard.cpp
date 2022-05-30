@@ -78,7 +78,6 @@ ReaderCard::ReaderCard(const wxString& title) :wxFrame
 	vRightBox->Add(noteBook, 0, wxTOP, 80);
 	vGuideBox->Add(labelGuide, 0, wxLEFT, 175);
 	vGuideBox->Add(guidePanel, 0, wxBOTTOM, 5);
-
 	vRightBox->Add(vGuideBox, 0, wxTOP, 10);
 	mainHBox->Add(vRightBox, 0, wxLEFT | wxBOTTOM, 40);
 
