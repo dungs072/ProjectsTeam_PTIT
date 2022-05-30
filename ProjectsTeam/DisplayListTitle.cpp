@@ -614,6 +614,7 @@ bool DisplayListTitle::CheckPageNumber(wxString text)
 	//page number has 6 number;
 	if (!checkInput->IsNumber(text)) { return false; }
 	string textstr = string(text.mbc_str());
+	if (textstr == "0") { return false; }
 	return textstr.length() <= 6 && textstr.length() > 0;
 }
 bool DisplayListTitle::CheckAuthor(wxString text)
