@@ -369,6 +369,22 @@ void DisplayListCardReader::ClearGridValue()
 			grid->SetCellValue(i, j, wxT(""));
 		}
 	}
+	if (length > 30)
+	{
+		if (length < grid->GetNumberRows())
+		{
+			grid->DeleteRows(length, grid->GetNumberRows() - length-1);
+		}
+	}
+	else
+	{
+		if (grid->GetNumberRows()>30)
+		{
+			grid->DeleteRows(length, grid->GetNumberRows() - 30 - 1);
+		}
+	}
+
+	
 }
 void DisplayListCardReader::Swap(int i, int j, CardReader** A)
 {

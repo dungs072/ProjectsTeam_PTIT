@@ -33,6 +33,7 @@ private:
 	OverDueList* overDueList;
 	MostBorrowings* mostBorrowings;
 	CheckInput* checkInput;
+	BookFunction* bookFunction;
 
 	wxColor darkYellow,lightYellow,
 			blueGreen,lightOrange,

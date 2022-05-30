@@ -3,6 +3,7 @@
 #include<wx/wx.h>
 #include<wx/grid.h>
 #include"CheckInput.h"
+#include"BookFunction.h"
 #include"DisplayListBook.h"
 #include"SortAlgorithm.h"
 #include"ISaveFile.h"
@@ -13,7 +14,8 @@ class DisplayListTitle :public wxFrame
 private:
 	//backend
 	SortAlgorithm<Title>* sort;
-	CheckInput* checkInput = new CheckInput();
+	CheckInput* checkInput;
+	BookFunction* bookFunction;
 	TitleList* titleList;
 	Title* selectedTitle = nullptr;
 	//Frontend
@@ -59,10 +61,11 @@ private:
 	bool canEdit = true;
 public:
 	DisplayListTitle(const wxString& title);
-	void SetData(TitleList* titleList,CheckInput* checkInput)
+	void SetData(TitleList* titleList,CheckInput* checkInput,BookFunction* bookFunction)
 	{
 		this->titleList = titleList;
 		this->checkInput = checkInput;
+		this->bookFunction = bookFunction;
 	}
 	DECLARE_EVENT_TABLE();
 };

@@ -5,6 +5,7 @@
 #include"CheckInput.h"
 #include"Title.h"
 #include"ISaveFile.h"
+#include"BookFunction.h"
 using namespace DataStructure;
 class BookTitle:public wxFrame
 {
@@ -12,6 +13,7 @@ private:
 	//backend
 	TitleList* titleList;
 	CheckInput* checkInput;
+	BookFunction* bookFunction;
 	//frontend
 	int maxItem = 0;
 	bool isTurnOnEnterPanel = true;
@@ -76,10 +78,11 @@ public:
 	{
 		delete[]enterText;
 	}
-	void SetData(TitleList* titleList,CheckInput* checkInput)
+	void SetData(TitleList* titleList,CheckInput* checkInput,BookFunction* bookFunction)
 	{
 		this->titleList = titleList;
 		this->checkInput = checkInput;
+		this->bookFunction = bookFunction;
 	}
 	DECLARE_EVENT_TABLE();
 

@@ -159,6 +159,10 @@ void DisplayListBook::OnShow(wxShowEvent& event)
 		{
 			grid->DeleteRows(30, maxItem - 30);
 		}
+		if (grid->IsSelection())
+		{
+			grid->ClearSelection();
+		}
 		maxItem = 0;
 		LoadData();
 		SetModeDelete(false);

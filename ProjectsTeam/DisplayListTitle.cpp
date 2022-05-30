@@ -332,6 +332,14 @@ void DisplayListTitle::EditCurrentCell(wxGridEvent& event)
 			return;
 		}
 		checkInput->UpperWxString(wxNewText);
+		if (bookFunction->CheckDuplicateBookName(string(wxNewText.mbc_str()),
+			titleList, titleList->GetList()->Length()))
+		{
+			checkInput->ErrorMessageBox("TRUNG TEN SACH");
+			grid->SetCellValue(row, col, wxOldText);
+			return;
+		}
+		
 	}
 	if (col == 2)
 	{

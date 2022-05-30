@@ -12,6 +12,7 @@ AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
 	green.Set("#70DE54");
 	darkRed.Set("#F06969");
 	checkInput = new CheckInput();
+	bookFunction = new BookFunction();
 	timer.Start();
 	LoadDataIntoTempMemory();
 	// window control
@@ -20,9 +21,9 @@ AdminMenu::AdminMenu(const wxString& title) :wxFrame(NULL, -1, title,
 	displayCardReader = new DisplayListCardReader("DANH SACH THE DOC GIA");
 	displayCardReader->SetData(treeCardReader,checkInput);
 	bookTitle = new BookTitle("DAU SACH");
-	bookTitle->SetData(titleList,checkInput);
+	bookTitle->SetData(titleList,checkInput,bookFunction);
 	displayTitle = new DisplayListTitle("DANH SACH DAU SACH");
-	displayTitle->SetData(titleList,checkInput);
+	displayTitle->SetData(titleList,checkInput,bookFunction);
 	findInforBook = new FindInforBook("TIM KIEM THONG TIN DAU SACH");
 	findInforBook->SetData(titleList,checkInput);
 	lendBook = new LendBook("MUON SACH");

@@ -367,6 +367,14 @@ void BookTitle::OnEnter(wxCommandEvent& WXUNUSED(event))
 		enterText[1]->SetFocus();
 		return;
 	}
+	if (bookFunction->CheckDuplicateBookName(string(wxstr.mbc_str()), 
+						titleList, titleList->GetList()->Length()))
+	{
+		checkInput->ErrorMessageBox("TRUNG TEN SACH");
+		enterText[1]->SetFocus();
+		return;
+	}
+
 	wxstr = enterText[2]->GetValue();
 	if (!CheckPageNumber(wxstr))
 	{
@@ -465,6 +473,14 @@ void BookTitle::EditCurrentCell(wxGridEvent& event)
 			return;
 		}
 		checkInput->UpperWxString(wxNewText);
+		if (bookFunction->CheckDuplicateBookName(string(wxNewText.mbc_str()),
+			titleList, titleList->GetList()->Length()))
+		{
+			checkInput->ErrorMessageBox("TRUNG TEN SACH");
+			grid->SetCellValue(row, col, wxOldText);
+			return;
+		}
+		
 	}
 	if (col == 2)
 	{
